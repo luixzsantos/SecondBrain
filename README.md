@@ -1,16 +1,20 @@
 # 🧠 SecondBrain
 
-Dicionário técnico pessoal + mapa de conhecimento. API em **C# / ASP.NET Core** que responde a pergunta
-"o que eu sei sobre X, e onde já usei isso?" — começando pequeno (V0.1: CRUD de `Concept`) e crescendo
-incrementalmente até virar um grafo de conhecimento pessoal integrável a Obsidian, GitHub e LLMs.
+Uma enciclopédia pessoal: guarde o que você aprende (um termo, uma definição, uma tecnologia) e encontre de
+novo quando esquecer. Por baixo tem uma API em **C# / ASP.NET Core**, mas o ponto de entrada pra quem só quer
+usar é uma página simples — sem jargão, sem Swagger — com busca e um botão "Guardar algo novo". O conhecimento
+também pode vir importado direto do [Segundo Cérebro (Obsidian)](#sincronizar-com-o-obsidian), pra não precisar
+digitar tudo de novo.
 
-Este README documenta até a **V0.2 — Knowledge** (Note, Tag, Project, relações N:N e busca full-text).
+Este README documenta até a **V0.2 — Knowledge** (Note, Tag, Project, relações N:N, busca full-text, UI e sync com Obsidian).
 
 ---
 
 ## Índice
 
 - [Visão do produto](#visão-do-produto)
+- [A interface (pra qualquer pessoa usar)](#a-interface-pra-qualquer-pessoa-usar)
+- [Sincronizar com o Obsidian](#sincronizar-com-o-obsidian)
 - [Arquitetura](#arquitetura)
 - [Modelo de dados](#modelo-de-dados)
 - [Stack](#stack)
@@ -30,8 +34,34 @@ Este README documenta até a **V0.2 — Knowledge** (Note, Tag, Project, relaç�
 
 Separar **conhecimento** ("o que é Redis?"), **experiência** ("como eu usei Redis?"), **projeto** ("em qual
 projeto?") e **decisão** ("por que Redis e não RabbitMQ?") em vez de jogar tudo num bloco de texto genérico
-(estilo Notion). A "página do conceito" (`GET /api/concepts/{id}`) já mostra a visão completa: descrição +
-notas, projetos e tags relacionados.
+(estilo Notion) — mas sem exigir que quem usa entenda essa separação. Na prática, pra quem abre a página, é só
+um verbete de enciclopédia: nome, definição, e o que mais está relacionado (anotações, projetos, tags).
+
+## A interface (pra qualquer pessoa usar)
+
+`http://localhost:5080/` (aberta automaticamente pelo [`start.bat`](start.bat)) é uma página HTML única, sem
+build/framework — só abrir e usar:
+
+- **Busca** central, estilo enciclopédia: digite um termo e aparece na hora (verbetes, anotações, projetos).
+- **"+ Guardar algo novo"**: um formulário de duas perguntas — "qual o nome?" e "o que é isso, nas suas
+  palavras?" — sem nenhum campo técnico.
+- **Clicar num verbete** abre a definição completa + anotações e projetos relacionados, com um campo rápido
+  pra anotar mais alguma coisa ali mesmo.
+- Tema claro/escuro (lembrado entre visitas).
+
+Pensada pra alguém que não sabe (nem precisa saber) o que é uma API — quem quiser mexer nos detalhes técnicos
+ainda tem o Swagger em `/swagger`.
+
+## Sincronizar com o Obsidian
+
+Se você já anota tecnologias e conceitos no seu vault do Obsidian (pastas `05-STACK TECNOLÓGICA` e
+`08-CONCEITOS FUNDAMENTAIS`), não precisa digitar tudo de novo aqui: [`sync-obsidian.bat`](sync-obsidian.bat)
+importa cada nota como um verbete (`Concept`) — a definição curta vem da seção "## O que é" da nota (quando
+existe), e o conteúdo completo (limpo de sintaxe Markdown/wikilinks) vira uma `Note` relacionada. Rodar de novo
+**atualiza** em vez de duplicar (casa por nome). Precisa da API no ar (`start.bat` primeiro).
+
+Script: [`scripts/sync-obsidian.ps1`](scripts/sync-obsidian.ps1). Hoje é sob demanda (você decide quando
+rodar); automatizar via tarefa agendada do Windows é uma opção futura, ainda não configurada.
 
 ## Arquitetura
 
@@ -91,10 +121,13 @@ second-brain/
 ├── tests/
 │   ├── SecondBrain.UnitTests/        # Services contra repositórios fake em memória
 │   └── SecondBrain.IntegrationTests/ # API real via WebApplicationFactory + EF InMemory
-├── compose.yml        # Postgres local
+├── scripts/
+│   └── sync-obsidian.ps1  # Importa/atualiza verbetes a partir do vault Obsidian
+├── compose.yml            # Postgres local
 ├── .env.example
-├── start.bat          # Sobe Postgres (Docker, com fallback nativo) + migrations + API
-├── stop.bat           # Encerra a API e derruba o Postgres do Docker
+├── start.bat              # Sobe Postgres (Docker, com fallback nativo) + migrations + API + interface
+├── stop.bat               # Encerra a API e derruba o Postgres do Docker
+├── sync-obsidian.bat      # Atalho pro script de sincronização
 └── SecondBrain.sln
 ```
 
@@ -107,8 +140,9 @@ second-brain/
 ## Como rodar
 
 **Windows — atalho:** dois cliques em [`start.bat`](start.bat) sobe o Postgres (Docker; se não responder, tenta
-o serviço nativo `postgresql-x64-16`), aplica as migrations pendentes e abre a API numa janela nova + o
-Swagger no navegador. [`stop.bat`](stop.bat) encerra tudo.
+o serviço nativo `postgresql-x64-16`), aplica as migrations pendentes e abre a API numa janela nova + a
+interface no navegador. [`stop.bat`](stop.bat) encerra tudo. [`sync-obsidian.bat`](sync-obsidian.bat) importa
+o vault (ver [seção acima](#sincronizar-com-o-obsidian)).
 
 Ou manualmente:
 
@@ -231,11 +265,15 @@ só validação manual.
   adicionar uma lib pra isso agora seria peso sem ganho real.
 - **.NET 8 (LTS)**, não a versão mais nova instalada na máquina — prioriza maturidade de tooling/documentação
   pra um projeto que também é estudo de C#/ASP.NET Core.
+- **Sync do Obsidian é sob demanda, não automático ainda.** Rodar em background (tarefa agendada do Windows)
+  exigiria a API sempre no ar; hoje ela só sobe quando você chama `start.bat`. Preferi entregar o sync
+  funcionando primeiro e decidir a automação depois, com o usuário confirmando explicitamente (criar uma
+  tarefa agendada é uma mudança persistente no sistema, não algo pra fazer silenciosamente).
 
 ## Roadmap
 
 - **V0.3** — Users, login, JWT.
 - **V0.4** — Experience, Decision, grafo de conhecimento relacionado.
 - **V0.5** — Redis, background workers, observabilidade.
-- **V1.0** — Integração com Obsidian (importar `.md` do vault como Notes), GitHub, embeddings/busca semântica,
-  assistente via LLM.
+- **V1.0** — Automatizar o sync do Obsidian (tarefa agendada, hoje é sob demanda), sincronizar outras pastas do
+  vault, integração com GitHub, embeddings/busca semântica, assistente via LLM.

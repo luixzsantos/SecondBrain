@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Meu Cérebro</title>
+<style>
+  :root {
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --text: #2b2b2b;
+    --muted: #6b6b6b;
+    --border: #e8e6e2;
+    --accent: #6c5ce7;
+    --accent-soft: #f1eefe;
+    --danger: #d9534f;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  [data-theme="dark"] {
+    --bg: #1c1c1e;
+    --surface: #262628;
+    --text: #ececec;
+    --muted: #a0a0a0;
+    --border: #3a3a3c;
+    --accent: #9b8afb;
+    --accent-soft: #2e2a4d;
+    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
+  header { text-align: center; margin-bottom: 32px; position: relative; }
+  header h1 { font-size: 32px; margin: 0 0 6px; }
+  header p { color: var(--muted); margin: 0; font-size: 15px; }
+  #themeToggle {
+    position: absolute; right: 0; top: 0;
+    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+    padding: 6px 12px; cursor: pointer; font-size: 13px; color: var(--text);
+  }
+  .search-box {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
+    box-shadow: var(--shadow); padding: 4px; display: flex; align-items: center; gap: 8px;
+  }
+  .search-box input {
+    flex: 1; border: none; outline: none; background: transparent; color: var(--text);
+    font-size: 17px; padding: 14px 12px;
+  }
+  .search-box span { padding-left: 14px; font-size: 18px; color: var(--muted); }
+  .hint { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+
+  .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 32px 0 12px; }
+
+  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
+  .card {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; cursor: pointer; box-shadow: var(--shadow); transition: transform .1s ease;
+  }
+  .card:hover { transform: translateY(-2px); }
+  .card h3 { margin: 0 0 6px; font-size: 16px; }
+  .card p { margin: 0; font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+  .card .badge { display: inline-block; font-size: 11px; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 2px 6px; margin-bottom: 8px; }
+
+  .empty { text-align: center; color: var(--muted); padding: 40px 0; font-size: 14px; }
+
+  .fab {
+    position: fixed; right: 24px; bottom: 24px; background: var(--accent); color: white;
+    border: none; border-radius: 999px; padding: 16px 22px; font-size: 15px; font-weight: 600;
+    cursor: pointer; box-shadow: 0 4px 14px rgba(108,92,231,.4);
+  }
+
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: flex-start;
+    justify-content: center; padding: 5vh 16px; overflow-y: auto; z-index: 10;
+  }
+  .modal {
+    background: var(--surface); border-radius: 14px; padding: 24px; max-width: 560px; width: 100%;
+    box-shadow: var(--shadow); animation: pop .12s ease;
+  }
+  @keyframes pop { from { transform: scale(.97); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal h2 { margin-top: 0; }
+  .modal label { display: block; font-size: 13px; color: var(--muted); margin: 14px 0 6px; }
+  .modal input[type=text], .modal textarea, .modal select {
+    width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
+    background: var(--bg); color: var(--text); font-size: 14px; font-family: inherit;
+  }
+  .modal textarea { min-height: 90px; resize: vertical; }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
+  button { font-family: inherit; }
+  .btn { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 8px; padding: 9px 16px; cursor: pointer; font-size: 14px; }
+  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
+  .btn-text { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 13px; }
+  .close-x { position: absolute; top: 18px; right: 20px; background: none; border: none; font-size: 20px; color: var(--muted); cursor: pointer; }
+  .msg { font-size: 13px; margin-top: 10px; }
+  .msg.error { color: var(--danger); }
+  .msg.ok { color: #2e7d32; }
+
+  .detail-tag { display: inline-block; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 3px 10px; font-size: 12px; margin: 0 6px 6px 0; }
+  .detail-block { margin-top: 22px; }
+  .detail-block h4 { font-size: 13px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); margin-bottom: 8px; }
+  .detail-item { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; font-size: 14px; }
+  .detail-item .t { font-weight: 600; margin-bottom: 2px; }
+  .detail-item .d { color: var(--muted); font-size: 13px; }
+  .quick-add { display: flex; gap: 8px; margin-top: 10px; }
+  .quick-add input { flex: 1; }
+  .link { color: var(--danger); background: none; border: none; cursor: pointer; font-size: 12px; padding: 0; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <button id="themeToggle" onclick="toggleTheme()">🌙 Escuro</button>
+    <h1>🧠 Meu Cérebro</h1>
+    <p>Sua enciclopédia pessoal — guarde o que você aprende e encontre de novo quando esquecer.</p>
+  </header>
+
+  <div class="search-box">
+    <span>🔍</span>
+    <input id="searchInput" type="text" placeholder="Buscar um termo, uma definição, um projeto..." oninput="onSearchInput()" />
+  </div>
+  <div class="hint">Digite pra buscar. Deixe vazio pra ver tudo que você já guardou.</div>
+
+  <div id="results"></div>
+</div>
+
+<button class="fab" onclick="openNewConceptModal()">+ Guardar algo novo</button>
+
+<div id="modalRoot"></div>
+
+<script>
+const state = { concepts: [], searching: false };
+
+function toggleTheme() {
+  const root = document.documentElement;
+  const isDark = root.getAttribute('data-theme') === 'dark';
+  root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+  document.getElementById('themeToggle').textContent = isDark ? '🌙 Escuro' : '☀️ Claro';
+  try { localStorage.setItem('secondbrain-theme', isDark ? 'light' : 'dark'); } catch (e) {}
+}
+(function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem('secondbrain-theme'); } catch (e) {}
+  if (saved === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('themeToggle').textContent = '☀️ Claro';
+    });
+  }
+})();
+
+async function api(path, options) {
+  const res = await fetch(path, Object.assign({ headers: { 'Content-Type': 'application/json' } }, options || {}));
+  if (!res.ok) {
+    let title = 'Algo deu errado.';
+    try { const body = await res.json(); title = body.title || title; } catch (e) {}
+    const err = new Error(title);
+    err.status = res.status;
+    throw err;
+  }
+  if (res.status === 204) return null;
+  return res.json();
+}
+
+async function loadAllConcepts() {
+  state.concepts = await api('/api/concepts');
+  renderConceptGrid(state.concepts, 'Tudo que você já guardou');
+}
+
+function escapeHtml(s) {
+  return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+function renderConceptGrid(concepts, title) {
+  const results = document.getElementById('results');
+  if (!concepts.length) {
+    results.innerHTML = `<div class="section-title">${title}</div><div class="empty">Nada por aqui ainda. Clique em "Guardar algo novo" pra começar.</div>`;
+    return;
+  }
+  results.innerHTML = `
+    <div class="section-title">${title}</div>
+    <div class="cards">
+      ${concepts.map(c => `
+        <div class="card" onclick="openConceptDetail('${c.id}')">
+          <h3>${escapeHtml(c.name)}</h3>
+          <p>${escapeHtml(c.description || 'Sem descrição ainda.')}</p>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+let searchTimer = null;
+function onSearchInput() {
+  clearTimeout(searchTimer);
+  const q = document.getElementById('searchInput').value.trim();
+  if (!q) { loadAllConcepts(); return; }
+  searchTimer = setTimeout(() => runSearch(q), 250);
+}
+
+async function runSearch(q) {
+  const data = await api('/api/search?q=' + encodeURIComponent(q));
+  const results = document.getElementById('results');
+  if (!data.results.length) {
+    results.innerHTML = `<div class="section-title">Resultados para "${escapeHtml(q)}"</div><div class="empty">Nada encontrado. Talvez você ainda não tenha guardado isso — quer <a href="#" onclick="openNewConceptModal('${escapeHtml(q)}');return false;">criar um verbete</a> com esse nome?</div>`;
+    return;
+  }
+  const typeLabel = { concept: '📖 Verbete', note: '📝 Anotação', project: '📁 Projeto' };
+  results.innerHTML = `
+    <div class="section-title">Resultados para "${escapeHtml(q)}"</div>
+    <div class="cards">
+      ${data.results.map(r => `
+        <div class="card" onclick="${r.type === 'concept' ? `openConceptDetail('${r.id}')` : ''}">
+          <span class="badge">${typeLabel[r.type] || r.type}</span>
+          <h3>${escapeHtml(r.title)}</h3>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function modalShell(innerHtml) {
+  document.getElementById('modalRoot').innerHTML = `
+    <div class="overlay" onclick="if(event.target===this) closeModal()">
+      <div class="modal" style="position:relative">
+        <button class="close-x" onclick="closeModal()">✕</button>
+        ${innerHtml}
+      </div>
+    </div>
+  `;
+}
+function closeModal() { document.getElementById('modalRoot').innerHTML = ''; }
+
+function openNewConceptModal(prefillName) {
+  modalShell(`
+    <h2>Guardar algo novo</h2>
+    <label>Nome (o termo, a palavra, a classe...)</label>
+    <input type="text" id="newName" placeholder="Ex: Redis" value="${escapeHtml(prefillName || '')}" />
+    <label>O que é isso? (em suas próprias palavras)</label>
+    <textarea id="newDesc" placeholder="Ex: um jeito de guardar dados na memória pra acessar rapidinho depois."></textarea>
+    <div id="newMsg" class="msg"></div>
+    <div class="modal-actions">
+      <button class="btn" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" onclick="submitNewConcept()">Guardar</button>
+    </div>
+  `);
+}
+
+async function submitNewConcept() {
+  const name = document.getElementById('newName').value.trim();
+  const description = document.getElementById('newDesc').value.trim();
+  const msg = document.getElementById('newMsg');
+  if (!name) { msg.textContent = 'Dá um nome pra essa ideia primeiro :)'; msg.className = 'msg error'; return; }
+  try {
+    const created = await api('/api/concepts', { method: 'POST', body: JSON.stringify({ name, description }) });
+    closeModal();
+    document.getElementById('searchInput').value = '';
+    await loadAllConcepts();
+    openConceptDetail(created.id);
+  } catch (e) {
+    msg.textContent = e.status === 409 ? 'Você já guardou algo com esse nome — procure por ele na busca.' : e.message;
+    msg.className = 'msg error';
+  }
+}
+
+async function openConceptDetail(id) {
+  const c = await api('/api/concepts/' + id);
+  renderConceptDetail(c);
+}
+
+function renderConceptDetail(c) {
+  modalShell(`
+    <h2>${escapeHtml(c.name)}</h2>
+    <p style="color:var(--muted)">${escapeHtml(c.description || 'Sem descrição ainda.')}</p>
+    ${c.tags.length ? `<div>${c.tags.map(t => `<span class="detail-tag">${escapeHtml(t.name)}</span>`).join('')}</div>` : ''}
+
+    <div class="detail-block">
+      <h4>📝 Anotações (${c.notes.length})</h4>
+      ${c.notes.map(n => `<div class="detail-item"><div class="t">${escapeHtml(n.title)}</div><div class="d">${escapeHtml(n.content)}</div></div>`).join('') || '<div class="d">Nenhuma ainda.</div>'}
+      <div class="quick-add">
+        <input type="text" id="quickNoteTitle" placeholder="Título da anotação" />
+        <input type="text" id="quickNoteContent" placeholder="O que você quer lembrar?" />
+        <button class="btn" onclick="quickAddNote('${c.id}')">+ Anotar</button>
+      </div>
+    </div>
+
+    <div class="detail-block">
+      <h4>📁 Usado nos projetos (${c.projects.length})</h4>
+      ${c.projects.map(p => `<div class="detail-item"><div class="t">${escapeHtml(p.name)}</div><div class="d">${escapeHtml(p.description || '')}</div></div>`).join('') || '<div class="d">Nenhum ainda.</div>'}
+    </div>
+
+    <div id="detailMsg" class="msg"></div>
+    <div class="modal-actions">
+      <button class="link" onclick="deleteConcept('${c.id}')">Apagar este verbete</button>
+      <span style="flex:1"></span>
+      <button class="btn" onclick="closeModal()">Fechar</button>
+    </div>
+  `);
+}
+
+async function quickAddNote(conceptId) {
+  const title = document.getElementById('quickNoteTitle').value.trim();
+  const content = document.getElementById('quickNoteContent').value.trim();
+  const msg = document.getElementById('detailMsg');
+  if (!title || !content) { msg.textContent = 'Preenche o título e o que você quer lembrar.'; msg.className = 'msg error'; return; }
+  try {
+    await api('/api/notes', { method: 'POST', body: JSON.stringify({ title, content, conceptIds: [conceptId] }) });
+    const c = await api('/api/concepts/' + conceptId);
+    renderConceptDetail(c);
+  } catch (e) {
+    msg.textContent = e.message;
+    msg.className = 'msg error';
+  }
+}
+
+async function deleteConcept(id) {
+  if (!confirm('Tem certeza que quer apagar esse verbete? Isso não pode ser desfeito.')) return;
+  await api('/api/concepts/' + id, { method: 'DELETE' });
+  closeModal();
+  loadAllConcepts();
+}
+
+loadAllConcepts();
+</script>
+</body>
+</html>

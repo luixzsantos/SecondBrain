@@ -40,14 +40,14 @@ start "SecondBrain - API" cmd /k "cd /d "%~dp0" && dotnet run --project src\Seco
 timeout /t 4 /nobreak >nul
 
 echo ==============================================
-echo   Abrindo o Swagger...
+echo   Abrindo o Meu Cerebro no navegador...
 echo ==============================================
-start "" "http://localhost:5080/swagger"
+start "" "http://localhost:5080/"
 
 echo.
 echo ==============================================
 echo   Tudo no ar!
-echo   API:     http://localhost:5080
+echo   Pagina:  http://localhost:5080/
 echo   Swagger: http://localhost:5080/swagger
 echo ==============================================
 echo.

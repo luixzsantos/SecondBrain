@@ -28,6 +28,11 @@ var app = builder.Build();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
 
+// UI simples e amigável (wwwroot/index.html) — pra quem não é dev/não quer saber
+// de Swagger, só quer abrir uma página, buscar e anotar o que aprendeu.
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
