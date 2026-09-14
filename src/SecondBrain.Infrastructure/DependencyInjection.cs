@@ -17,6 +17,10 @@ public static class DependencyInjection
         services.AddDbContext<SecondBrainDbContext>(options => options.UseNpgsql(connectionString));
 
         services.AddScoped<IConceptRepository, ConceptRepository>();
+        services.AddScoped<INoteRepository, NoteRepository>();
+        services.AddScoped<ITagRepository, TagRepository>();
+        services.AddScoped<IProjectRepository, ProjectRepository>();
+        services.AddScoped<ISearchRepository, SearchRepository>();
 
         return services;
     }

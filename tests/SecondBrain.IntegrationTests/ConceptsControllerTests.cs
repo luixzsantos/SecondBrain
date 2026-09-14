@@ -10,7 +10,7 @@ public class ConceptsControllerTests(SecondBrainApiFactory factory) : IClassFixt
 {
     // A API serializa em camelCase ("id", "name"...); sem isso, ReadFromJsonAsync
     // (case-sensitive por padrão) não casa "id" com a propriedade "Id" do record.
-    private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
+    private static readonly JsonSerializerOptions JsonOptions = TestJson.Options;
 
     private readonly HttpClient _client = factory.CreateClient();
 

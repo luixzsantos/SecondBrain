@@ -10,4 +10,8 @@ public class Concept
     public string? Description { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
+
+    public ICollection<ConceptNote> ConceptNotes { get; set; } = [];
+    public ICollection<ConceptProject> ConceptProjects { get; set; } = [];
+    public ICollection<ConceptTag> ConceptTags { get; set; } = [];
 }

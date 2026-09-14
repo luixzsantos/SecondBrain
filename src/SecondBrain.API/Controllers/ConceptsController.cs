@@ -18,13 +18,13 @@ public class ConceptsController(IConceptService conceptService) : ControllerBase
         return Ok(concepts);
     }
 
-    /// <summary>Busca um conceito pelo Id.</summary>
+    /// <summary>"Página do conceito": dados do conceito + notas/projetos/tags relacionados.</summary>
     [HttpGet("{id:guid}")]
-    [ProducesResponseType<ConceptDto>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ConceptDetailDto>(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ConceptDto>> GetById(Guid id, CancellationToken cancellationToken)
+    public async Task<ActionResult<ConceptDetailDto>> GetById(Guid id, CancellationToken cancellationToken)
     {
-        var concept = await conceptService.GetByIdAsync(id, cancellationToken);
+        var concept = await conceptService.GetDetailByIdAsync(id, cancellationToken);
         return Ok(concept);
     }
 
@@ -60,6 +60,69 @@ public class ConceptsController(IConceptService conceptService) : ControllerBase
     public async Task<IActionResult> Delete(Guid id, CancellationToken cancellationToken)
     {
         await conceptService.DeleteAsync(id, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>Relaciona uma Note a este Concept ("explicado em").</summary>
+    [HttpPost("{conceptId:guid}/notes/{noteId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> LinkNote(Guid conceptId, Guid noteId, CancellationToken cancellationToken)
+    {
+        await conceptService.LinkNoteAsync(conceptId, noteId, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>Remove a relação entre este Concept e uma Note.</summary>
+    [HttpDelete("{conceptId:guid}/notes/{noteId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UnlinkNote(Guid conceptId, Guid noteId, CancellationToken cancellationToken)
+    {
+        await conceptService.UnlinkNoteAsync(conceptId, noteId, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>Relaciona um Project a este Concept ("usado em").</summary>
+    [HttpPost("{conceptId:guid}/projects/{projectId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> LinkProject(Guid conceptId, Guid projectId, CancellationToken cancellationToken)
+    {
+        await conceptService.LinkProjectAsync(conceptId, projectId, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>Remove a relação entre este Concept e um Project.</summary>
+    [HttpDelete("{conceptId:guid}/projects/{projectId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UnlinkProject(Guid conceptId, Guid projectId, CancellationToken cancellationToken)
+    {
+        await conceptService.UnlinkProjectAsync(conceptId, projectId, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>Relaciona uma Tag a este Concept.</summary>
+    [HttpPost("{conceptId:guid}/tags/{tagId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> LinkTag(Guid conceptId, Guid tagId, CancellationToken cancellationToken)
+    {
+        await conceptService.LinkTagAsync(conceptId, tagId, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>Remove a relação entre este Concept e uma Tag.</summary>
+    [HttpDelete("{conceptId:guid}/tags/{tagId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UnlinkTag(Guid conceptId, Guid tagId, CancellationToken cancellationToken)
+    {
+        await conceptService.UnlinkTagAsync(conceptId, tagId, cancellationToken);
         return NoContent();
     }
 }

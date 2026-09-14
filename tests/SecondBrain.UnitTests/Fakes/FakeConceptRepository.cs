@@ -4,10 +4,17 @@ using SecondBrain.Domain.Entities;
 namespace SecondBrain.UnitTests.Fakes;
 
 // Repositório em memória — evita subir Postgres/EF nos testes unitários e evita
-// depender de uma lib de mock pra um contrato simples como este.
-public class FakeConceptRepository : IConceptRepository
+// depender de uma lib de mock pra um contrato simples como este. Recebe os outros
+// fakes pra conseguir montar as relações em GetByIdWithRelationsAsync.
+public class FakeConceptRepository(
+    FakeNoteRepository notes,
+    FakeProjectRepository projects,
+    FakeTagRepository tags) : IConceptRepository
 {
     private readonly List<Concept> _concepts = [];
+    private readonly List<(Guid ConceptId, Guid NoteId)> _noteLinks = [];
+    private readonly List<(Guid ConceptId, Guid ProjectId)> _projectLinks = [];
+    private readonly List<(Guid ConceptId, Guid TagId)> _tagLinks = [];
 
     public Task<List<Concept>> GetAllAsync(CancellationToken cancellationToken = default) =>
         Task.FromResult(_concepts.OrderBy(c => c.Name).ToList());
@@ -28,4 +35,66 @@ public class FakeConceptRepository : IConceptRepository
     public void Remove(Concept concept) => _concepts.Remove(concept);
 
     public Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default) => Task.FromResult(true);
+
+    public Task<Concept?> GetByIdWithRelationsAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var concept = _concepts.FirstOrDefault(c => c.Id == id);
+        if (concept is null)
+        {
+            return Task.FromResult<Concept?>(null);
+        }
+
+        concept.ConceptNotes = _noteLinks
+            .Where(l => l.ConceptId == id)
+            .Select(l => new ConceptNote { ConceptId = id, NoteId = l.NoteId, Note = notes.Notes.First(n => n.Id == l.NoteId) })
+            .ToList();
+
+        concept.ConceptProjects = _projectLinks
+            .Where(l => l.ConceptId == id)
+            .Select(l => new ConceptProject { ConceptId = id, ProjectId = l.ProjectId, Project = projects.Projects.First(p => p.Id == l.ProjectId) })
+            .ToList();
+
+        concept.ConceptTags = _tagLinks
+            .Where(l => l.ConceptId == id)
+            .Select(l => new ConceptTag { ConceptId = id, TagId = l.TagId, Tag = tags.Tags.First(t => t.Id == l.TagId) })
+            .ToList();
+
+        return Task.FromResult<Concept?>(concept);
+    }
+
+    public Task<bool> NoteLinkExistsAsync(Guid conceptId, Guid noteId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_noteLinks.Contains((conceptId, noteId)));
+
+    public Task AddNoteLinkAsync(Guid conceptId, Guid noteId, CancellationToken cancellationToken = default)
+    {
+        _noteLinks.Add((conceptId, noteId));
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> RemoveNoteLinkAsync(Guid conceptId, Guid noteId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_noteLinks.Remove((conceptId, noteId)));
+
+    public Task<bool> ProjectLinkExistsAsync(Guid conceptId, Guid projectId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_projectLinks.Contains((conceptId, projectId)));
+
+    public Task AddProjectLinkAsync(Guid conceptId, Guid projectId, CancellationToken cancellationToken = default)
+    {
+        _projectLinks.Add((conceptId, projectId));
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> RemoveProjectLinkAsync(Guid conceptId, Guid projectId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_projectLinks.Remove((conceptId, projectId)));
+
+    public Task<bool> TagLinkExistsAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_tagLinks.Contains((conceptId, tagId)));
+
+    public Task AddTagLinkAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default)
+    {
+        _tagLinks.Add((conceptId, tagId));
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> RemoveTagLinkAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_tagLinks.Remove((conceptId, tagId)));
 }

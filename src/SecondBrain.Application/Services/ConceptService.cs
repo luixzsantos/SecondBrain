@@ -6,7 +6,12 @@ using SecondBrain.Domain.Entities;
 
 namespace SecondBrain.Application.Services;
 
-public class ConceptService(IConceptRepository repository, ILogger<ConceptService> logger) : IConceptService
+public class ConceptService(
+    IConceptRepository repository,
+    INoteRepository noteRepository,
+    IProjectRepository projectRepository,
+    ITagRepository tagRepository,
+    ILogger<ConceptService> logger) : IConceptService
 {
     public async Task<List<ConceptDto>> GetAllAsync(CancellationToken cancellationToken = default)
     {
@@ -20,6 +25,109 @@ public class ConceptService(IConceptRepository repository, ILogger<ConceptServic
             ?? throw new NotFoundException($"Concept '{id}' não encontrado.");
 
         return ToDto(concept);
+    }
+
+    public async Task<ConceptDetailDto> GetDetailByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        var concept = await repository.GetByIdWithRelationsAsync(id, cancellationToken)
+            ?? throw new NotFoundException($"Concept '{id}' não encontrado.");
+
+        var notes = concept.ConceptNotes
+            .Select(cn => new NoteDto(cn.Note.Id, cn.Note.Title, cn.Note.Content, cn.Note.CreatedAt, cn.Note.UpdatedAt))
+            .ToList();
+
+        var projects = concept.ConceptProjects
+            .Select(cp => new ProjectDto(cp.Project.Id, cp.Project.Name, cp.Project.Description, cp.Project.Status, cp.Project.CreatedAt, cp.Project.UpdatedAt))
+            .ToList();
+
+        var tags = concept.ConceptTags
+            .Select(ct => new TagDto(ct.Tag.Id, ct.Tag.Name))
+            .ToList();
+
+        return new ConceptDetailDto(
+            concept.Id, concept.Name, concept.Description, concept.CreatedAt, concept.UpdatedAt,
+            notes, projects, tags);
+    }
+
+    public async Task LinkNoteAsync(Guid conceptId, Guid noteId, CancellationToken cancellationToken = default)
+    {
+        _ = await repository.GetByIdAsync(conceptId, cancellationToken)
+            ?? throw new NotFoundException($"Concept '{conceptId}' não encontrado.");
+        _ = await noteRepository.GetByIdAsync(noteId, cancellationToken)
+            ?? throw new NotFoundException($"Note '{noteId}' não encontrada.");
+
+        if (await repository.NoteLinkExistsAsync(conceptId, noteId, cancellationToken))
+        {
+            throw new ConflictException("Esse Concept já está relacionado a essa Note.");
+        }
+
+        await repository.AddNoteLinkAsync(conceptId, noteId, cancellationToken);
+        await repository.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UnlinkNoteAsync(Guid conceptId, Guid noteId, CancellationToken cancellationToken = default)
+    {
+        var removed = await repository.RemoveNoteLinkAsync(conceptId, noteId, cancellationToken);
+        if (!removed)
+        {
+            throw new NotFoundException("Relação entre esse Concept e essa Note não encontrada.");
+        }
+
+        await repository.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task LinkProjectAsync(Guid conceptId, Guid projectId, CancellationToken cancellationToken = default)
+    {
+        _ = await repository.GetByIdAsync(conceptId, cancellationToken)
+            ?? throw new NotFoundException($"Concept '{conceptId}' não encontrado.");
+        _ = await projectRepository.GetByIdAsync(projectId, cancellationToken)
+            ?? throw new NotFoundException($"Project '{projectId}' não encontrado.");
+
+        if (await repository.ProjectLinkExistsAsync(conceptId, projectId, cancellationToken))
+        {
+            throw new ConflictException("Esse Concept já está relacionado a esse Project.");
+        }
+
+        await repository.AddProjectLinkAsync(conceptId, projectId, cancellationToken);
+        await repository.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UnlinkProjectAsync(Guid conceptId, Guid projectId, CancellationToken cancellationToken = default)
+    {
+        var removed = await repository.RemoveProjectLinkAsync(conceptId, projectId, cancellationToken);
+        if (!removed)
+        {
+            throw new NotFoundException("Relação entre esse Concept e esse Project não encontrada.");
+        }
+
+        await repository.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task LinkTagAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default)
+    {
+        _ = await repository.GetByIdAsync(conceptId, cancellationToken)
+            ?? throw new NotFoundException($"Concept '{conceptId}' não encontrado.");
+        _ = await tagRepository.GetByIdAsync(tagId, cancellationToken)
+            ?? throw new NotFoundException($"Tag '{tagId}' não encontrada.");
+
+        if (await repository.TagLinkExistsAsync(conceptId, tagId, cancellationToken))
+        {
+            throw new ConflictException("Esse Concept já está relacionado a essa Tag.");
+        }
+
+        await repository.AddTagLinkAsync(conceptId, tagId, cancellationToken);
+        await repository.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UnlinkTagAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default)
+    {
+        var removed = await repository.RemoveTagLinkAsync(conceptId, tagId, cancellationToken);
+        if (!removed)
+        {
+            throw new NotFoundException("Relação entre esse Concept e essa Tag não encontrada.");
+        }
+
+        await repository.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<ConceptDto> CreateAsync(CreateConceptRequest request, CancellationToken cancellationToken = default)

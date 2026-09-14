@@ -12,4 +12,20 @@ public interface IConceptRepository
     Task AddAsync(Concept concept, CancellationToken cancellationToken = default);
     void Remove(Concept concept);
     Task<bool> SaveChangesAsync(CancellationToken cancellationToken = default);
+
+    // Traz o Concept já com Notes/Projects/Tags relacionados carregados — usado na
+    // "página do conceito" (GET /api/concepts/{id}).
+    Task<Concept?> GetByIdWithRelationsAsync(Guid id, CancellationToken cancellationToken = default);
+
+    Task<bool> NoteLinkExistsAsync(Guid conceptId, Guid noteId, CancellationToken cancellationToken = default);
+    Task AddNoteLinkAsync(Guid conceptId, Guid noteId, CancellationToken cancellationToken = default);
+    Task<bool> RemoveNoteLinkAsync(Guid conceptId, Guid noteId, CancellationToken cancellationToken = default);
+
+    Task<bool> ProjectLinkExistsAsync(Guid conceptId, Guid projectId, CancellationToken cancellationToken = default);
+    Task AddProjectLinkAsync(Guid conceptId, Guid projectId, CancellationToken cancellationToken = default);
+    Task<bool> RemoveProjectLinkAsync(Guid conceptId, Guid projectId, CancellationToken cancellationToken = default);
+
+    Task<bool> TagLinkExistsAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default);
+    Task AddTagLinkAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default);
+    Task<bool> RemoveTagLinkAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default);
 }
