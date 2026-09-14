@@ -93,6 +93,8 @@ second-brain/
 │   └── SecondBrain.IntegrationTests/ # API real via WebApplicationFactory + EF InMemory
 ├── compose.yml        # Postgres local
 ├── .env.example
+├── start.bat          # Sobe Postgres (Docker, com fallback nativo) + migrations + API
+├── stop.bat           # Encerra a API e derruba o Postgres do Docker
 └── SecondBrain.sln
 ```
 
@@ -103,6 +105,12 @@ second-brain/
 - Ferramenta `dotnet-ef` (`dotnet tool install --global dotnet-ef`)
 
 ## Como rodar
+
+**Windows — atalho:** dois cliques em [`start.bat`](start.bat) sobe o Postgres (Docker; se não responder, tenta
+o serviço nativo `postgresql-x64-16`), aplica as migrations pendentes e abre a API numa janela nova + o
+Swagger no navegador. [`stop.bat`](stop.bat) encerra tudo.
+
+Ou manualmente:
 
 ```bash
 # 1. Subir o Postgres
