@@ -1,0 +1,24 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+
+# Testes
+[Tt]est[Rr]esult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# IDEs
+.vs/
+.idea/
+*.swp
+
+# Segredos locais / infra
+.env
+*.pfx
+
+# OS
+.DS_Store
+Thumbs.db

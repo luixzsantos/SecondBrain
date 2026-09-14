@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/SecondBrain.API/SecondBrain.API.csproj" />
+    <Project Path="src/SecondBrain.Application/SecondBrain.Application.csproj" />
+    <Project Path="src/SecondBrain.Domain/SecondBrain.Domain.csproj" />
+    <Project Path="src/SecondBrain.Infrastructure/SecondBrain.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/SecondBrain.IntegrationTests/SecondBrain.IntegrationTests.csproj" />
+    <Project Path="tests/SecondBrain.UnitTests/SecondBrain.UnitTests.csproj" />
+  </Folder>
+</Solution>
