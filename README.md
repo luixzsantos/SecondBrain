@@ -82,13 +82,19 @@ generics, async, ponteiros inteligentes...):
   específico, por isso ficam num Project à parte, "Referência Geral (Linguagem)"), cada um com um link pra
   documentação oficial (MDN, docs.python.org, Microsoft Learn, Oracle, cppreference, go.dev).
 
-Cada verbete tem uma definição curta + uma anotação com a explicação completa, o exemplo de código e (quando
-aplicável) o link de documentação — tudo já relacionado à Tag da linguagem (visível como aba na interface) e
-ao Project de origem.
+Cada verbete tem um **nível** (`Concept.Level`: Básico/Intermediário/Avançado) que ordena toda listagem e
+filtro por linguagem — a interface nunca mistura conteúdo básico com avançado na mesma tela, seguindo a
+progressão de quem está aprendendo do zero. Verbetes criados manualmente pela interface podem ficar sem
+nível (aparecem por último, fora da progressão).
+
+A anotação de cada verbete segue uma ordem fixa de leitura: primeiro uma **analogia em linguagem simples**
+(pra alguém que nunca programou), depois o nível e a explicação técnica com o exemplo de código, e só no
+final o **repositório real** onde aquele mesmo código foi usado — do mais simples ao mais técnico, terminando
+sempre em "isso é real, não é um exemplo de livro".
 
 Scripts: [`scripts/import-language-knowledge.ps1`](scripts/import-language-knowledge.ps1), lendo os dados de
-[`scripts/data/language-knowledge/`](scripts/data/language-knowledge) (um arquivo por linguagem/origem).
-Idempotente (roda de novo sem duplicar, só atualiza). Requer a API no ar.
+[`scripts/data/language-knowledge/`](scripts/data/language-knowledge) (um arquivo por linguagem/origem, com
+`level` e `simpleAnalogy` por conceito). Idempotente (roda de novo sem duplicar, só atualiza). Requer a API no ar.
 
 ## Arquitetura
 
@@ -321,6 +327,10 @@ só validação manual.
 - **`setMainContent()` centraliza toda troca de conteúdo principal na UI e sempre reseta o scroll pro topo.**
   Bug real encontrado: sem isso, sair de uma lista rolada bem pra baixo pra um verbete mais curto deixava a
   tela em branco (o scroll antigo ficava além do conteúdo novo, mais curto).
+- **`Concept.Level` é opcional e mapeado do português com acento pro nome do enum no script de import.** O
+  JSON de conhecimento das linguagens guarda `"básico"/"intermediário"/"avançado"` (legível pra quem edita o
+  arquivo); o enum C# usa `Basico/Intermediario/Avancado` (sem acento, serializado como texto). O script
+  normaliza antes de mandar pra API — sem isso a deserialização do enum falharia silenciosamente.
 - **Sync do Obsidian é sob demanda, não automático ainda.** Rodar em background (tarefa agendada do Windows)
   exigiria a API sempre no ar; hoje ela só sobe quando você chama `start.bat`. Preferi entregar o sync
   funcionando primeiro e decidir a automação depois, com o usuário confirmando explicitamente (criar uma
@@ -330,6 +340,9 @@ só validação manual.
 
 - **V0.3 ✅** — Knowledge Graph: relação Concept↔Concept (`RelatedTo`/`AlternativeTo`), "Relacionados" na
   página do conceito, contadores na sidebar.
+- **V0.3.1 ✅** — Nível de dificuldade (`Concept.Level`) ordenando toda listagem/filtro (nunca mistura básico
+  com avançado) e reestruturação das notas de linguagem: analogia simples primeiro, depois nível + explicação
+  técnica, repositório real só no final.
 - **V0.4** — Users, login, JWT (adiado da V0.3 original — o grafo tinha prioridade maior: sem ele, o app ainda
   parecia "um Notion simplificado"; com ele, começa a parecer um mapa do que você sabe).
 - **V0.5** — Timeline de aprendizado (já dá pra fazer sem schema novo — `CreatedAt` já existe em tudo).
