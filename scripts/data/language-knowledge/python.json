@@ -155,6 +155,90 @@
       "projectName": "pdf-editor",
       "simpleAnalogy": "Pense num totem de autoatendimento de um restaurante: em vez de alguém perguntar item por item o que você quer, você já digita de uma vez \"pedido para viagem, sem cebola, para a mesa 5\". Da mesma forma, essa ferramenta deixa a pessoa dizer logo ao ligar o programa exatamente qual tarefa quer fazer e com quais detalhes, tudo de uma vez, em vez de responder perguntas uma a uma depois que o programa já começou a rodar.",
       "resposta": "Esse trecho não imprime nada diretamente; ele configura o parser para que, ao rodar por exemplo 'python main.py merge -i a.pdf b.pdf -o saida.pdf' no terminal, args.command receba a string 'merge' e a condição if dispare a chamada PDFEditor.merge(['a.pdf', 'b.pdf'], 'saida.pdf'), delegando a ela a produção do resultado final."
+    },
+    {
+      "name": "Python: classe abstrata com ABC e @abstractmethod (Strategy pattern)",
+      "simpleAnalogy": "É como um contrato de prestador de serviço: o contrato exige que todo prestador saiba \"fazer a limpeza\", mas não diz COMO cada um faz isso — um pode usar vassoura, outro aspirador. A classe abstrata é esse contrato; cada classe filha decide o próprio jeito de cumprir a exigência.",
+      "level": "intermediário",
+      "shortDescription": "ABC + @abstractmethod cria uma classe que não pode ser instanciada diretamente e obriga toda classe filha a implementar um método específico — a base do Strategy pattern (várias formas de fazer a mesma coisa, intercambiáveis).",
+      "explanation": "No personal-finance, diferentes formatos de extrato (CSV, OFX, PDF) precisam ser lidos de formas bem diferentes por dentro, mas o resto do sistema só quer chamar \".read(caminho)\" sem se importar com o formato. BaseReader declara essa promessa (o método read deve existir), e cada subclasse (CSVReader, OFXReader, PDFReader) implementa o \"como\" à sua maneira. Tentar instanciar BaseReader diretamente falha em tempo de execução — só as subclasses que implementam read() podem ser criadas.",
+      "codeExample": "from abc import ABC, abstractmethod\n\nclass BaseReader(ABC):\n    @abstractmethod\n    def read(self, file_path: str):\n        \"\"\"Obriga toda classe filha a implementar o método read\"\"\"\n        pass\n\n\nclass CSVReader(BaseReader):\n    def read(self, file_path: str):\n        \"\"\"Retorna a leitura do CSV.\"\"\"\n        return pd.read_csv(file_path)",
+      "resposta": "CSVReader().read(\"extrato.csv\") funciona normalmente e retorna um DataFrame do pandas com o conteúdo do arquivo. Já BaseReader() (tentando instanciar a classe abstrata diretamente) levanta TypeError: Can't instantiate abstract class BaseReader with abstract method read — o Python impede na hora, sem nem chegar a rodar nada.",
+      "whereUsed": "src/ingestion/readers/base.py e CSVReader.py — cada formato de extrato bancário (CSV, OFX, PDF) implementa essa mesma interface.",
+      "projectName": "Personal Finance",
+      "documentationUrl": "https://docs.python.org/3/library/abc.html"
+    },
+    {
+      "name": "Python: lendo arquivos CSV com pandas (pd.read_csv)",
+      "simpleAnalogy": "É como entregar uma planilha de papel pra alguém que já sabe organizar tudo em linhas e colunas automaticamente, em vez de você ter que ler linha por linha e separar cada valor por vírgula na mão.",
+      "level": "básico",
+      "shortDescription": "pd.read_csv() lê um arquivo CSV inteiro e devolve um DataFrame — uma tabela em memória com linhas, colunas e tipos já inferidos, pronta pra filtrar/somar/agrupar sem escrever esse código manualmente.",
+      "explanation": "Ler um CSV \"na mão\" (abrir o arquivo, separar por vírgula, converter cada valor pro tipo certo) é repetitivo e cheio de casos de borda (aspas, separador decimal, encoding). pandas resolve isso numa linha só, já detectando cabeçalho, tipos de cada coluna e permitindo usar todo o poder de indexação/filtro/agregação do pandas em cima do resultado.",
+      "codeExample": "import pandas as pd\n\nclass CSVReader(BaseReader):\n    def read(self, file_path: str):\n        \"\"\"Retorna a leitura do CSV.\"\"\"\n        return pd.read_csv(file_path)",
+      "resposta": "Se o CSV tiver colunas como data,descricao,valor, o retorno é um DataFrame com essas mesmas colunas, uma linha por linha do arquivo, com valor já inferido como número (float) e nao como texto. Se o arquivo não existir no caminho passado, a chamada levanta FileNotFoundError antes mesmo de qualquer processamento.",
+      "whereUsed": "src/ingestion/readers/CSVReader.py — leitura de extratos bancários exportados em CSV.",
+      "projectName": "Personal Finance",
+      "documentationUrl": "https://pandas.pydata.org/docs/reference/api/pandas.read_csv.html"
+    },
+    {
+      "name": "Python: API com FastAPI — APIRouter e rotas GET/POST/DELETE",
+      "simpleAnalogy": "É como organizar os balcões de atendimento de uma loja por assunto: o balcão de \"trocas\" só cuida de trocas, o de \"informações\" só de informações. APIRouter é um desses balcões — agrupa as rotas de um assunto (aqui, \"gastos\") separadas do resto da aplicação.",
+      "level": "intermediário",
+      "shortDescription": "APIRouter agrupa rotas relacionadas num módulo próprio; cada função decorada com @router.get/post/delete vira um endpoint HTTP que o FastAPI expõe automaticamente, incluindo validação e documentação (Swagger) geradas sozinhas.",
+      "explanation": "Em vez de declarar todas as rotas da aplicação num único arquivo gigante, cada assunto (gastos, investimentos, desejos) tem seu próprio router, depois \"incluído\" na aplicação principal. O FastAPI usa o tipo do parâmetro (aqui, Flow, um modelo Pydantic) pra validar automaticamente o corpo da requisição antes mesmo do código da função rodar — se o corpo não bater com o schema, o cliente recebe um erro 422 sem que a função create_flow chegue a ser executada.",
+      "codeExample": "from fastapi import APIRouter\nfrom src.api.schemas.expenses import Flow\nfrom src.database.crud import select_flow, insert_flow, delete_flow, balance_flow\n\nrouter = APIRouter()\n\n@router.get(\"/expenses\")\ndef flow():\n    \"\"\"Retorna todos os gastos cadastrados\"\"\"\n    return {\"flow\": select_flow()}\n\n@router.post(\"/expenses\")\ndef create_flow(expense: Flow):\n    \"\"\"Cria um novo tipo de gasto no banco\"\"\"\n    insert_flow(expense.date, expense.description, expense.category, expense.type, expense.value, expense.bank)\n\n@router.delete(\"/expenses/{id}\")\ndef remove_flow(id: int):\n    \"\"\"Apaga um tipo de gasto do banco pelo id.\"\"\"\n    delete_flow(id)",
+      "resposta": "Um GET em /expenses responde com JSON no formato {\"flow\": [...]}, uma lista com todos os gastos cadastrados. Um POST em /expenses com um corpo JSON válido (date, description, category, type, value, bank) insere o registro e responde 200 sem corpo. Um POST com um campo faltando (ex: sem \"value\") nunca chega a executar create_flow — o FastAPI já responde 422 Unprocessable Entity com o detalhe de qual campo falhou na validação do Pydantic.",
+      "whereUsed": "src/api/routers/expenses.py — rotas de gastos da API de finanças pessoais.",
+      "projectName": "Personal Finance",
+      "documentationUrl": "https://fastapi.tiangolo.com/tutorial/bigger-applications/"
+    },
+    {
+      "name": "Python: validando o corpo da requisição com Pydantic (BaseModel)",
+      "simpleAnalogy": "É como uma ficha de cadastro com campos obrigatórios e o tipo certo esperado em cada um: o formulário simplesmente não deixa você avançar se escrever texto onde deveria ir um número, ou deixar um campo obrigatório vazio.",
+      "level": "intermediário",
+      "shortDescription": "Uma classe que herda de BaseModel declara os campos esperados e seus tipos; o FastAPI usa isso pra validar automaticamente o JSON recebido antes de entregar pro código da rota, rejeitando o que não bate com o schema.",
+      "explanation": "Sem essa validação declarativa, cada rota precisaria checar manualmente se cada campo existe e tem o tipo certo — repetitivo e fácil de esquecer um caso. Com Pydantic, declarar 'value: float' já garante que, se o cliente mandar '\"value\": \"abc\"', a requisição é rejeitada automaticamente com 422, sem o código da rota precisar de nenhum 'if' extra pra isso.",
+      "codeExample": "from pydantic import BaseModel\n\nclass Flow(BaseModel):\n    date: str\n    description: str\n    category: str\n    type: str\n    value: float\n    bank: str",
+      "resposta": "Um corpo JSON como {\"date\": \"2026-01-05\", \"description\": \"Uber\", \"category\": \"Transporte\", \"type\": \"Expense\", \"value\": 25.5, \"bank\": \"Nubank\"} passa a validação e chega na rota como um objeto Flow com esses atributos. Um corpo faltando o campo \"value\" é rejeitado com 422 e um detalhe do tipo 'field required', sem nunca chegar ao código da função.",
+      "whereUsed": "src/api/schemas/expenses.py — schema usado pela rota POST /expenses.",
+      "projectName": "Personal Finance",
+      "documentationUrl": "https://docs.pydantic.dev/latest/concepts/models/"
+    },
+    {
+      "name": "Python: FastAPI com Depends — injeção de dependência (conexão de banco por requisição)",
+      "simpleAnalogy": "É como um garçom que sempre te entrega uma mesa limpa quando você senta, e a recolhe pra limpar depois que você vai embora — você não precisa se preocupar em pedir a mesa nem em avisar que já terminou, o restaurante cuida disso automaticamente a cada cliente novo.",
+      "level": "avançado",
+      "shortDescription": "Depends injeta um valor (aqui, uma conexão de banco) preparado antes da rota rodar; usando yield em vez de return, o código depois do yield roda como \"limpeza\" garantida ao final da requisição, mesmo se der erro no meio.",
+      "explanation": "get_database_connection é uma função geradora: tudo antes do yield roda antes da rota (abre a conexão, liga o enforcement de foreign keys), o valor depois do yield é o que a rota recebe como parâmetro, e tudo depois do yield (aqui, connection.close(), dentro de um finally) roda ao final da requisição, sempre — nunca é preciso lembrar de fechar a conexão manualmente em cada rota que usa esse Depends.",
+      "codeExample": "from collections.abc import Iterator\nimport sqlite3\n\ndef get_database_connection() -> Iterator[sqlite3.Connection]:\n    \"\"\"Open a SQLite connection with foreign key enforcement enabled.\"\"\"\n    connection = sqlite3.connect(get_database_url())\n    connection.execute(\"PRAGMA foreign_keys = ON\")\n    try:\n        yield connection\n    finally:\n        connection.close()\n\n# numa rota:\n@router.post(\"/erros-quarentena\", status_code=201)\ndef create_quarantine_day(day: QuarantineDayCreate, connection=Depends(get_database_connection)):\n    ...",
+      "resposta": "A cada requisição recebida em /erros-quarentena, o FastAPI chama get_database_connection, entrega a connection já aberta (com foreign keys ativadas) pra dentro da rota, e — assim que a rota terminar, com sucesso ou com uma exceção não tratada — executa o finally e fecha essa mesma conexão automaticamente. A rota nunca precisa chamar connection.close() ela mesma.",
+      "whereUsed": "backend/app/database/connection.py e quarantine.py — conexão SQLite fornecida via Depends a cada rota que precisa acessar o banco.",
+      "projectName": "Daily Routine App",
+      "documentationUrl": "https://fastapi.tiangolo.com/tutorial/dependencies/"
+    },
+    {
+      "name": "Python: acessando SQLite com context manager (with connect() as conn)",
+      "simpleAnalogy": "É como pegar uma chave de armário, usar o armário, e devolver a chave automaticamente ao sair da sala — sem depender de você lembrar de devolvê-la manualmente. O \"with\" garante que a conexão seja fechada mesmo que algo dê errado no meio do caminho.",
+      "level": "básico",
+      "shortDescription": "O bloco 'with connect() as conn' abre a conexão com o banco, executa o código dentro do bloco, e garante que a conexão seja fechada ao sair do bloco — mesmo se uma exceção acontecer no meio.",
+      "explanation": "Fechar a conexão manualmente (sem with) exige um try/finally repetido em toda função que acessa o banco, e é fácil esquecer numa delas. O protocolo de context manager (__enter__/__exit__, que connect() implementa por baixo) resolve isso de forma automática e consistente — todo INSERT/SELECT/DELETE do personal-finance segue esse mesmo padrão.",
+      "codeExample": "def insert_flow(date, description, category, type, value, bank):\n    \"\"\"Insere um registro de gasto novo no banco.\"\"\"\n    with connect() as conn:\n        cursor = conn.cursor()\n        cursor.execute('''\n            INSERT INTO flow (date, description, category, type, value, bank)\n            VALUES (?, ?, ?, ?, ?, ?)\n        ''', (date, description, category, type, value, bank))",
+      "resposta": "Se os valores forem válidos, o INSERT é executado e a conexão é fechada automaticamente ao final do bloco with, sem nenhuma linha extra de código pra isso. Se cursor.execute() lançar uma exceção (ex: violação de constraint), a conexão ainda é fechada corretamente pelo protocolo do with antes da exceção se propagar pra quem chamou insert_flow.",
+      "whereUsed": "src/database/crud.py — todas as funções de insert/select/delete do personal-finance seguem esse padrão.",
+      "projectName": "Personal Finance",
+      "documentationUrl": "https://docs.python.org/3/reference/datamodel.html#context-managers"
+    },
+    {
+      "name": "Python: validação manual acumulando uma lista de erros",
+      "simpleAnalogy": "É como um fiscal que revisa um formulário inteiro de uma vez e anota TODOS os problemas encontrados numa lista, em vez de parar na primeira falha e devolver o formulário sem dizer o que mais está errado nele.",
+      "level": "intermediário",
+      "shortDescription": "Em vez de lançar uma exceção na primeira inconsistência encontrada, a função percorre todos os campos, acumula um código de erro pra cada problema numa lista, e devolve essa lista completa ao final — útil quando o cliente quer ver todos os erros de uma vez, não um por um.",
+      "explanation": "Se validate_day lançasse uma exceção na primeira validação que falhasse (ex: data ausente), o chamador só saberia desse problema, corrigiria, tentaria de novo, e só então descobriria o próximo erro (ex: minutos inválidos) — um ciclo lento de tentativa e erro. Acumulando tudo numa lista e só decidindo o que fazer com os erros ao final (nesse caso, aparentemente devolvidos pra quem chamou decidir), o cliente recebe o quadro completo de uma vez.",
+      "codeExample": "def validate_day(day):\n    errors = []\n    if not day.get(\"data\"):\n        errors.append(\"data_ausente\")\n\n    studied_minutes = day.get(\"minutos_estudados\")\n    if studied_minutes is None:\n        errors.append(\"minutos_ausentes\")\n    elif not isinstance(studied_minutes, int) or studied_minutes < 0 or studied_minutes > 1440:\n        errors.append(\"minutos_invalidos\")\n\n    return errors",
+      "resposta": "Para um dia sem o campo \"data\" e com minutos_estudados = 2000 (fora do intervalo 0-1440), a função retorna a lista ['data_ausente', 'minutos_invalidos'] — os dois problemas de uma vez, em vez de parar no primeiro. Para um dia totalmente válido, retorna uma lista vazia [].",
+      "whereUsed": "backend/pipeline/validation.py — validação de um dia recebido pelo pipeline de OCR antes de gravar no banco.",
+      "projectName": "Daily Routine App",
+      "documentationUrl": "https://docs.python.org/3/tutorial/datastructures.html"
     }
   ]
 }

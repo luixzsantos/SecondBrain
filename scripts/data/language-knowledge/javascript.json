@@ -111,6 +111,18 @@
       "resposta": "O console mostra B C A: os valores rotacionam de forma que varA passa a valer o que era varB, varB passa a valer o que era varC, e varC recebe o valor original de varA guardado antes na variável temporária.",
       "whereUsed": "Javascript-notes/javascript/aula12/aula12.js — rotaciona os valores de três variáveis usando uma variável temporária.",
       "projectName": "Javascript-notes"
+    },
+    {
+      "name": "JavaScript: validação de formulário com addEventListener e preventDefault",
+      "simpleAnalogy": "É como um segurança na porta de um evento que primeiro confere se está tudo certo com o convite antes de deixar a pessoa entrar — se faltar algo, ele impede a entrada e explica o motivo, em vez de deixar entrar e só descobrir o problema depois.",
+      "level": "intermediário",
+      "shortDescription": "addEventListener('submit', ...) captura o envio de um formulário; event.preventDefault() impede o recarregamento padrão da página, permitindo validar os campos em JavaScript antes de decidir o que fazer com os dados.",
+      "explanation": "Por padrão, enviar um <form> recarrega a página (ou navega pra outra URL) — o que interromperia qualquer validação em JavaScript no meio do caminho. preventDefault() impede esse comportamento padrão, dando controle total: só depois de validar (aqui, checando se o nome tem pelo menos duas palavras) o código decide se mostra uma mensagem de sucesso (preenchendo o HTML com template literals) ou marca visualmente o campo com erro (adicionando uma classe CSS).",
+      "codeExample": "const form = document.getElementById('form-deposito');\nconst nomeBeneficiario = document.getElementById('nome-beneficiario');\n\nfunction validaNome(nomeCompleto) {\n    const nomesArray = nomeCompleto.split(' ');\n    return nomesArray.length >= 2;\n}\n\nform.addEventListener('submit', function(e) {\n    e.preventDefault();\n\n    const formEvalido = validaNome(nomeBeneficiario.value);\n    if (formEvalido) {\n        document.querySelector('.mensagem-sucesso').style.display = 'block';\n    } else {\n        nomeBeneficiario.style.border = '1px solid red';\n        document.querySelector('.error-message').style.display = 'block';\n    }\n});",
+      "resposta": "Se o usuário digitar só \"Melo\" (uma palavra) e enviar o formulário, a página não recarrega (graças ao preventDefault), validaNome retorna false, e o código deixa a borda do campo vermelha e exibe a mensagem de erro. Se digitar \"Gustavo Melo\" (duas palavras), validaNome retorna true e a mensagem de sucesso aparece no lugar, sem nenhum recarregamento de página em nenhum dos dois casos.",
+      "whereUsed": "js/studies-js/formulario-js/main.js — validação de um formulário de depósito bancário simulado.",
+      "projectName": "Front-end Studies",
+      "documentationUrl": "https://developer.mozilla.org/en-US/docs/Web/API/Event/preventDefault"
     }
   ]
 }

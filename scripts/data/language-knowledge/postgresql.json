@@ -169,6 +169,30 @@
       "whereUsed": "internal/db/schema.sql — cobre instalações mais antigas do banco que existiam antes de certos campos (attachments, idempotency_key...) serem adicionados ao domínio.",
       "projectName": "Notification Engine",
       "documentationUrl": "https://www.postgresql.org/docs/current/sql-altertable.html"
+    },
+    {
+      "name": "SQL: filtrando grupos com HAVING (depois do GROUP BY)",
+      "simpleAnalogy": "WHERE filtra pessoas antes de formar os grupos (ex: só quem é maior de idade); HAVING filtra os GRUPOS depois de formados (ex: só as equipes com mais de 5 pessoas). São dois filtros em momentos diferentes do processo, e por isso não podem ser trocados um pelo outro.",
+      "level": "intermediário",
+      "shortDescription": "WHERE filtra linhas antes de agrupar; HAVING filtra os grupos já calculados pelo GROUP BY — útil quando a condição depende de um valor agregado (como uma soma ou contagem), que só existe depois do agrupamento.",
+      "explanation": "Não é possível escrever 'WHERE SUM(amount) > 10' porque, no momento em que o WHERE é avaliado, a soma por grupo ainda não foi calculada — GROUP BY roda depois do WHERE. HAVING existe exatamente pra esse caso: ele roda depois do agrupamento, podendo filtrar com base no resultado já agregado (SUM, COUNT, AVG...).",
+      "codeExample": "SELECT category, SUM(amount)\nFROM spending\nWHERE transaction_type = 'expense'\nGROUP BY category\nHAVING SUM(amount) > 10;",
+      "resposta": "Considerando gastos de Food (R$55,90), Leisure (R$100) e Transport (R$5) somados por categoria, o resultado traz só Food e Leisure (ambos com soma > 10) — Transport fica de fora porque sua soma (5) não passa do HAVING, mesmo que cada linha individual já tivesse passado pelo WHERE (todas são 'expense').",
+      "whereUsed": "sql/queries.sql — análise de gastos por categoria, mostrando só categorias com gasto total relevante.",
+      "projectName": "Financial Analysis",
+      "documentationUrl": "https://www.postgresql.org/docs/current/tutorial-agg.html"
+    },
+    {
+      "name": "SQL: window functions com OVER (PARTITION BY) — agregando sem perder as linhas",
+      "simpleAnalogy": "GROUP BY é como resumir uma turma inteira numa única nota de média por sala, perdendo o nome de cada aluno. Uma window function é como escrever, ao lado do nome de CADA aluno, a média da sala dele — ninguém desaparece da lista, mas todo mundo já vê o contexto do próprio grupo.",
+      "level": "avançado",
+      "shortDescription": "SUM(coluna) OVER (PARTITION BY grupo) calcula o agregado por grupo, mas mantém uma linha por registro original — diferente de GROUP BY, que colapsa todas as linhas de um grupo numa só.",
+      "explanation": "Quando se quer ver cada gasto individual JUNTO com o total da categoria dele (pra comparar o peso de um gasto específico dentro do grupo), GROUP BY não serve — ele perderia o detalhe de cada linha. PARTITION BY divide as linhas em grupos (partições) pro cálculo da função de janela, mas devolve o resultado do agregado repetido em cada linha daquele grupo, sem reduzir a quantidade de linhas.",
+      "codeExample": "SELECT description, category, amount,\n       SUM(amount) OVER (PARTITION BY category) AS total_categoria\nFROM spending\nWHERE transaction_type = 'expense';",
+      "resposta": "Cada gasto de \"Food\" (iFood order: R$45,90 e Cake the BOX: R$10) aparece em sua própria linha, mas ambos mostram total_categoria = 55.9 (a soma de Food) ao lado — nenhuma linha desaparece, diferente do que aconteceria com um GROUP BY category simples, que colapsaria essas duas linhas numa só.",
+      "whereUsed": "sql/queries.sql — comparando cada gasto individual com o total gasto na mesma categoria.",
+      "projectName": "Financial Analysis",
+      "documentationUrl": "https://www.postgresql.org/docs/current/tutorial-window.html"
     }
   ]
 }

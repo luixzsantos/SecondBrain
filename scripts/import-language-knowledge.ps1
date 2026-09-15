@@ -69,11 +69,21 @@ foreach ($p in (Invoke-RestMethod -Uri "$ApiBase/projects" -Method Get)) { $proj
 
 $fenceByTag = @{
     go = "go"; csharp = "csharp"; cpp = "cpp"; python = "python"; java = "java"; javascript = "javascript"
-    redis = "bash"; postgresql = "sql"
+    redis = "bash"; postgresql = "sql"; html = "html"
 }
 # 3 backticks como variavel evita ter que escapar backtick dentro de string
 # interpolada do PowerShell (onde backtick e o caractere de escape).
 $fence3 = [string]::new([char]96, 3)
+
+# Projetos reais que vieram do GitHub de um colaborador (nao do usuario) - a
+# descricao do Project precisa deixar isso explicito, em vez de dizer "projeto
+# real do usuario" pra algo que na verdade e codigo de outra pessoa.
+$contributorProjects = @{
+    "personal finance" = "GustavoMelo1"
+    "daily routine app" = "GustavoMelo1"
+    "front-end studies" = "GustavoMelo1"
+    "financial analysis" = "GustavoMelo1"
+}
 
 # O JSON traz "level" em portugues com acento (basico/intermediario/avancado) -
 # nao bate com os nomes do enum ConceptLevel no C# (sem acento, PascalCase),
@@ -119,8 +129,11 @@ Get-ChildItem -Path $DataDir -Filter "*.json" | ForEach-Object {
                 $projectId = $projectByName[$projKey].id
             } else {
                 $isGenericRef = $concept.projectName -like "Referencia Geral*" -or $concept.projectName -like "Refer*ncia Geral*"
+                $contributor = $contributorProjects[$concept.projectName.ToLower()]
                 $projDescription = if ($isGenericRef) {
                     "Conteudo de referencia geral da linguagem, nao vinculado a um repositorio especifico do usuario."
+                } elseif ($contributor) {
+                    "Projeto real do colaborador $contributor (GitHub), fonte dos exemplos de codigo importados."
                 } else {
                     "Projeto real do usuario, fonte dos exemplos de codigo importados."
                 }

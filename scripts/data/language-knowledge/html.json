@@ -1,0 +1,90 @@
+{
+  "language": "HTML & CSS",
+  "tag": "html",
+  "concepts": [
+    {
+      "name": "HTML: estrutura básica de uma página (doctype, head, body)",
+      "simpleAnalogy": "É como o esqueleto de uma casa antes da decoração: o doctype avisa \"isso é uma casa moderna\" (não uma versão antiga de HTML), o head guarda coisas que ninguém vê diretamente (título da aba, links de estilo), e o body é onde fica tudo que realmente aparece pra quem visita.",
+      "level": "básico",
+      "shortDescription": "Toda página HTML segue essa estrutura mínima: <!DOCTYPE html> declara a versão, <head> guarda metadados e recursos (CSS, título), e <body> contém o conteúdo visível da página.",
+      "explanation": "O <meta charset=\"UTF-8\"> garante que acentos e caracteres especiais (como os do português) sejam exibidos corretamente; sem ele, o navegador pode adivinhar o encoding errado e mostrar caracteres corrompidos. O <meta name=\"viewport\"...> configura como a página se comporta em telas de celular. <link rel=\"stylesheet\"> conecta um arquivo CSS externo — sem essa linha, o style.css simplesmente não teria efeito nenhum na página.",
+      "codeExample": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n    <meta charset=\"UTF-8\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n    <link rel=\"stylesheet\" href=\"style.css\">\n    <title>Minha página</title>\n</head>\n<body>\n    <div class=\"titulo\">\n        <p>Conteúdo visível aqui</p>\n    </div>\n</body>\n</html>",
+      "resposta": "O navegador renderiza só o que está dentro de <body> — nesse caso, o texto \"Conteúdo visível aqui\" — aplicando o CSS de style.css (já que o <link> foi declarado corretamente no head) e mostrando \"Minha página\" na aba do navegador (o conteúdo de <title>).",
+      "whereUsed": "css/studies-css/cssflag/index.html — estrutura básica usada em todos os exercícios de HTML/CSS do repositório.",
+      "projectName": "Front-end Studies",
+      "documentationUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Basics"
+    },
+    {
+      "name": "HTML: listas ordenadas e não ordenadas (ul, ol, li)",
+      "simpleAnalogy": "Uma lista não ordenada (<ul>) é como uma lista de compras onde a ordem dos itens não importa — leite, pão, ovos, em qualquer sequência. Uma lista ordenada (<ol>) é como um passo a passo de receita, onde a ordem É o que faz sentido — você não pode assar o bolo antes de misturar os ingredientes.",
+      "level": "básico",
+      "shortDescription": "<ul> cria uma lista sem numeração (marcadores); <ol> cria uma lista numerada automaticamente; cada item de qualquer uma das duas é um <li>.",
+      "explanation": "A escolha entre ul e ol comunica algo sobre o conteúdo: ingredientes de uma receita não têm ordem obrigatória (ul), mas o modo de preparo tem passos numa sequência específica que precisa ser seguida (ol) — usar o elemento certo não é só estético, ajuda leitores de tela a entender a estrutura do conteúdo.",
+      "codeExample": "<h3>Ingredientes:</h3>\n<ul>\n    <li>3/4 xícara de leite morno</li>\n    <li>2 colheres de chá de fermento</li>\n    <li>1/4 xícara de açúcar</li>\n</ul>\n\n<h3>Modo de preparo:</h3>\n<ol>\n    <li>Misture o leite com o fermento e o açúcar</li>\n    <li>Derreta a manteiga e adicione à mistura</li>\n    <li>Adicione a farinha e misture até incorporar</li>\n</ol>",
+      "resposta": "A lista de ingredientes aparece com marcadores (•) na frente de cada item, sem numeração. A lista do modo de preparo aparece numerada automaticamente pelo navegador: 1. Misture o leite..., 2. Derreta a manteiga..., 3. Adicione a farinha... — mesmo sem você escrever os números manualmente.",
+      "whereUsed": "html/studies-html/htmlul/index.html — lista de ingredientes (ul) e modo de preparo (ol) de uma receita.",
+      "projectName": "Front-end Studies",
+      "documentationUrl": "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/ol"
+    },
+    {
+      "name": "HTML: elementos void/auto-fecháveis (br, hr)",
+      "simpleAnalogy": "A maioria das tags HTML é como uma caixa que precisa ser aberta e fechada (<p>...</p>); mas algumas coisas não têm \"conteúdo\" pra guardar dentro — são só um marcador sozinho, como <br> (quebra de linha) e <hr> (uma linha horizontal). Não faz sentido \"abrir e fechar uma quebra de linha\", então elas não têm tag de fechamento.",
+      "level": "básico",
+      "shortDescription": "Elementos void (br, hr, img, input...) não têm conteúdo interno nem tag de fechamento própria — representam algo sozinho, não um container.",
+      "explanation": "<br> força uma quebra de linha dentro de um bloco de texto (útil pra endereços, poemas — qualquer coisa que precise quebrar linha sem criar um novo parágrafo); <hr> desenha uma linha horizontal separando visualmente seções de conteúdo. Escrever <br></br> (com fechamento) é redundante e vai contra a especificação — a forma correta é só <br> ou, em XHTML/estilo mais antigo, <br />.",
+      "codeExample": "<p>\n17 south molton street<br>\nLondon<br>\nW1K 5QT<br>\nUK<br>\n</p>\n\n<hr>\n\n<p>Próxima seção de conteúdo depois da linha divisória.</p>",
+      "resposta": "O navegador renderiza o endereço em 4 linhas separadas (uma por <br>), mesmo estando todo dentro de um único <p>, seguido de uma linha horizontal visível (<hr>) separando esse bloco do parágrafo seguinte.",
+      "whereUsed": "html/studies-html/htmlvoid/ — endereço formatado com quebras de linha e uma linha divisória entre seções.",
+      "projectName": "Front-end Studies",
+      "documentationUrl": "https://developer.mozilla.org/en-US/docs/Glossary/Void_element"
+    },
+    {
+      "name": "CSS: seletor de classe e seletor descendente (.classe > div > div)",
+      "simpleAnalogy": "Um seletor de classe é como dar um crachá igual pra um grupo de pessoas e dizer uma regra pra quem tem aquele crachá. Um seletor descendente (\".japao > div > div\") é mais específico: só vale pra quem está dentro de outra pessoa específica, que está dentro de outra — como uma regra que só se aplica ao \"neto\" de alguém com um crachá específico.",
+      "level": "intermediário",
+      "shortDescription": ".nome seleciona qualquer elemento com aquela classe; \"A > B\" seleciona só os B que são filhos diretos de A — encadear vários '>' permite alcançar um elemento bem específico dentro de uma estrutura aninhada, sem precisar dar uma classe pra cada nível.",
+      "explanation": "Em vez de criar uma classe nova só pra estilizar o <div> mais interno de uma estrutura aninhada, o seletor \".japao > div > div\" já localiza exatamente esse elemento a partir da estrutura HTML: \"o div que é filho direto de um div que é filho direto de algo com classe japao\". É uma forma de reaproveitar a própria estrutura do HTML como seletor, sem inflar o HTML com classes extras só para estilo.",
+      "codeExample": ".japao {\n    width: 900px;\n    height: 600px;\n    background-color: rgb(255, 255, 255);\n    border: solid black;\n}\n\n.japao > div > div {\n    border-radius: 50%;\n    background-color: red;\n    width: 200px;\n    height: 200px;\n    margin: auto;\n}",
+      "resposta": "Só o <div> que está dois níveis abaixo de um elemento com classe \"japao\" (um div dentro de outro div dentro do .japao) recebe o círculo vermelho — qualquer outro div na página, mesmo que também esteja dentro de algo chamado \"japao\" mas numa profundidade diferente, não é afetado por essa regra.",
+      "whereUsed": "css/studies-css/cssflag/style.css — desenhando a bandeira do Japão só com HTML/CSS (retângulo branco + círculo vermelho centralizado).",
+      "projectName": "Front-end Studies",
+      "documentationUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator"
+    },
+    {
+      "name": "CSS: box model — width, height, margin e border",
+      "simpleAnalogy": "Todo elemento numa página é uma caixa invisível, mesmo que pareça só um texto ou uma imagem: essa caixa tem um tamanho (width/height), pode ter uma moldura em volta (border), e um espaço reservado do lado de fora dela, empurrando os outros elementos (margin).",
+      "level": "básico",
+      "shortDescription": "width/height definem o tamanho do conteúdo da caixa; border desenha uma borda em volta dela; margin cria espaço fora da caixa, entre ela e os elementos vizinhos.",
+      "explanation": "Entender que TODO elemento HTML é tratado como uma caixa rectangular é a base de qualquer layout em CSS — mesmo um <p> de texto simples ocupa uma caixa retangular por baixo dos panos. Aqui, width: 900px e height: 600px definem o tamanho do retângulo branco, e border: solid black desenha uma moldura preta em volta dele.",
+      "codeExample": ".japao {\n    width: 900px;\n    height: 600px;\n    background-color: rgb(255, 255, 255);\n    border: solid black;\n}",
+      "resposta": "Aparece um retângulo branco de 900px de largura por 600px de altura, com uma borda preta sólida em volta — o tamanho total ocupado na página é um pouco maior que 900x600, já que a borda soma alguns pixels extras pra fora do width/height declarados (a menos que box-sizing: border-box seja usado, o que não é o caso aqui).",
+      "whereUsed": "css/studies-css/cssflag/style.css — o retângulo base da bandeira do Japão.",
+      "projectName": "Front-end Studies",
+      "documentationUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_box_model/Introduction_to_the_CSS_box_model"
+    },
+    {
+      "name": "CSS: centralizando elementos com margin: auto",
+      "simpleAnalogy": "É como colocar um quadro exatamente no meio de uma parede: em vez de medir a distância manualmente de cada lado, você diz \"deixe o mesmo espaço sobrando dos dois lados\" — e margin: auto faz exatamente essa divisão igual automaticamente.",
+      "level": "intermediário",
+      "shortDescription": "margin: auto nas laterais de um elemento com width definida faz o navegador dividir igualmente o espaço sobrando à esquerda e à direita, centralizando-o horizontalmente dentro do elemento pai.",
+      "explanation": "Pra margin: auto centralizar de fato, o elemento precisa ter uma width explícita menor que o elemento pai — sem isso, não haveria \"espaço sobrando\" pra dividir. No exemplo, o círculo (200px) fica centralizado horizontalmente dentro do retângulo pai (900px) porque tem width/height fixos e margin: auto nas laterais.",
+      "codeExample": ".japao > div > div {\n    width: 200px;\n    height: 200px;\n    border-radius: 50%;\n    background-color: red;\n    margin: auto;\n}",
+      "resposta": "O círculo vermelho de 200px de diâmetro aparece exatamente centralizado horizontalmente dentro do retângulo branco de 900px, com a mesma distância (350px) sobrando de cada lado — sem margin: auto, ele ficaria colado na borda esquerda por padrão (comportamento normal de um elemento em fluxo de bloco).",
+      "whereUsed": "css/studies-css/cssflag/style.css — centralização do círculo vermelho dentro da bandeira do Japão.",
+      "projectName": "Front-end Studies",
+      "documentationUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/margin"
+    },
+    {
+      "name": "CSS: criando formas com border-radius (de quadrado a círculo)",
+      "simpleAnalogy": "border-radius é como arredondar os cantos de uma folha de papel: um arredondamento pequeno só suaviza as pontas, mas um arredondamento de 50% (metade da largura/altura) arredonda tanto que os quatro cantos se encontram no meio, transformando um quadrado perfeito num círculo perfeito.",
+      "level": "intermediário",
+      "shortDescription": "border-radius arredonda os cantos de uma caixa; aplicado a 50% num elemento com width igual à height (um quadrado), transforma esse quadrado num círculo perfeito — sem precisar de nenhuma imagem ou SVG.",
+      "explanation": "Não existe uma tag <circulo> em HTML — formas como círculos são conseguidas estilizando uma caixa comum (geralmente uma <div>) com CSS. Como width e height aqui são iguais (200px cada), border-radius: 50% arredonda igualmente todos os lados até formar um círculo perfeito; se width e height fossem diferentes, o resultado seria uma elipse em vez de um círculo.",
+      "codeExample": ".japao > div > div {\n    width: 200px;\n    height: 200px;\n    border-radius: 50%;\n    background-color: red;\n}",
+      "resposta": "Em vez de um quadrado vermelho de 200x200px com cantos retos, aparece um círculo vermelho perfeito de 200px de diâmetro — o mesmo elemento, só com o border-radius transformando visualmente sua forma, sem alterar width/height/posição.",
+      "whereUsed": "css/studies-css/cssflag/style.css — o círculo vermelho central da bandeira do Japão.",
+      "projectName": "Front-end Studies",
+      "documentationUrl": "https://developer.mozilla.org/en-US/docs/Web/CSS/border-radius"
+    }
+  ]
+}
