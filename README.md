@@ -43,9 +43,11 @@ um verbete de enciclopédia: nome, definição, e o que mais está relacionado (
 `http://localhost:5080/` (aberta automaticamente pelo [`start.bat`](start.bat)) é uma página HTML única, sem
 build/framework — só abrir e usar:
 
-- **Layout em duas colunas** (sidebar com todos os verbetes + busca, conteúdo principal à direita) — inspirado
-  em Discord/X: flat, sem gradiente, sem sombra colorida, bordas finas separando os blocos, um único accent
+- **Layout em três colunas** (rail de abas + sidebar com verbetes/busca + conteúdo principal) — inspirado em
+  Discord/X: flat, sem gradiente, sem sombra colorida, bordas finas separando os blocos, um único accent
   (azul), zero emoji na interface. Tema claro e escuro, cada um seguindo a paleta desses apps.
+- **Abas laterais por linguagem** (a "rail" mais à esquerda, estilo lista de servidores do Discord): um círculo
+  por Tag ("Go", "C#", "Py"...) filtra os verbetes só daquela linguagem; "Tudo" volta a mostrar todos.
 - **Busca** na sidebar, estilo enciclopédia: digite um termo e aparece na hora (verbetes, anotações, projetos).
 - **"+ Novo verbete"**: um formulário de duas perguntas — "qual o nome?" e "o que é isso, nas suas
   palavras?" — sem nenhum campo técnico.
@@ -192,6 +194,7 @@ ver `.env.example`).
 curl -X POST http://localhost:5080/api/concepts -H "Content-Type: application/json" \
   -d '{"name":"Redis","description":"Banco de dados em memória, usado para cache, filas e pub/sub."}'
 curl http://localhost:5080/api/concepts                # lista
+curl http://localhost:5080/api/concepts?tagId={id}     # lista só os relacionados a uma Tag (ex: uma linguagem)
 curl http://localhost:5080/api/concepts/{id}           # "página do conceito": + notes/projects/tags relacionados
 curl -X PUT http://localhost:5080/api/concepts/{id} -H "Content-Type: application/json" -d '{...}'
 curl -X DELETE http://localhost:5080/api/concepts/{id}

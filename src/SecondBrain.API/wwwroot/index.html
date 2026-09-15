@@ -70,10 +70,12 @@
   .rail-item {
     width: 46px; height: 46px; border-radius: 16px; flex-shrink: 0; display: flex; align-items: center;
     justify-content: center; font-size: 12px; font-weight: 800; cursor: pointer; background: var(--surface);
-    border: 1px solid var(--border); color: var(--muted); transition: border-radius .12s ease;
+    border: 2px solid transparent; box-shadow: 0 0 0 1px var(--border) inset; color: var(--muted);
+    padding: 9px; transition: border-color .12s ease;
   }
-  .rail-item:hover { border-radius: 12px; color: var(--text); }
-  .rail-item.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); border-radius: 12px; }
+  .rail-item img { width: 100%; height: 100%; object-fit: contain; }
+  .rail-item:hover { border-color: var(--muted); }
+  .rail-item.active { border-color: var(--accent); }
 
   /* ---------- sidebar ---------- */
   .sidebar {
@@ -257,20 +259,38 @@ function svg(name, size) {
 
 const state = { concepts: [], tags: [], activeTagId: null, view: { type: 'feed' } };
 
-// Abreviações conhecidas pra caber no círculo da aba lateral — o resto usa as 2 primeiras letras.
-const TAG_LABELS = { go: 'Go', csharp: 'C#', cpp: 'C++', python: 'Py', java: 'Ja', javascript: 'JS', database: 'DB' };
-function tagLabel(name) { return TAG_LABELS[name.toLowerCase()] || name.slice(0, 2).toUpperCase(); }
+// Logo oficial (colorido) de cada linguagem via devicon, num círculo neutro —
+// nada de bandeira colorida no fundo (isso seria "enfeite"), só o logo real.
+// Tag sem logo conhecido cai no fallback: as 2 primeiras letras do nome.
+const TAG_LOGOS = {
+  go: 'go/go-original.svg',
+  csharp: 'csharp/csharp-original.svg',
+  cpp: 'cplusplus/cplusplus-original.svg',
+  python: 'python/python-original.svg',
+  java: 'java/java-original.svg',
+  javascript: 'javascript/javascript-original.svg',
+};
+const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/';
+function tagLabel(name) { return name.slice(0, 2).toUpperCase(); }
 
 async function loadTags() {
   state.tags = await api('/api/tags');
   renderRail();
 }
 
+function railItemContent(name) {
+  const logoPath = TAG_LOGOS[name.toLowerCase()];
+  if (!logoPath) return escapeHtml(tagLabel(name));
+  const fallback = escapeHtml(tagLabel(name));
+  return `<img src="${DEVICON_BASE}${logoPath}" alt="${escapeHtml(name)}" loading="lazy"
+    onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${fallback}'}))" />`;
+}
+
 function renderRail() {
   const rail = document.getElementById('rail');
   const allActive = state.activeTagId === null;
   const items = [`<div class="rail-item${allActive ? ' active' : ''}" title="Todos" onclick="selectTag(null)">Tudo</div>`];
-  items.push(...state.tags.map(t => `<div class="rail-item${state.activeTagId === t.id ? ' active' : ''}" title="${escapeHtml(t.name)}" onclick="selectTag('${t.id}')">${escapeHtml(tagLabel(t.name))}</div>`));
+  items.push(...state.tags.map(t => `<div class="rail-item${state.activeTagId === t.id ? ' active' : ''}" title="${escapeHtml(t.name)}" onclick="selectTag('${t.id}')">${railItemContent(t.name)}</div>`));
   rail.innerHTML = items.join('');
 }
 
