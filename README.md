@@ -1,4 +1,4 @@
-# 🧠 SecondBrain
+# 🧠 knowledge-api
 
 Uma enciclopédia pessoal: guarde o que você aprende (um termo, uma definição, uma tecnologia) e encontre de
 novo quando esquecer. Por baixo tem uma API em **C# / ASP.NET Core**, mas o ponto de entrada pra quem só quer
