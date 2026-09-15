@@ -4,6 +4,7 @@
   "concepts": [
     {
       "name": "Go: structs e tipos nomeados",
+      "simpleAnalogy": "Imagine uma ficha de cadastro de hospital: em vez de anotar o nome, a idade e o endereço do paciente em papéis soltos e espalhados, você agrupa tudo numa única ficha organizada. Além disso, é como colar uma etiqueta bem clara num pote de tempero — em vez de deixar escrito só \"pó branco\", você escreve \"sal\" ou \"açúcar\", para que ninguém confunda um pote com outro só de olhar.",
       "level": "básico",
       "shortDescription": "Struct agrupa campos relacionados num tipo próprio; um tipo nomeado (ex: type ChannelType string) dá significado a um valor primitivo.",
       "explanation": "Em Go não existe classe — struct é o jeito de agrupar dados relacionados (nome, campos, tipos) num único tipo. É comum também criar um tipo nomeado em cima de um primitivo (ex: 'type ChannelType string') só para deixar explícito o que aquele valor representa e evitar passar qualquer string onde só um canal válido faz sentido. No Notification Engine, Notification é a struct central: reúne tudo que uma notificação carrega (canal, destino, mensagem, anexos, status) num só lugar, e ChannelType/Status são strings nomeadas em vez de strings soltas.",
@@ -13,6 +14,7 @@
     },
     {
       "name": "Go: constantes como enum",
+      "simpleAnalogy": "Pense num semáforo: ele só pode estar em vermelho, amarelo ou verde — não existe uma quarta cor inventada na hora. Aqui é a mesma ideia: em vez de deixar qualquer palavra solta representar o estado de uma entrega, cria-se uma lista fechada e nomeada de opções válidas (tipo \"pendente\", \"entregue\", \"tentando de novo\"), evitando que alguém escreva errado ou invente um estado que não existe.",
       "level": "básico",
       "shortDescription": "Go não tem enum nativo — o padrão é declarar um bloco de const do mesmo tipo nomeado, cada um com um valor fixo.",
       "explanation": "Como Go não tem uma palavra-chave 'enum', o padrão idiomático é criar um tipo nomeado (geralmente sobre string ou int) e declarar um bloco `const` com os valores válidos. Isso dá segurança de tipo (o compilador não deixa passar uma string qualquer onde se espera um Status) e ainda mantém o valor legível quando serializado em JSON ou logado, já que por baixo é só uma string. No Notification Engine isso aparece tanto em ChannelType (quais canais existem) quanto em Status (por quais estados uma notificação passa).",
@@ -22,6 +24,7 @@
     },
     {
       "name": "Go: ponteiros e métodos com receiver",
+      "simpleAnalogy": "É a diferença entre te dar a chave de verdade de uma casa e te dar só uma foto da casa. Com a chave, você entra e pode realmente trocar a fechadura, pintar a parede — mexer na casa de verdade. Com a foto, você pode até rabiscar em cima dela, mas a casa real continua exatamente igual.",
       "level": "básico",
       "shortDescription": "Um método em Go é uma função com um 'receiver' antes do nome; usar *T (ponteiro) no receiver permite que o método altere o valor original.",
       "explanation": "Go não tem 'this' automático dentro de uma classe — cada método declara explicitamente a quem ele pertence através do receiver, escrito entre 'func' e o nome do método. Quando o receiver é um ponteiro (*Notification), o método enxerga e pode modificar o valor original em vez de trabalhar numa cópia — essencial quando o método precisa alterar campos da struct, como validar e normalizar dados nela mesma.",
@@ -31,6 +34,7 @@
     },
     {
       "name": "Go: erros como valores (if err != nil)",
+      "simpleAnalogy": "É como um garçom que, assim que a cozinha erra um pedido, não sai correndo gritando pelo salão — ele simplesmente te entrega um bilhetinho na hora, avisando \"faltou isso aqui\". Assim, cada etapa do atendimento já sai checando esse bilhete e decide ali mesmo se resolve o problema ou repassa o bilhete adiante para outra pessoa resolver.",
       "level": "básico",
       "shortDescription": "Go não tem try/catch — toda função que pode falhar retorna um valor `error` extra, e quem chama decide na hora se trata ou repassa.",
       "explanation": "Em vez de lançar uma exceção que sobe a pilha até alguém capturar, uma função em Go que pode falhar simplesmente retorna um segundo valor do tipo `error` (nil quando deu certo). Isso obriga a olhar pro erro no exato ponto onde ele pode acontecer — o fluxo de falha nunca fica escondido. Erros conhecidos do domínio viram valores sentinela criados com `errors.New`, comparáveis diretamente.",
@@ -40,6 +44,7 @@
     },
     {
       "name": "Go: interfaces implícitas",
+      "simpleAnalogy": "É como um ponto de táxi: ninguém precisa assinar um papel dizendo \"eu sou um táxi\" — se o carro tem as características certas (placa, taxímetro, motorista habilitado), ele já pode simplesmente parar ali e pegar passageiros. Do mesmo jeito, qualquer \"entregador\" de mensagem que já sabe fazer as ações certas passa a ser aceito automaticamente no grupo, sem precisar declarar isso em lugar nenhum.",
       "level": "intermediário",
       "shortDescription": "Um tipo em Go satisfaz uma interface automaticamente só por ter os métodos certos — não existe a palavra 'implements'.",
       "explanation": "Diferente de C#/Java, em Go você nunca declara que um tipo implementa uma interface: se ele tiver os métodos com a assinatura exigida, já satisfaz a interface, ponto. Isso deixa o contrato definido por quem consome (quem escreve a interface), não por quem implementa — e permite trocar a implementação concreta sem tocar em quem já usa a interface. É assim que cada canal de notificação (Discord, Telegram, e-mail...) vira intercambiável atrás de um `Sender` comum.",
@@ -49,6 +54,7 @@
     },
     {
       "name": "Go: injeção de dependência via struct",
+      "simpleAnalogy": "É como montar a lancheira do seu filho à mão, todo dia — você mesmo escolhe e coloca a fruta, o sanduíche e o suco dentro dela, em vez de usar uma máquina automática que decide isso sozinha. Assim fica bem claro e visível o que está dentro da lancheira, porque foi você que colocou cada item, um por um, sem mágica escondida.",
       "level": "intermediário",
       "shortDescription": "Sem framework de DI: as dependências de um tipo são só campos de uma struct, preenchidos na hora de criá-la.",
       "explanation": "Go não usa um container de injeção de dependência como o ASP.NET Core — o padrão comum é simplesmente declarar as dependências como campos públicos (ou passadas por um construtor `NewX`) de uma struct, e montar tudo à mão no `main()`. Isso mantém o fluxo de dependências totalmente explícito e rastreável — dá pra ver exatamente o que cada peça precisa só lendo a struct.",
@@ -58,6 +64,7 @@
     },
     {
       "name": "Go: wrapping de erro com %w",
+      "simpleAnalogy": "É como embrulhar um bilhete pequeno dentro de um envelope maior: o bilhete original diz \"pilha acabou\", e o envelope por cima diz \"o despertador não tocou hoje\". Quem recebe o envelope já entende o problema geral, mas se quiser saber a causa exata, pode abrir o envelope e encontrar o bilhete original intacto lá dentro, mesmo depois de embrulhado de novo várias vezes.",
       "level": "intermediário",
       "shortDescription": "fmt.Errorf com %w embrulha um erro original dentro de uma mensagem nova, sem perder a identidade dele (dá pra checar com errors.Is depois).",
       "explanation": "Quando uma função de baixo nível falha, muitas vezes vale adicionar contexto (\"falha ao fazer X\") sem esconder qual foi o erro original. `fmt.Errorf(\"...: %w\", err)` faz isso: cria uma nova mensagem que ainda \"contém\" o erro original, permitindo que código mais acima use `errors.Is`/`errors.As` pra reconhecer o erro de origem mesmo depois de embrulhado várias vezes.",
@@ -67,6 +74,7 @@
     },
     {
       "name": "Go: configuração via variáveis de ambiente",
+      "simpleAnalogy": "É como ter um único painel de controle na recepção de um hotel, com todos os ajustes já anotados numa lista — temperatura do ar, senha do wifi, horário do café — cada um com um valor padrão preenchido caso ninguém tenha mudado nada. Em vez de cada funcionário sair perguntando os ajustes de memória em lugares diferentes, todo mundo consulta esse painel único.",
       "level": "intermediário",
       "shortDescription": "Ler .env com godotenv e depois os.Getenv com um valor default — padrão comum em Go pra centralizar toda configuração num só lugar.",
       "explanation": "Em vez de espalhar os.Getenv pelo código, o padrão é ter uma função `Load()` só, que lê o arquivo `.env` (via biblioteca `godotenv`) e monta uma struct `Config` com TODAS as variáveis já convertidas pro tipo certo (int, bool, float), cada uma com um valor padrão seguro caso a variável não exista. O resto do programa só usa a struct Config, nunca os.Getenv diretamente.",
@@ -76,6 +84,7 @@
     },
     {
       "name": "Go: goroutines + sync.WaitGroup",
+      "simpleAnalogy": "É como mandar vários amigos ao mesmo tempo entregar panfletos em casas diferentes do bairro, em vez de um fazer tudo sozinho, casa por casa. Você fica esperando na esquina, e antes de ir embora, confere que TODOS os amigos já voltaram — ninguém fica pra trás no meio da tarefa.",
       "level": "avançado",
       "shortDescription": "goroutine é uma função rodando concorrentemente (`go func(){...}`); WaitGroup espera todas terminarem antes de continuar.",
       "explanation": "Uma goroutine é extremamente barata comparada a uma thread do sistema operacional, e é assim que Go faz concorrência nativa: só colocar `go` antes de uma chamada de função. Quando o programa precisa esperar várias goroutines terminarem (por exemplo, antes de encerrar de vez), usa-se `sync.WaitGroup`: `Add(1)` antes de cada goroutine, `Done()` (geralmente via `defer`) dentro dela, e `Wait()` no ponto que precisa bloquear até todas acabarem. O worker sobe N consumidores concorrentes desse jeito.",
@@ -85,6 +94,7 @@
     },
     {
       "name": "Go: graceful shutdown com context + sinais do SO",
+      "simpleAnalogy": "É como um restaurante na hora de fechar: em vez de apagar as luzes e expulsar todo mundo na marra assim que bate o horário, ele para de deixar gente nova entrar pela porta, mas deixa as mesas que já estão comendo terminarem a refeição em paz antes de fechar de vez. Um aviso (o sinal de fechamento) é que dispara esse processo educado de encerramento.",
       "level": "avançado",
       "shortDescription": "signal.NotifyContext cria um context que é cancelado automaticamente quando o processo recebe Ctrl+C/SIGTERM, propagando o cancelamento pra tudo que usa esse context.",
       "explanation": "Em vez de o processo morrer abruptamente ao receber um sinal do sistema operacional (Ctrl+C, ou SIGTERM do Docker/Kubernetes pedindo pra parar), `signal.NotifyContext` devolve um `context.Context` que fica \"vivo\" até o sinal chegar — e a partir daí, todo código que respeita esse context (loops com `select { case <-ctx.Done(): ... }`, chamadas de rede) recebe o cancelamento e pode terminar o que está fazendo antes de sair. É isso que permite ao worker parar de aceitar trabalho novo mas ainda esperar (`wg.Wait()`) as goroutines em andamento finalizarem antes de encerrar de vez.",
@@ -94,6 +104,7 @@
     },
     {
       "name": "Go: Redis Streams com Consumer Groups",
+      "simpleAnalogy": "É como a fila de senhas de uma padaria: cada senha chamada é atendida por um único atendente — nunca dois atendentes chamam a mesma senha ao mesmo tempo, mesmo tendo vários atendentes trabalhando juntos para ir mais rápido. E se um atendente sumir no meio do atendimento sem terminar, aquela senha específica é devolvida e pega por outro atendente, para o cliente não ficar esquecido para sempre.",
       "level": "avançado",
       "shortDescription": "XReadGroup lê mensagens de um stream do Redis garantindo que cada uma vá pra só um consumidor do grupo; XAutoClaim recupera mensagens de um consumidor que travou/caiu.",
       "explanation": "Redis Streams com Consumer Groups funciona parecido com uma fila distribuída de verdade: vários consumidores (aqui, várias goroutines) leem do MESMO stream e MESMO grupo, e o Redis garante que cada mensagem seja entregue a só um deles — permitindo escalar processamento em paralelo sem duplicar entrega. Se um consumidor cair no meio (crash, restart), a mensagem que ele tinha em mãos fica na Pending Entries List (PEL); `XAutoClaim` periodicamente reivindica de volta mensagens paradas há tempo demais na PEL, pra nenhuma notificação ficar perdida pra sempre.",
@@ -103,6 +114,7 @@
     },
     {
       "name": "Go: rate limiting (token bucket) + sync.Mutex",
+      "simpleAnalogy": "É como o segurança de uma balada que só deixa entrar um número limitado de pessoas por minuto, usando fichas tiradas de uma cestinha — quando a cestinha esvazia, tem que esperar reabastecer. E como pode ter mais de um segurança tentando pegar ficha na mesma cestinha ao mesmo tempo, só um de cada vez pode colocar a mão lá dentro, pra não pegarem a mesma ficha por engano.",
       "level": "avançado",
       "shortDescription": "golang.org/x/time/rate.Limiter implementa um token bucket por chave (aqui, por canal); sync.Mutex protege o mapa de limiters de acesso concorrente por várias goroutines.",
       "explanation": "Pra não estourar o rate limit de APIs externas (Discord, Telegram...) quando várias goroutines enviam ao mesmo tempo, cada canal ganha seu próprio `rate.Limiter` (token bucket: N tokens por segundo, com um burst inicial). Como várias goroutines podem pedir um limiter pro mesmo canal ao mesmo tempo, o mapa que guarda os limiters precisa de um `sync.Mutex` protegendo a leitura/escrita — sem isso, duas goroutines criando o limiter do mesmo canal simultaneamente causariam uma condição de corrida.",
@@ -112,6 +124,7 @@
     },
     {
       "name": "Go: mitigação de SSRF com net.Dialer customizado",
+      "simpleAnalogy": "É como um porteiro de condomínio que, antes de deixar um caminhão de entrega passar pelo portão, confere pessoalmente e na hora exata para onde aquele caminhão está realmente indo — e recusa a entrada se descobrir que o destino real é uma área restrita do prédio, mesmo que a guia de entrega parecesse normal quando foi apresentada antes. Isso evita que alguém engane o sistema trocando o endereço de destino depois de já ter sido autorizado.",
       "level": "avançado",
       "shortDescription": "Um http.Transport com DialContext próprio resolve o DNS manualmente e recusa conectar se o IP resolvido for privado/interno — proteção contra Server-Side Request Forgery.",
       "explanation": "Quando a própria API aceita uma URL do cliente pra depois fazer uma requisição a ela (webhook genérico, Discord), existe risco de SSRF: alguém mandar uma URL que aponta pra dentro da rede interna (ex: metadados de nuvem em 169.254.169.254). A defesa de verdade não é só olhar a URL na hora de criar a notificação (o DNS pode mudar depois — 'DNS rebinding') — é sobrescrever `DialContext` do `http.Transport` pra resolver o host e checar CADA IP retornado no exato momento da conexão, recusando qualquer um privado/loopback/link-local antes de discar.",
@@ -121,6 +134,7 @@
     },
     {
       "name": "Go: retry com exponential backoff e jitter",
+      "simpleAnalogy": "É como tentar ligar pra um amigo que não atende: em vez de ligar de novo imediatamente, você espera cada vez mais tempo entre uma tentativa e outra. E se várias pessoas estão tentando ligar pra esse mesmo amigo ao mesmo tempo, cada uma escolhe um instante levemente diferente pra tentar de novo, em vez de todo mundo ligar exatamente no mesmo segundo assim que o telefone dele desocupar.",
       "level": "avançado",
       "shortDescription": "O atraso entre tentativas cresce exponencialmente (2s, 4s, 8s...) até um teto, e o valor final é sorteado dentro desse teto ('jitter') pra não sincronizar retries de várias notificações ao mesmo tempo.",
       "explanation": "Ao tentar de novo uma operação que falhou, esperar sempre o mesmo tempo fixo entre tentativas é ruim: se um monte de notificações falhar no mesmo instante (ex: canal externo caiu), todas tentariam de novo exatamente juntas, martelando o canal assim que ele voltar. Backoff exponencial aumenta o teto de espera a cada tentativa (2^attempt segundos), e sortear (`jitter`) um valor dentro desse teto espalha os retries no tempo em vez de concentrá-los.",
@@ -130,6 +144,7 @@
     },
     {
       "name": "Go: database/sql com SQL puro (sem ORM)",
+      "simpleAnalogy": "É como escrever uma carta à mão, palavra por palavra, em vez de usar um aplicativo que preenche um modelo pronto pra você automaticamente. Dá mais trabalho, mas você sabe exatamente o que está escrito em cada linha — e quando alguém tenta cadastrar uma informação que já existe (como dois clientes usando o mesmo documento), o sistema recusa e avisa qual foi o problema exato.",
       "level": "avançado",
       "shortDescription": "Notification Engine não usa ORM — acessa o Postgres direto via database/sql + driver lib/pq, escrevendo o SQL à mão e checando códigos de erro específicos do driver.",
       "explanation": "Diferente do SecondBrain (que usa Entity Framework Core), o Notification Engine acessa o banco com `database/sql` puro: SQL escrito à mão, `ExecContext`/`QueryContext` com parâmetros posicionados (`$1`, `$2`...) pra evitar SQL injection, e serialização manual de campos complexos (mapas, slices) pra JSON antes de gravar numa coluna. Pra detectar uma violação específica (ex: Idempotency-Key duplicado), o código faz cast do erro pro tipo do driver (`*pq.Error`) e compara o código SQLSTATE.",

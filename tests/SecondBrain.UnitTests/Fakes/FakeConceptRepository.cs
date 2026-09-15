@@ -17,14 +17,23 @@ public class FakeConceptRepository(
     private readonly List<(Guid ConceptId, Guid TagId)> _tagLinks = [];
     private readonly List<(Guid SourceId, Guid TargetId, ConceptRelationType Type)> _relations = [];
 
+    private static int LevelSortKey(Concept c) => c.Level switch
+    {
+        ConceptLevel.Basico => 0,
+        ConceptLevel.Intermediario => 1,
+        ConceptLevel.Avancado => 2,
+        _ => 3,
+    };
+
     public Task<List<Concept>> GetAllAsync(CancellationToken cancellationToken = default) =>
-        Task.FromResult(_concepts.OrderBy(c => c.Name).ToList());
+        Task.FromResult(_concepts.OrderBy(LevelSortKey).ThenBy(c => c.Name).ToList());
 
     public Task<List<Concept>> GetAllByTagAsync(Guid tagId, CancellationToken cancellationToken = default) =>
         Task.FromResult(_tagLinks
             .Where(l => l.TagId == tagId)
             .Select(l => _concepts.First(c => c.Id == l.ConceptId))
-            .OrderBy(c => c.Name)
+            .OrderBy(LevelSortKey)
+            .ThenBy(c => c.Name)
             .ToList());
 
     public Task<Concept?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>

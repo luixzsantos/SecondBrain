@@ -13,6 +13,7 @@ public record ConceptDetailDto(
     Guid Id,
     string Name,
     string? Description,
+    ConceptLevel? Level,
     DateTime CreatedAt,
     DateTime UpdatedAt,
     List<NoteDto> Notes,

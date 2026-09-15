@@ -22,6 +22,7 @@ public class SecondBrainDbContext(DbContextOptions<SecondBrainDbContext> options
             entity.HasKey(c => c.Id);
             entity.Property(c => c.Name).IsRequired().HasMaxLength(150);
             entity.Property(c => c.Description).HasMaxLength(4000);
+            entity.Property(c => c.Level).HasConversion<string?>().HasMaxLength(20);
             entity.Property(c => c.CreatedAt).IsRequired();
             entity.Property(c => c.UpdatedAt).IsRequired();
 

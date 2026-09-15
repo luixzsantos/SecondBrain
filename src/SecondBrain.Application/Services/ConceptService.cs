@@ -61,7 +61,7 @@ public class ConceptService(
             .ToList();
 
         return new ConceptDetailDto(
-            concept.Id, concept.Name, concept.Description, concept.CreatedAt, concept.UpdatedAt,
+            concept.Id, concept.Name, concept.Description, concept.Level, concept.CreatedAt, concept.UpdatedAt,
             notes, projects, tags, relations);
     }
 
@@ -192,6 +192,7 @@ public class ConceptService(
             Id = Guid.NewGuid(),
             Name = request.Name.Trim(),
             Description = request.Description?.Trim(),
+            Level = request.Level,
             CreatedAt = now,
             UpdatedAt = now,
         };
@@ -217,6 +218,7 @@ public class ConceptService(
 
         concept.Name = request.Name.Trim();
         concept.Description = request.Description?.Trim();
+        concept.Level = request.Level;
         concept.UpdatedAt = DateTime.UtcNow;
 
         await repository.SaveChangesAsync(cancellationToken);
@@ -241,6 +243,7 @@ public class ConceptService(
         concept.Id,
         concept.Name,
         concept.Description,
+        concept.Level,
         concept.CreatedAt,
         concept.UpdatedAt
     );

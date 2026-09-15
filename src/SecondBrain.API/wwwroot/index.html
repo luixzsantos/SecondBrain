@@ -117,6 +117,19 @@
   .nav-item:hover { background: var(--hover); }
   .nav-item.active { background: var(--hover); font-weight: 700; }
   .nav-empty { color: var(--muted); font-size: 13px; padding: 10px; }
+  .nav-section-title {
+    font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
+    color: var(--muted); padding: 14px 10px 6px;
+  }
+  .nav-section-title:first-child { padding-top: 4px; }
+
+  .level-badge {
+    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .03em;
+    padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted);
+  }
+  .level-badge.basico { color: #1d9bf0; border-color: #1d9bf0; }
+  .level-badge.intermediario { color: #e0952c; border-color: #e0952c; }
+  .level-badge.avancado { color: #e0245e; border-color: #e0245e; }
 
   /* ---------- main ---------- */
   .main { flex: 1; min-width: 0; border-right: 1px solid var(--border); }
@@ -378,14 +391,30 @@ function activeTagName() {
   return tag ? tag.name : null;
 }
 
+// Ordem fixa de aprendizado — nunca mistura básico com avançado numa lista.
+// "Sem nível" (verbetes criados a mão) fica no final, fora da progressão.
+const LEVEL_ORDER = ['Basico', 'Intermediario', 'Avancado', null];
+const LEVEL_LABEL = { Basico: 'Básico', Intermediario: 'Intermediário', Avancado: 'Avançado' };
+function levelLabel(level) { return LEVEL_LABEL[level] || 'Sem nível'; }
+function levelClass(level) { return (level || 'sem-nivel').toLowerCase(); }
+
+function groupByLevel(concepts) {
+  return LEVEL_ORDER
+    .map(level => ({ level, items: concepts.filter(c => (c.level || null) === level) }))
+    .filter(group => group.items.length);
+}
+
 function renderNav(concepts) {
   const nav = document.getElementById('navList');
   if (!concepts.length) {
     nav.innerHTML = '<div class="nav-empty">Nada guardado ainda.</div>';
     return;
   }
-  nav.innerHTML = concepts.map(c => `
-    <div class="nav-item${state.view.type === 'detail' && state.view.id === c.id ? ' active' : ''}" onclick="openConceptDetail('${c.id}')">${escapeHtml(c.name)}</div>
+  nav.innerHTML = groupByLevel(concepts).map(group => `
+    <div class="nav-section-title">${escapeHtml(levelLabel(group.level))}</div>
+    ${group.items.map(c => `
+      <div class="nav-item${state.view.type === 'detail' && state.view.id === c.id ? ' active' : ''}" onclick="openConceptDetail('${c.id}')">${escapeHtml(c.name)}</div>
+    `).join('')}
   `).join('');
 }
 
@@ -418,11 +447,14 @@ function renderFeed() {
   setMainContent(`
     <div class="main-header"><h1>${escapeHtml(title)}</h1></div>
     <div class="main-body">
-      ${state.concepts.map(c => `
-        <div class="row" onclick="openConceptDetail('${c.id}')">
-          <div class="row-title">${escapeHtml(c.name)}</div>
-          <p class="row-desc">${escapeHtml(c.description || 'Sem descrição ainda.')}</p>
-        </div>
+      ${groupByLevel(state.concepts).map(group => `
+        <div class="section-title" style="padding: 18px 20px 4px;">${escapeHtml(levelLabel(group.level))}</div>
+        ${group.items.map(c => `
+          <div class="row" onclick="openConceptDetail('${c.id}')">
+            <div class="row-title">${escapeHtml(c.name)}</div>
+            <p class="row-desc">${escapeHtml(c.description || 'Sem descrição ainda.')}</p>
+          </div>
+        `).join('')}
       `).join('')}
     </div>
   `);
@@ -485,6 +517,13 @@ function openNewConceptModal(prefillName) {
     <input type="text" id="newName" placeholder="Ex: Redis" value="${escapeHtml(prefillName || '')}" />
     <label>O que é isso? (em suas próprias palavras)</label>
     <textarea id="newDesc" placeholder="Ex: um jeito de guardar dados na memória pra acessar rapidinho depois."></textarea>
+    <label>Nível (opcional)</label>
+    <select class="field" id="newLevel">
+      <option value="">Sem nível</option>
+      <option value="Basico">Básico</option>
+      <option value="Intermediario">Intermediário</option>
+      <option value="Avancado">Avançado</option>
+    </select>
     <div id="newMsg" class="msg"></div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal()">Cancelar</button>
@@ -497,10 +536,11 @@ function openNewConceptModal(prefillName) {
 async function submitNewConcept() {
   const name = document.getElementById('newName').value.trim();
   const description = document.getElementById('newDesc').value.trim();
+  const level = document.getElementById('newLevel').value || null;
   const msg = document.getElementById('newMsg');
   if (!name) { msg.textContent = 'Dá um nome pra essa ideia primeiro.'; msg.className = 'msg error'; return; }
   try {
-    const created = await api('/api/concepts', { method: 'POST', body: JSON.stringify({ name, description }) });
+    const created = await api('/api/concepts', { method: 'POST', body: JSON.stringify({ name, description, level }) });
     closeModal();
     state.allConceptsCache = null;
     await loadAllConcepts();
@@ -527,6 +567,7 @@ async function renderConceptDetail(c) {
     <div class="main-header">
       <button class="icon-btn" onclick="renderFeed()">${svg('back')}</button>
       <h1>${escapeHtml(c.name)}</h1>
+      ${c.level ? `<span class="level-badge ${levelClass(c.level)}">${escapeHtml(levelLabel(c.level))}</span>` : ''}
     </div>
     <div class="detail">
       <p class="desc">${escapeHtml(c.description || 'Sem descrição ainda.')}</p>

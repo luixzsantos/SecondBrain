@@ -6,17 +6,23 @@ namespace SecondBrain.Infrastructure.Persistence;
 
 public class ConceptRepository(SecondBrainDbContext context) : IConceptRepository
 {
+    // Level vira string no banco (legivel em SQL direto), mas ordenar pela string
+    // ordenaria "Avancado" antes de "Basico" - errado. O ternario inline (nao um
+    // metodo separado - EF Core nao traduz chamada de metodo pro SQL) vira um CASE
+    // no SQL, respeitando basico -> intermediario -> avancado -> sem nivel.
     public async Task<List<Concept>> GetAllAsync(CancellationToken cancellationToken = default) =>
         await context.Concepts
             .AsNoTracking()
-            .OrderBy(c => c.Name)
+            .OrderBy(c => c.Level == ConceptLevel.Basico ? 0 : c.Level == ConceptLevel.Intermediario ? 1 : c.Level == ConceptLevel.Avancado ? 2 : 3)
+            .ThenBy(c => c.Name)
             .ToListAsync(cancellationToken);
 
     public async Task<List<Concept>> GetAllByTagAsync(Guid tagId, CancellationToken cancellationToken = default) =>
         await context.Concepts
             .AsNoTracking()
             .Where(c => c.ConceptTags.Any(ct => ct.TagId == tagId))
-            .OrderBy(c => c.Name)
+            .OrderBy(c => c.Level == ConceptLevel.Basico ? 0 : c.Level == ConceptLevel.Intermediario ? 1 : c.Level == ConceptLevel.Avancado ? 2 : 3)
+            .ThenBy(c => c.Name)
             .ToListAsync(cancellationToken);
 
     public async Task<Concept?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>

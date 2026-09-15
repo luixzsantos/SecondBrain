@@ -7,6 +7,7 @@ public record ConceptDto(
     Guid Id,
     string Name,
     string? Description,
+    ConceptLevel? Level,
     DateTime CreatedAt,
     DateTime UpdatedAt
 );
@@ -19,6 +20,9 @@ public class CreateConceptRequest
 
     [MaxLength(4000, ErrorMessage = "Description deve ter no máximo 4000 caracteres.")]
     public string? Description { get; set; }
+
+    // Opcional: verbete criado a mao pela pessoa nao precisa classificar nivel.
+    public ConceptLevel? Level { get; set; }
 }
 
 public class UpdateConceptRequest
@@ -29,6 +33,8 @@ public class UpdateConceptRequest
 
     [MaxLength(4000, ErrorMessage = "Description deve ter no máximo 4000 caracteres.")]
     public string? Description { get; set; }
+
+    public ConceptLevel? Level { get; set; }
 }
 
 public class LinkConceptRelationRequest

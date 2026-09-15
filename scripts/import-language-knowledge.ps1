@@ -1,4 +1,4 @@
-<#
+﻿<#
 Importa o conhecimento de linguagens/bibliotecas real (extraido dos projetos
 do usuario) para o SecondBrain: cada arquivo em scripts/data/language-knowledge/
 vira uma Tag (a linguagem), varios Concepts (um por topico, basico->avancado)
@@ -74,6 +74,23 @@ $fenceByTag = @{
 # interpolada do PowerShell (onde backtick e o caractere de escape).
 $fence3 = [string]::new([char]96, 3)
 
+# O JSON traz "level" em portugues com acento (basico/intermediario/avancado) -
+# nao bate com os nomes do enum ConceptLevel no C# (sem acento, PascalCase),
+# entao precisa mapear antes de mandar pra API.
+$levelMap = @{
+    "basico" = "Basico"
+    "intermediario" = "Intermediario"
+    "avancado" = "Avancado"
+}
+
+function Get-ConceptLevel {
+    param([string]$Level)
+    if (-not $Level) { return $null }
+    $normalized = $Level.ToLower() -replace "[áàâã]", "a" -replace "[éê]", "e" -replace "í", "i" -replace "[óô]", "o" -replace "ç", "c"
+    if ($levelMap.ContainsKey($normalized)) { return $levelMap[$normalized] }
+    return $null
+}
+
 $totalCreated = 0
 $totalUpdated = 0
 $totalFailed = 0
@@ -114,20 +131,28 @@ Get-ChildItem -Path $DataDir -Filter "*.json" | ForEach-Object {
             # Concept (verbete)
             $conceptKey = $concept.name.ToLower()
             $fence = $fenceByTag[$data.tag]
+            $conceptLevel = Get-ConceptLevel -Level $concept.level
             if ($conceptByName.ContainsKey($conceptKey)) {
                 $conceptId = $conceptByName[$conceptKey].id
-                Invoke-JsonApi -Uri "$ApiBase/concepts/$conceptId" -Method Put -Payload @{ name = $concept.name; description = $concept.shortDescription } | Out-Null
+                Invoke-JsonApi -Uri "$ApiBase/concepts/$conceptId" -Method Put -Payload @{ name = $concept.name; description = $concept.shortDescription; level = $conceptLevel } | Out-Null
                 $script:totalUpdated++
             } else {
-                $conceptResp = Invoke-JsonApi -Uri "$ApiBase/concepts" -Method Post -Payload @{ name = $concept.name; description = $concept.shortDescription }
+                $conceptResp = Invoke-JsonApi -Uri "$ApiBase/concepts" -Method Post -Payload @{ name = $concept.name; description = $concept.shortDescription; level = $conceptLevel }
                 $conceptByName[$conceptKey] = $conceptResp
                 $conceptId = $conceptResp.id
                 $script:totalCreated++
             }
 
-            # Note com a explicacao completa + exemplo de codigo
+            # Note: primeiro uma analogia simples pra quem nao entende de programacao,
+            # depois o nivel e a explicacao tecnica + codigo, e so no final o
+            # repositorio real onde esse mesmo codigo foi usado - nessa ordem de
+            # leitura (do mais simples ao mais tecnico, terminando no "isso e real").
             $noteTitle = "$($concept.name) (nota completa)"
             $noteLines = @(
+                "## Em termos simples"
+                ""
+                $concept.simpleAnalogy
+                ""
                 "**Nivel:** $($concept.level)"
                 ""
                 $concept.explanation
@@ -138,7 +163,11 @@ Get-ChildItem -Path $DataDir -Filter "*.json" | ForEach-Object {
                 $concept.codeExample
                 $fence3
                 ""
-                "**Contexto de uso:** $($concept.whereUsed)"
+                "## Onde isso aparece na pratica"
+                ""
+                "**Repositorio:** $($concept.projectName)"
+                ""
+                $concept.whereUsed
             )
             if ($concept.PSObject.Properties.Name -contains "documentationUrl" -and $concept.documentationUrl) {
                 $noteLines += ""
