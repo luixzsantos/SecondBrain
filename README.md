@@ -343,6 +343,11 @@ só validação manual.
 - **Redis e PostgreSQL como duas Tags separadas, não uma única "Banco de Dados".** Cada tecnologia tem logo
   próprio (devicon) e uma progressão básico→avançado independente — misturar as duas sob um rótulo genérico
   perderia a possibilidade de filtrar só por uma delas, o mesmo raciocínio já usado para as 6 linguagens.
+- **Logos das linguagens servidos localmente (`wwwroot/icons/`), não via CDN.** Os SVGs vinham do devicon pela
+  jsdelivr, mas dois formatos de URL diferentes (mirror "gh" sem versão e pacote npm com versão fixa) se
+  mostraram inconsistentes — funcionavam para uns ícones e falhavam silenciosamente para outros, de forma
+  diferente em cada teste. Como são só 9 arquivos pequenos e estáticos, baixá-los uma vez pro próprio
+  `wwwroot` elimina de vez a dependência de rede/cache de terceiros pra algo tão simples.
 - **Campo `resposta` é conteúdo, não schema.** Diferente do `Concept.Level` (uma coluna nova, com migration),
   `resposta` vive só dentro do texto da `Note` gerada pelo script de import — não exigiu nenhuma mudança no
   banco, só no template da nota e nos dados de origem.
