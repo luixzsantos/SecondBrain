@@ -6,7 +6,9 @@ usar é uma página simples — sem jargão, sem Swagger — com busca e um bot�
 também pode vir importado direto do [Segundo Cérebro (Obsidian)](#sincronizar-com-o-obsidian), pra não precisar
 digitar tudo de novo.
 
-Este README documenta até a **V0.3 — Knowledge Graph** (Note/Tag/Project da V0.2 + relação Concept↔Concept, contadores e um catálogo de 222 verbetes prontos).
+Este README documenta até a **V0.3.3** (Knowledge Graph da V0.3 + nível/analogia/resposta de cada verbete das
+V0.3.1/V0.3.2 + conhecimento real de um colaborador do GitHub na V0.3.3 — catálogo de 250 verbetes prontos,
+entre 6 linguagens, Redis, PostgreSQL e HTML/CSS).
 
 ---
 
@@ -71,13 +73,16 @@ rodar); automatizar via tarefa agendada do Windows é uma opção futura, ainda 
 
 ## Base de conhecimento de linguagens e bancos de dados
 
-O SecondBrain vem com **233 verbetes** cobrindo 6 linguagens + Redis + PostgreSQL, do "Hello World" a tópicos
-avançados (OOP, generics, async, ponteiros inteligentes, consumer groups, índices parciais...):
+O knowledge-api vem com **250 verbetes** cobrindo 6 linguagens + Redis + PostgreSQL + HTML/CSS, do "Hello
+World" a tópicos avançados (OOP, generics, async, ponteiros inteligentes, consumer groups, índices parciais,
+FastAPI, window functions...):
 
-- **91 vêm de código real** dos próprios projetos do usuário — não são exemplos inventados: **Go**, **Redis**
-  e **PostgreSQL** (Notification Engine — Redis Streams/consumer groups e SQL puro sobre `database/sql`), **C#**
-  (este projeto), **C++/Arduino** (PlatformIO-Projects), **Java** e **JavaScript** (all-notes) e **Python**
-  (Python-notes, pid-system-in-Python, pdf-editor).
+- **108 vêm de código real** de projetos de verdade — não são exemplos inventados: **Go**, **Redis** e
+  **PostgreSQL** (Notification Engine — Redis Streams/consumer groups e SQL puro sobre `database/sql`), **C#**
+  (este projeto), **C++/Arduino** (PlatformIO-Projects), **Java** e **JavaScript** (all-notes), **Python**
+  (Python-notes, pid-system-in-Python, pdf-editor) — do próprio usuário — mais **Python** (FastAPI, Pydantic,
+  Strategy pattern), **JavaScript** e **HTML/CSS** e **SQL** de repositórios públicos de um colaborador do
+  GitHub (identificados como "colaborador", não "usuário", no Project de origem).
 - **142 são currículo de referência geral** — o restante do que uma linguagem/tecnologia tem, do básico ao
   avançado, pensado pra alguém que não sabe nada do assunto: exemplos genéricos corretos (não vêm de um
   repositório específico, por isso ficam num Project à parte, "Referência Geral (Linguagem)"), cada um com um
@@ -341,6 +346,11 @@ só validação manual.
 - **Campo `resposta` é conteúdo, não schema.** Diferente do `Concept.Level` (uma coluna nova, com migration),
   `resposta` vive só dentro do texto da `Note` gerada pelo script de import — não exigiu nenhuma mudança no
   banco, só no template da nota e nos dados de origem.
+- **Conhecimento de um colaborador do GitHub, clonado temporariamente e apagado depois.** Os repositórios
+  públicos usados como fonte real (personal-finance, daily-routine-app, front-end, financial-analysis) foram
+  clonados só-leitura pra extrair o código, e removidos do disco depois de extraído — nada do repositório em
+  si fica versionado aqui, só os trechos de código citados dentro dos verbetes. O Project de cada um deixa
+  explícito que é código do colaborador, não do usuário.
 - **Sync do Obsidian é sob demanda, não automático ainda.** Rodar em background (tarefa agendada do Windows)
   exigiria a API sempre no ar; hoje ela só sobe quando você chama `start.bat`. Preferi entregar o sync
   funcionando primeiro e decidir a automação depois, com o usuário confirmando explicitamente (criar uma
@@ -356,6 +366,10 @@ só validação manual.
 - **V0.3.2 ✅** — Campo `resposta` (o resultado esperado de rodar o exemplo) retroativo nos 224 verbetes
   existentes, mais duas categorias novas na sidebar — **Redis** e **PostgreSQL** — com 26 verbetes extraídos
   do código real do Notification Engine (Streams, consumer groups, índices, constraints, pool de conexões).
+- **V0.3.3 ✅** — Conhecimento real extraído dos repositórios públicos de um colaborador do GitHub
+  (GustavoMelo1): 17 verbetes novos (FastAPI, Pydantic, Strategy pattern com ABC, SQLite, validação de
+  formulário em JS puro, HAVING/window functions em SQL) e uma categoria nova — **HTML/CSS** — com 7 verbetes.
+  Os Projects desses repositórios são marcados explicitamente como "colaborador", não "usuário".
 - **V0.4** — Users, login, JWT (adiado da V0.3 original — o grafo tinha prioridade maior: sem ele, o app ainda
   parecia "um Notion simplificado"; com ele, começa a parecer um mapa do que você sabe).
 - **V0.5** — Timeline de aprendizado (já dá pra fazer sem schema novo — `CreatedAt` já existe em tudo).
