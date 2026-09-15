@@ -1,0 +1,150 @@
+{
+  "language": "Redis",
+  "tag": "redis",
+  "concepts": [
+    {
+      "name": "Redis: o que é e por que é tão rápido",
+      "simpleAnalogy": "Um banco de dados normal é como um arquivo de gavetas: você guarda tudo organizado, mas precisa abrir a gaveta, procurar a pasta e ler o papel a cada consulta. O Redis é como um bloco de post-its colados bem na sua mesa, ao alcance da mão — guarda tudo na memória RAM em vez do disco, então ler ou escrever é quase instantâneo. A troca é que post-its podem se perder se a mesa for derrubada (a memória é volátil), por isso o Redis tem formas de salvar cópias no disco de vez em quando.",
+      "level": "básico",
+      "shortDescription": "Redis é um banco de dados em memória (chave-valor), usado como cache, fila de mensagens ou armazenamento temporário rápido — não substitui um banco relacional, complementa.",
+      "explanation": "Diferente do PostgreSQL, que grava tudo em disco e é otimizado pra durabilidade e consultas relacionais complexas, o Redis mantém os dados na memória RAM, o que o torna ordens de magnitude mais rápido pra leitura/escrita simples. É comum usá-lo como cache (evitar bater no banco relacional toda hora), fila de mensagens (como no Notification Engine, que usa Redis Streams pra desacoplar a API do worker que envia as notificações), ou armazenamento de sessão/rate limit. Ele oferece persistência opcional (RDB, snapshots periódicos, ou AOF, log de cada escrita) pra não perder tudo se o processo cair, mas o caso de uso principal é dado que pode ser reconstruído ou que vale a pena perder em troca de velocidade.",
+      "codeExample": "# redis-cli — o cliente de linha de comando do Redis\nredis-cli PING",
+      "resposta": "PONG — é a forma do Redis confirmar que está no ar e respondendo. Esse é o primeiro comando que costuma se rodar pra testar se a conexão com o servidor Redis está funcionando.",
+      "whereUsed": "Usado como fila de mensagens entre a API e o worker do Notification Engine (ver Redis Streams), evitando que o worker dependa de o PostgreSQL sozinho pra saber o que processar.",
+      "projectName": "Referência Geral (Redis)",
+      "documentationUrl": "https://redis.io/docs/latest/develop/get-started/"
+    },
+    {
+      "name": "Redis: conectando em Go (redis.NewClient + Ping)",
+      "simpleAnalogy": "É como discar pra uma central telefônica antes de poder falar com alguém: você primeiro estabelece a ligação com o endereço certo, e só depois consegue enviar comandos de verdade. O Ping é a mesma coisa que perguntar 'alô, você está me ouvindo?' antes de começar a conversa de verdade — se não responder, não tem por que seguir tentando falar.",
+      "level": "básico",
+      "shortDescription": "redis.NewClient cria o cliente Go apontando pro endereço/senha/DB do Redis; um Ping logo depois confirma que a conexão está de verdade funcionando antes do programa seguir.",
+      "explanation": "A biblioteca oficial (github.com/redis/go-redis) cria o cliente de forma \"lazy\" — redis.NewClient não abre conexão nenhuma sozinho, só configura como conectar. Por isso o Notification Engine chama Ping logo depois, com um timeout curto: se o Redis não responder em 5 segundos, o processo prefere falhar rápido (log.Fatalf) na inicialização em vez de subir \"quebrado\" e só descobrir o problema quando a primeira notificação chegar.",
+      "codeExample": "redisClient := redis.NewClient(&redis.Options{\n\tAddr:     cfg.RedisAddr,\n\tPassword: cfg.RedisPassword,\n\tDB:       cfg.RedisDB,\n})\n\nctxPing, cancelPing := context.WithTimeout(context.Background(), 5*time.Second)\nif err := redisClient.Ping(ctxPing).Err(); err != nil {\n\tcancelPing()\n\tlog.Fatalf(\"[worker] falha ao conectar no Redis (%s): %v\", cfg.RedisAddr, err)\n}\ncancelPing()\nlog.Printf(\"[worker] conectado ao Redis em %s\", cfg.RedisAddr)",
+      "resposta": "Se o Redis estiver no ar e acessível, o programa imprime no log \"[worker] conectado ao Redis em localhost:6379\" (ou o endereço configurado) e continua a inicialização normalmente. Se o Redis estiver fora do ar ou o endereço/senha estiverem errados, o processo encerra imediatamente com log.Fatalf, mostrando a mensagem \"[worker] falha ao conectar no Redis (...): dial tcp ...: connect: connection refused\" (ou erro semelhante).",
+      "whereUsed": "cmd/worker/main.go e cmd/api/main.go — conexão com o Redis feita na subida de cada processo, antes de qualquer outra coisa acontecer.",
+      "projectName": "Notification Engine",
+      "documentationUrl": "https://redis.uptrace.dev/guide/"
+    },
+    {
+      "name": "Redis: strings com SET, GET e expiração (EXPIRE/TTL)",
+      "simpleAnalogy": "É como escrever um recado num quadro branco com uma etiqueta e um alarme: SET escreve o recado com um nome (a chave), GET lê esse recado depois, e EXPIRE cola um alarme que apaga o quadro automaticamente depois de um tempo — útil pra recados que só fazem sentido por um tempo limitado, como um código de verificação que expira em 5 minutos.",
+      "level": "básico",
+      "shortDescription": "SET/GET guardam e leem um valor simples por uma chave; EXPIRE (ou SET com a opção EX) faz esse valor desaparecer sozinho depois de N segundos — a base de qualquer cache.",
+      "explanation": "O tipo mais simples do Redis é a string (que pode ser texto, número ou até um blob binário pequeno). SET grava, GET lê, e a combinação com expiração é o que faz o Redis brilhar como cache: em vez de se preocupar em limpar dados velhos manualmente, você já diz na escrita 'esse valor só é válido por X segundos' e o próprio Redis remove sozinho depois disso — por exemplo, para não bater sempre num serviço externo caro/lento, cachear a resposta por 60 segundos.",
+      "codeExample": "SET usuario:42:nome \"Ana\"\nGET usuario:42:nome\n\n# grava e já expira em 60 segundos (equivalente a SET + EXPIRE)\nSET cache:cotacao-dolar \"5.42\" EX 60\nTTL cache:cotacao-dolar",
+      "resposta": "SET usuario:42:nome \"Ana\" responde OK. GET usuario:42:nome responde \"Ana\". SET ... EX 60 também responde OK, e TTL cache:cotacao-dolar responde algo como (integer) 58 — quantos segundos ainda faltam até a chave expirar sozinha; depois desses 60 segundos, um novo GET nessa chave responderia (nil), como se ela nunca tivesse existido.",
+      "whereUsed": "Padrão comum de cache de leitura — evitar repetir uma consulta cara/lenta enquanto o resultado ainda é \"fresco o suficiente\".",
+      "projectName": "Referência Geral (Redis)",
+      "documentationUrl": "https://redis.io/docs/latest/commands/expire/"
+    },
+    {
+      "name": "Redis: listas com LPUSH, RPUSH e LRANGE",
+      "simpleAnalogy": "Pense numa fila de pessoas no caixa do banco: RPUSH é entrar no fim da fila, LPUSH é furar e entrar na frente, e LRANGE é perguntar \"quem são as 3 primeiras pessoas da fila agora?\" sem precisar remover ninguém dela.",
+      "level": "básico",
+      "shortDescription": "Uma lista no Redis é uma sequência ordenada de valores; LPUSH/RPUSH adicionam no início/fim, e LRANGE lê um intervalo sem removê-los.",
+      "explanation": "Listas são úteis pra representar uma fila (FIFO, entra por um lado e sai pelo outro com RPUSH+LPOP) ou uma pilha (LIFO, entra e sai do mesmo lado com LPUSH+LPOP), como um histórico limitado das últimas N ações de um usuário. Diferente de um array numa linguagem de programação, a lista do Redis já é compartilhada entre processos diferentes — dois workers podem ler/escrever na mesma lista sem coordenar nada além do próprio Redis.",
+      "codeExample": "RPUSH fila:emails \"ana@exemplo.com\"\nRPUSH fila:emails \"joao@exemplo.com\"\nLRANGE fila:emails 0 -1",
+      "resposta": "Os dois RPUSH respondem (integer) 1 e (integer) 2 — o novo tamanho da lista depois de cada inserção. LRANGE fila:emails 0 -1 (do primeiro ao último elemento) responde 1) \"ana@exemplo.com\" 2) \"joao@exemplo.com\", na ordem em que foram inseridos.",
+      "whereUsed": "Padrão comum pra fila simples de tarefas ou histórico recente limitado (combinado com LTRIM pra não crescer pra sempre).",
+      "projectName": "Referência Geral (Redis)",
+      "documentationUrl": "https://redis.io/docs/latest/commands/lrange/"
+    },
+    {
+      "name": "Redis: hashes e sets — objetos e coleções sem duplicar",
+      "simpleAnalogy": "Um hash é como uma ficha de cadastro dentro de uma única gaveta (nome, idade, telefone, tudo junto sob um só rótulo), em vez de espalhar cada informação numa chave separada. Um set é como uma cesta de frutas onde não faz sentido ter duas maçãs 'iguais' contadas separadamente — ou a fruta está na cesta, ou não está, sem repetição.",
+      "level": "intermediário",
+      "shortDescription": "Hash (HSET/HGET) guarda vários campos sob uma chave, como um objeto; Set (SADD/SMEMBERS) guarda valores únicos sem ordem nem duplicatas.",
+      "explanation": "Em vez de criar uma chave string separada pra cada atributo de um usuário (usuario:42:nome, usuario:42:idade...), um Hash agrupa tudo sob usuario:42 com campos internos — mais parecido com um objeto/dicionário. Um Set garante unicidade automaticamente: adicionar o mesmo valor duas vezes não duplica nada, o que o torna útil pra coisas como 'quais tags esse post tem' ou 'quais usuários já confirmaram presença', sem se preocupar em checar duplicidade manualmente.",
+      "codeExample": "HSET usuario:42 nome \"Ana\" idade 30\nHGET usuario:42 nome\n\nSADD post:10:tags \"redis\" \"banco-de-dados\" \"redis\"\nSMEMBERS post:10:tags",
+      "resposta": "HSET responde (integer) 2 (dois campos novos criados). HGET usuario:42 nome responde \"Ana\". SADD responde (integer) 2 — só duas tags novas de fato entraram, porque \"redis\" repetido não conta de novo. SMEMBERS post:10:tags responde 1) \"redis\" 2) \"banco-de-dados\" (ordem não é garantida), sem nenhuma repetição mesmo tendo sido enviada duas vezes.",
+      "whereUsed": "Padrão comum pra representar um objeto pequeno (hash) ou uma coleção de valores únicos (set) sem precisar de uma tabela relacional só pra isso.",
+      "projectName": "Referência Geral (Redis)",
+      "documentationUrl": "https://redis.io/docs/latest/commands/sadd/"
+    },
+    {
+      "name": "Redis: Pub/Sub vs Streams — por que o Notification Engine escolheu Streams",
+      "simpleAnalogy": "Pub/Sub é como um rádio AM: quem não estava ligado no momento da transmissão perdeu a mensagem pra sempre, ela não fica gravada em nenhum lugar. Streams é como um grupo de WhatsApp: mesmo que você abra o celular horas depois, as mensagens continuam lá esperando, organizadas em ordem, e cada uma pode ser marcada como \"lida\" individualmente.",
+      "level": "intermediário",
+      "shortDescription": "Pub/Sub entrega mensagens só a quem está ouvindo no exato momento (sem persistência); Streams guarda as mensagens e permite reprocessar, confirmar e escalar com Consumer Groups.",
+      "explanation": "O Notification Engine precisava que, se o worker estivesse fora do ar quando uma notificação fosse criada, ela não se perdesse — ele processaria assim que voltasse. Pub/Sub puro não serve pra isso: se não há nenhum subscriber conectado no instante do PUBLISH, a mensagem simplesmente desaparece. Streams resolve isso guardando cada mensagem persistida no próprio Redis até ser explicitamente confirmada (ACK), e ainda permite Consumer Groups — vários workers dividindo o mesmo stream sem processar a mesma notificação duas vezes.",
+      "codeExample": "// comentário real do código do Notification Engine:\n// \"Streams foram escolhidos em vez de Pub/Sub puro por garantirem\n// persistência da mensagem e permitirem consumer groups com ACK/retry.\"\ntype RedisProducer struct {\n\tclient     *redis.Client\n\tstreamName string\n}",
+      "resposta": "Não é um trecho executável isolado — é a declaração do tipo que carrega essa decisão de design. O efeito prático aparece nos comandos que usam esse client (XAdd, XReadGroup, XAck, vistos nos próximos verbetes): se o worker cair e voltar depois, as mensagens publicadas nesse meio tempo continuam no Stream esperando, em vez de terem sido perdidas como aconteceria com Pub/Sub.",
+      "whereUsed": "internal/queue/redis_producer.go — comentário de design explicando a escolha de Redis Streams em vez de Pub/Sub puro.",
+      "projectName": "Notification Engine",
+      "documentationUrl": "https://redis.io/docs/latest/develop/data-types/streams/"
+    },
+    {
+      "name": "Redis Streams: publicando eventos com XADD",
+      "simpleAnalogy": "É como depositar uma carta numa caixa de correio compartilhada, numerada em ordem de chegada: XADD é o ato de colocar a carta lá dentro, com um número e um horário únicos automaticamente atribuídos — quem for buscar as cartas depois sabe exatamente em que ordem elas chegaram.",
+      "level": "intermediário",
+      "shortDescription": "XAdd adiciona uma nova entrada a um Stream do Redis; cada entrada recebe um ID único (baseado em timestamp) e carrega os campos que você quiser, como um mapa de chave/valor.",
+      "explanation": "No Notification Engine, quando uma notificação é aceita pela API, ela é serializada em JSON e publicada no Stream via XAdd, em vez de ser processada ali mesmo na requisição — isso desacopla \"aceitar o pedido\" de \"efetivamente enviar a notificação\", permitindo que a API responda rápido e o worker processe no seu próprio ritmo, inclusive escalando com múltiplas instâncias.",
+      "codeExample": "func (p *RedisProducer) Enqueue(ctx context.Context, n *domain.Notification) error {\n\tdata, _ := json.Marshal(n)\n\n\terr := p.client.XAdd(ctx, &redis.XAddArgs{\n\t\tStream: p.streamName,\n\t\tValues: map[string]any{\n\t\t\t\"id\":   n.ID,\n\t\t\t\"data\": data,\n\t\t},\n\t}).Err()\n\n\treturn err\n}",
+      "resposta": "Se o Redis estiver acessível, XAdd grava a entrada no stream e devolve um ID novo (algo como \"1715792400123-0\", timestamp em milissegundos + sequência), e a função retorna nil (sucesso) — a notificação agora existe no stream esperando ser consumida. Se o Redis estiver fora do ar, XAdd devolve um erro de conexão, e a função retorna esse erro envolvido em \"redis producer: falha ao publicar no stream ...\".",
+      "whereUsed": "internal/queue/redis_producer.go — Enqueue, chamado pelo service sempre que uma notificação nova é aceita pela API.",
+      "projectName": "Notification Engine",
+      "documentationUrl": "https://redis.io/docs/latest/commands/xadd/"
+    },
+    {
+      "name": "Redis Streams: Consumer Groups e leitura com XREADGROUP",
+      "simpleAnalogy": "Pense numa fila de atendimento com vários guichês: em vez de cada atendente pegar a mesma senha e atender a mesma pessoa duas vezes, o sistema de senhas garante que cada uma seja entregue a só um guichê por vez. Um Consumer Group faz exatamente isso entre vários workers Go rodando ao mesmo tempo: cada mensagem do stream vai pra um consumidor só, nunca pra dois ao mesmo tempo.",
+      "level": "intermediário",
+      "shortDescription": "Um Consumer Group permite que várias instâncias do worker leiam o mesmo Stream dividindo o trabalho, sem duas instâncias processarem a mesma mensagem — a chave pra escalar horizontalmente.",
+      "explanation": "XReadGroup, usado com o parâmetro \">\", busca só mensagens que ainda não foram entregues a nenhum consumidor daquele grupo. Isso é o que permite subir 2, 3 ou N processos worker apontando pro mesmo stream: o Redis coordena entre eles pra que cada notificação seja entregue a exatamente um consumidor, não a todos. O grupo em si é criado (se ainda não existir) via XGroupCreateMkStream, que também cria o stream se ele não existir ainda.",
+      "codeExample": "streams, err := c.client.XReadGroup(ctx, &redis.XReadGroupArgs{\n\tGroup:    c.consumerGrp,\n\tConsumer: c.consumerName,\n\tStreams:  []string{c.streamName, \">\"}, // \">\" = só mensagens nunca entregues\n\tCount:    10,\n\tBlock:    5 * time.Second,\n}).Result()",
+      "resposta": "Se houver mensagens novas no stream, streams vem preenchido com até 10 entradas ainda não entregues a nenhum consumidor do grupo, e err é nil. Se não houver nenhuma mensagem nova dentro dos 5 segundos de Block, a chamada retorna com err igual a redis.Nil (tratado no código como \"tenta de novo\", não como falha real) — o loop simplesmente volta a chamar XReadGroup.",
+      "whereUsed": "internal/queue/redis_consumer.go — Consume, o loop principal que lê continuamente novas notificações do stream.",
+      "projectName": "Notification Engine",
+      "documentationUrl": "https://redis.io/docs/latest/commands/xreadgroup/"
+    },
+    {
+      "name": "Redis Streams: confirmando o processamento com XACK",
+      "simpleAnalogy": "É como assinar o recibo de uma entrega: enquanto você não assina, a encomenda continua oficialmente \"em trânsito\" no sistema da transportadora, mesmo que já esteja fisicamente na sua mão. XAck é essa assinatura — só depois dela o Redis considera que aquela mensagem específica foi de fato tratada.",
+      "level": "avançado",
+      "shortDescription": "XAck marca uma mensagem do Stream como processada com sucesso, removendo-a da Pending Entries List (PEL) daquele consumer group.",
+      "explanation": "Depois que XReadGroup entrega uma mensagem, ela fica registrada na PEL (Pending Entries List) do grupo — o Redis assume que ela ainda está \"em processamento\" até alguém confirmar. Se o handler processar com sucesso, o consumidor chama XAck e a mensagem sai da PEL, encerrando seu ciclo de vida. Se o handler falhar (e o Notification Engine só devolve erro nesse caso durante um shutdown), a mensagem NÃO é confirmada de propósito — ela continua pendente na PEL até ser reivindicada de volta mais tarde.",
+      "codeExample": "func (c *RedisConsumer) ack(ctx context.Context, messageID string) {\n\tif err := c.client.XAck(ctx, c.streamName, c.consumerGrp, messageID).Err(); err != nil {\n\t\tlog.Printf(\"[consumer] falha ao confirmar (ACK) mensagem %s: %v\", messageID, err)\n\t}\n}",
+      "resposta": "Em caso normal, XAck remove a mensagem da PEL e retorna (integer) 1 (uma entrada confirmada), sem erro — a função não imprime nada. Se a conexão com o Redis falhar nesse instante, o log mostra algo como \"[consumer] falha ao confirmar (ACK) mensagem 1715792400123-0: <erro de rede>\", e a mensagem continua pendente na PEL (será reivindicada depois por XAutoClaim).",
+      "whereUsed": "internal/queue/redis_consumer.go — chamado no fim de processMessage, só depois do handler ter processado a notificação com sucesso.",
+      "projectName": "Notification Engine",
+      "documentationUrl": "https://redis.io/docs/latest/commands/xack/"
+    },
+    {
+      "name": "Redis Streams: recuperando mensagens perdidas com XAUTOCLAIM",
+      "simpleAnalogy": "Imagine um atendente que pegou uma senha da fila, mas sumiu no meio do atendimento (foi embora, travou, sei lá). Depois de um tempo sem resposta, o supervisor pega aquela senha de volta e entrega pra outro atendente terminar. XAutoClaim é esse supervisor: ele varre a fila de \"pendências sem resposta\" e devolve pra reprocessamento o que ficou parado tempo demais.",
+      "level": "avançado",
+      "shortDescription": "XAutoClaim reivindica de volta mensagens que ficaram paradas na PEL por mais que MinIdle (ex: um worker que caiu no meio do processamento), entregando-as a outro consumidor pra tentar de novo.",
+      "explanation": "Se um worker for encerrado abruptamente (kill -9, crash) depois de receber uma mensagem via XReadGroup mas antes de confirmá-la com XAck, essa mensagem fica \"órfã\" na PEL — tecnicamente ainda atribuída a um consumidor que não existe mais. XAutoClaim, chamado a cada iteração do loop antes de ler mensagens novas, verifica se há mensagens paradas há mais de claimMinIdle (30 segundos no Notification Engine) e as reatribui ao consumidor atual, tratando-as como se tivessem acabado de chegar — reprocessando o que ficou preso.",
+      "codeExample": "const claimMinIdle = 30 * time.Second\n\nmessages, _, err := c.client.XAutoClaim(ctx, &redis.XAutoClaimArgs{\n\tStream:   c.streamName,\n\tGroup:    c.consumerGrp,\n\tConsumer: c.consumerName,\n\tMinIdle:  claimMinIdle,\n\tStart:    \"0-0\",\n\tCount:    10,\n}).Result()",
+      "resposta": "Se não houver nenhuma mensagem parada há mais de 30 segundos, messages volta vazio e nada acontece. Se houver (ex: um worker anterior caiu com uma mensagem em mãos), messages traz até 10 dessas entradas, cada uma reatribuída ao consumidor atual — o código então loga \"[consumer] mensagem <id> reivindicada da PEL (idle > 30s)\" e reprocessa cada uma normalmente, incluindo confirmar com XAck ao final se der certo.",
+      "whereUsed": "internal/queue/redis_consumer.go — reclaimStale, chamado a cada volta do loop principal, antes de buscar mensagens novas.",
+      "projectName": "Notification Engine",
+      "documentationUrl": "https://redis.io/docs/latest/commands/xautoclaim/"
+    },
+    {
+      "name": "Redis Streams: criando o Consumer Group de forma idempotente (XGROUP CREATE + MKSTREAM)",
+      "simpleAnalogy": "É como tentar criar uma pasta que talvez já exista: em vez de travar com erro se ela já estiver lá, você simplesmente ignora esse erro específico e segue em frente — o que importa é que a pasta exista no final, não quem a criou primeiro.",
+      "level": "avançado",
+      "shortDescription": "XGroupCreateMkStream cria o consumer group (e o próprio stream, se não existir); o erro \"BUSYGROUP\" (grupo já existe) é tratado como situação normal, não como falha.",
+      "explanation": "Como o worker pode ser reiniciado várias vezes (deploy, crash, restart manual), ele precisa poder chamar 'criar o consumer group' repetidamente sem quebrar quando o grupo já existe de uma execução anterior. O Redis sinaliza isso com o erro específico \"BUSYGROUP Consumer Group name already exists\" — o código checa exatamente essa mensagem e a trata como sucesso, deixando qualquer OUTRO erro (ex: problema de conexão) propagar normalmente. O parâmetro \"$\" na criação significa que o grupo só verá mensagens publicadas a partir de agora, ignorando o histórico anterior do stream.",
+      "codeExample": "func (c *RedisConsumer) ensureGroup(ctx context.Context) error {\n\terr := c.client.XGroupCreateMkStream(ctx, c.streamName, c.consumerGrp, \"$\").Err()\n\tif err != nil && !errors.Is(err, redis.Nil) {\n\t\tif err.Error() != \"BUSYGROUP Consumer Group name already exists\" {\n\t\t\treturn err\n\t\t}\n\t}\n\treturn nil\n}",
+      "resposta": "Na primeira vez que o worker sobe (grupo ainda não existe), XGroupCreateMkStream cria o stream (se preciso) e o grupo, retornando OK sem erro — a função devolve nil. Na segunda vez (worker reiniciado, grupo já existe de antes), o Redis devolve o erro \"BUSYGROUP Consumer Group name already exists\", que o código reconhece e ignora de propósito — a função ainda devolve nil, como se nada de anormal tivesse acontecido.",
+      "whereUsed": "internal/queue/redis_consumer.go — ensureGroup, chamado no início de Consume antes de entrar no loop de leitura.",
+      "projectName": "Notification Engine",
+      "documentationUrl": "https://redis.io/docs/latest/commands/xgroup-create/"
+    },
+    {
+      "name": "Redis: persistência com RDB e AOF",
+      "simpleAnalogy": "É a diferença entre tirar uma foto da sua casa a cada hora (RDB — um retrato completo, mas some tudo que aconteceu desde a última foto se a casa \"resetar\") e manter um diário escrevendo cada coisa que você faz no momento em que faz (AOF — mais detalhado e recente, mas o \"livro\" fica maior e mais lento de reconstruir do zero).",
+      "level": "avançado",
+      "shortDescription": "RDB tira snapshots completos periódicos do banco em memória; AOF grava um log de cada operação de escrita — Redis pode usar um, outro, ou os dois combinados pra durabilidade.",
+      "explanation": "Como o Redis guarda tudo na RAM por padrão, um restart do processo (ou uma queda de energia) apagaria os dados se não houvesse persistência em disco. RDB salva o estado completo em intervalos (ex: a cada 5 minutos ou depois de N escritas), sendo compacto e rápido de carregar de volta, mas perde qualquer coisa escrita depois do último snapshot. AOF registra cada comando de escrita à medida que acontece, permitindo recuperar quase tudo, mas o arquivo cresce mais e a reconstrução na inicialização é mais lenta. Sistemas que usam o Redis como fila (como Streams) geralmente se importam bastante com persistência, já que perder o conteúdo do stream significa perder notificações não processadas ainda.",
+      "codeExample": "# redis.conf — habilita RDB (save automático) e AOF juntos\nsave 300 10\nappendonly yes\nappendfsync everysec",
+      "resposta": "Com essa configuração, o Redis salva um snapshot RDB automaticamente se pelo menos 10 chaves mudarem em 300 segundos, E também mantém o log AOF ativo, sincronizando no disco a cada 1 segundo (appendfsync everysec) — um meio-termo comum entre performance e durabilidade, aceitando perder no máximo ~1 segundo de escritas em caso de crash abrupto.",
+      "whereUsed": "Decisão de configuração de infraestrutura, tipicamente feita direto no redis.conf ou nas opções do container/serviço gerenciado, não no código da aplicação.",
+      "projectName": "Referência Geral (Redis)",
+      "documentationUrl": "https://redis.io/docs/latest/operate/oss_and_stack/management/persistence/"
+    }
+  ]
+}

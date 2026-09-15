@@ -11,7 +11,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfmt.Println(\"Hello, World!\")\n}",
       "whereUsed": "O primeiro programa que qualquer pessoa escreve ao aprender Go — roda com 'go run main.go' no terminal.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/doc/tutorial/getting-started"
+      "documentationUrl": "https://go.dev/doc/tutorial/getting-started",
+      "resposta": "No terminal aparece exatamente a linha: Hello, World!"
     },
     {
       "name": "Go: slices e arrays",
@@ -22,7 +23,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// array: tamanho fixo (3), faz parte do tipo\n\tvar arr [3]int = [3]int{1, 2, 3}\n\n\t// slice: tamanho flexível\n\tnumeros := []int{10, 20, 30}\n\tnumeros = append(numeros, 40) // cresce automaticamente\n\n\tfmt.Println(arr)      // [1 2 3]\n\tfmt.Println(numeros)  // [10 20 30 40]\n\tfmt.Println(len(numeros), cap(numeros))\n}",
       "whereUsed": "Comum em qualquer programa Go que precisa guardar uma lista de itens, como resultados de uma consulta ou linhas de um arquivo.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/blog/slices-intro"
+      "documentationUrl": "https://go.dev/blog/slices-intro",
+      "resposta": "O programa imprime '[1 2 3]' para o array, depois '[10 20 30 40]' para o slice já com o item extra adicionado por append. A última linha imprime len e cap do slice — o tamanho (len) é sempre 4, e a capacidade (cap) exata não é garantida pela linguagem (pode variar entre versões do Go), mas tipicamente sai algo como '4 6', já que a capacidade costuma dobrar quando o slice cresce além do array original de 3 posições."
     },
     {
       "name": "Go: maps",
@@ -33,7 +35,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tidades := map[string]int{\n\t\t\"Ana\":   30,\n\t\t\"Bruno\": 25,\n\t}\n\n\tidades[\"Carla\"] = 40 // adiciona nova chave\n\n\tidade, existe := idades[\"Bruno\"]\n\tif existe {\n\t\tfmt.Println(\"Bruno tem\", idade, \"anos\")\n\t}\n\n\tdelete(idades, \"Ana\") // remove uma chave\n\tfmt.Println(idades)\n}",
       "whereUsed": "Comum para indexar dados em memória, como cache local ou contagem de itens em um relatório.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/blog/maps"
+      "documentationUrl": "https://go.dev/blog/maps",
+      "resposta": "O programa imprime 'Bruno tem 25 anos' (a chave 'Bruno' existia no map com valor 25). Depois de remover 'Ana' com delete, a última linha imprime map[Bruno:25 Carla:40] — o pacote fmt ordena as chaves alfabeticamente ao imprimir um map, então 'Ana' já não aparece mais."
     },
     {
       "name": "Go: laço for e suas variações",
@@ -44,7 +47,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\t// forma clássica\n\tfor i := 0; i < 3; i++ {\n\t\tfmt.Println(\"contador:\", i)\n\t}\n\n\t// como um \"while\"\n\tn := 0\n\tfor n < 2 {\n\t\tn++\n\t}\n\n\t// range sobre um slice\n\tfrutas := []string{\"maçã\", \"banana\"}\n\tfor indice, fruta := range frutas {\n\t\tfmt.Println(indice, fruta)\n\t}\n}",
       "whereUsed": "Usado em praticamente todo programa Go que precisa repetir uma ação, como processar itens de uma lista.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/ref/spec#For_statements"
+      "documentationUrl": "https://go.dev/ref/spec#For_statements",
+      "resposta": "Aparecem as linhas 'contador: 0', 'contador: 1' e 'contador: 2' do laço clássico. O laço no estilo while não imprime nada, só incrementa n internamente até 2. Por fim, o for range sobre frutas imprime '0 maçã' e '1 banana', o índice seguido do valor de cada posição."
     },
     {
       "name": "Go: defer",
@@ -55,7 +59,8 @@
       "codeExample": "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc lerArquivo(caminho string) error {\n\tarquivo, err := os.Open(caminho)\n\tif err != nil {\n\t\treturn err\n\t}\n\tdefer arquivo.Close() // sempre executado ao sair da função\n\n\tfmt.Println(\"arquivo aberto:\", arquivo.Name())\n\treturn nil\n}",
       "whereUsed": "Comum para garantir o fechamento de arquivos, conexões de banco de dados ou liberação de locks.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/blog/defer-panic-and-recover"
+      "documentationUrl": "https://go.dev/blog/defer-panic-and-recover",
+      "resposta": "Esse trecho não tem uma função main() chamando lerArquivo, então rodá-lo isoladamente não produz saída nenhuma. Se outro código chamar lerArquivo(\"caminho/valido.txt\") com um caminho que existe, a função imprime 'arquivo aberto: caminho/valido.txt' e retorna nil — só depois disso, no instante em que a função retorna, o defer aciona arquivo.Close(). Se os.Open falhar (arquivo não existe), a função retorna o erro imediatamente e nada é impresso, porque o defer ainda nem tinha sido registrado."
     },
     {
       "name": "Go: panic e recover",
@@ -66,7 +71,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc protegido() {\n\tdefer func() {\n\t\tif r := recover(); r != nil {\n\t\t\tfmt.Println(\"recuperado de um panic:\", r)\n\t\t}\n\t}()\n\n\tpanic(\"algo deu muito errado\")\n}\n\nfunc main() {\n\tprotegido()\n\tfmt.Println(\"programa continua executando normalmente\")\n}",
       "whereUsed": "Comum em middlewares de servidores HTTP, para evitar que um erro inesperado em uma requisição derrube o processo inteiro.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/blog/defer-panic-and-recover"
+      "documentationUrl": "https://go.dev/blog/defer-panic-and-recover",
+      "resposta": "O panic(\"algo deu muito errado\") interrompe protegido(), mas o defer com recover() captura esse pânico e imprime 'recuperado de um panic: algo deu muito errado'. Como o panic foi recuperado, o programa não é derrubado e a linha seguinte em main() ainda executa, imprimindo 'programa continua executando normalmente'."
     },
     {
       "name": "Go: channels para comunicação entre goroutines",
@@ -77,7 +83,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc trabalhador(resultado chan<- int) {\n\tresultado <- 42 // envia o valor pelo canal\n}\n\nfunc main() {\n\tcanal := make(chan int) // channel sem buffer\n\n\tgo trabalhador(canal) // roda em outra goroutine\n\n\tvalor := <-canal // espera receber o valor\n\tfmt.Println(\"recebido:\", valor)\n}",
       "whereUsed": "Comum em pipelines de processamento onde uma goroutine produz dados e outra os consome.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/ref/spec#Channel_types"
+      "documentationUrl": "https://go.dev/ref/spec#Channel_types",
+      "resposta": "A goroutine trabalhador envia o valor 42 pelo canal; main fica bloqueado em <-canal até recebê-lo, e então imprime 'recebido: 42'."
     },
     {
       "name": "Go: channels bufferizados",
@@ -88,7 +95,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tfila := make(chan string, 2) // buffer de tamanho 2\n\n\tfila <- \"tarefa 1\" // não bloqueia, buffer tem espaço\n\tfila <- \"tarefa 2\" // ainda não bloqueia\n\n\tfmt.Println(<-fila) // \"tarefa 1\"\n\tfmt.Println(<-fila) // \"tarefa 2\"\n}",
       "whereUsed": "Comum para limitar o número de tarefas concorrentes (padrão de semáforo) ou suavizar diferenças de velocidade entre produtor e consumidor.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/ref/spec#Making_slices_maps_and_channels"
+      "documentationUrl": "https://go.dev/ref/spec#Making_slices_maps_and_channels",
+      "resposta": "Como o buffer tem tamanho 2, os dois envios ('tarefa 1' e 'tarefa 2') não bloqueiam a goroutine principal. As duas últimas linhas imprimem, em ordem, 'tarefa 1' e depois 'tarefa 2', exatamente na ordem em que foram enfileiradas (FIFO)."
     },
     {
       "name": "Go: comando select",
@@ -99,7 +107,8 @@
       "codeExample": "package main\n\nimport (\n\t\"fmt\"\n\t\"time\"\n)\n\nfunc main() {\n\tcanal := make(chan string)\n\n\tgo func() {\n\t\ttime.Sleep(2 * time.Second)\n\t\tcanal <- \"resposta\"\n\t}()\n\n\tselect {\n\tcase msg := <-canal:\n\t\tfmt.Println(\"recebido:\", msg)\n\tcase <-time.After(1 * time.Second):\n\t\tfmt.Println(\"tempo esgotado, desistindo\")\n\t}\n}",
       "whereUsed": "Comum para implementar timeouts em chamadas de rede e para escutar múltiplos channels de eventos ao mesmo tempo.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/ref/spec#Select_statements"
+      "documentationUrl": "https://go.dev/ref/spec#Select_statements",
+      "resposta": "A goroutine só envia 'resposta' pelo canal depois de dormir 2 segundos, mas o case do time.After(1 * time.Second) fica pronto primeiro, 1 segundo antes disso. Por isso o select escolhe o case do timeout, e o programa imprime 'tempo esgotado, desistindo' — a mensagem 'resposta' nunca chega a ser recebida por esse programa."
     },
     {
       "name": "Go: closures (funções que capturam variáveis)",
@@ -110,7 +119,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc criarContador() func() int {\n\tcontagem := 0\n\treturn func() int {\n\t\tcontagem++ // a closure \"lembra\" da variável contagem\n\t\treturn contagem\n\t}\n}\n\nfunc main() {\n\tproximo := criarContador()\n\tfmt.Println(proximo()) // 1\n\tfmt.Println(proximo()) // 2\n\tfmt.Println(proximo()) // 3\n}",
       "whereUsed": "Comum para criar geradores de IDs, contadores ou callbacks que precisam manter algum estado entre chamadas.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/tour/moretypes/25"
+      "documentationUrl": "https://go.dev/tour/moretypes/25",
+      "resposta": "Cada chamada de proximo() incrementa a variável contagem capturada pela closure e a devolve. O programa imprime, em três linhas separadas, '1', depois '2', depois '3' — a contagem persiste entre chamadas porque a closure mantém uma referência viva à variável, não uma cópia."
     },
     {
       "name": "Go: funções variádicas",
@@ -121,7 +131,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc soma(numeros ...int) int {\n\ttotal := 0\n\tfor _, n := range numeros {\n\t\ttotal += n\n\t}\n\treturn total\n}\n\nfunc main() {\n\tfmt.Println(soma(1, 2, 3))       // 6\n\tvalores := []int{4, 5, 6}\n\tfmt.Println(soma(valores...))    // 15, espalhando o slice\n}",
       "whereUsed": "Comum em funções utilitárias de log, formatação de strings e funções agregadoras como soma ou concatenação.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/ref/spec#Passing_arguments_to_..._parameters"
+      "documentationUrl": "https://go.dev/ref/spec#Passing_arguments_to_..._parameters",
+      "resposta": "soma(1, 2, 3) soma os três argumentos e imprime '6'. Depois, soma(valores...) espalha o slice [4, 5, 6] como argumentos individuais e imprime '15', a soma dos três valores."
     },
     {
       "name": "Go: embedding e composição de structs",
@@ -132,7 +143,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\ntype Motor struct {\n\tPotencia int\n}\n\nfunc (m Motor) Ligar() string {\n\treturn \"motor ligado\"\n}\n\ntype Carro struct {\n\tMotor // embedding: Carro \"ganha\" os campos e métodos de Motor\n\tModelo string\n}\n\nfunc main() {\n\tcarro := Carro{Motor: Motor{Potencia: 150}, Modelo: \"Sedan\"}\n\tfmt.Println(carro.Ligar())     // método vindo de Motor\n\tfmt.Println(carro.Potencia)    // campo vindo de Motor\n}",
       "whereUsed": "Comum para reaproveitar comportamento entre structs, como um struct base de auditoria (CreatedAt, UpdatedAt) embutido em vários modelos.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/doc/effective_go#embedding"
+      "documentationUrl": "https://go.dev/doc/effective_go#embedding",
+      "resposta": "carro.Ligar() chama o método vindo do Motor embutido e imprime 'motor ligado'. carro.Potencia acessa diretamente o campo Potencia de Motor através do carro, imprimindo '150', sem precisar escrever carro.Motor.Potencia."
     },
     {
       "name": "Go: generics (parâmetros de tipo)",
@@ -143,7 +155,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\n// T deve ser um tipo que suporta operadores de comparação\nfunc Maior[T int | float64](a, b T) T {\n\tif a > b {\n\t\treturn a\n\t}\n\treturn b\n}\n\nfunc main() {\n\tfmt.Println(Maior(3, 7))         // funciona com int\n\tfmt.Println(Maior(2.5, 1.1))     // funciona com float64\n}",
       "whereUsed": "Comum em bibliotecas utilitárias, como funções de slices (Map, Filter, Reduce) que precisam funcionar com qualquer tipo de dado.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/doc/tutorial/generics"
+      "documentationUrl": "https://go.dev/doc/tutorial/generics",
+      "resposta": "Maior(3, 7) instancia a função genérica para int e imprime '7', o maior dos dois. Maior(2.5, 1.1) instancia a mesma função para float64 e imprime '2.5' — a mesma implementação funciona para os dois tipos, sem duplicar código nem perder verificação de tipos em tempo de compilação."
     },
     {
       "name": "Go: comando switch",
@@ -154,7 +167,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc main() {\n\tdia := 3\n\n\tswitch dia {\n\tcase 1, 7:\n\t\tfmt.Println(\"fim de semana\")\n\tcase 2, 3, 4, 5, 6:\n\t\tfmt.Println(\"dia de semana\")\n\tdefault:\n\t\tfmt.Println(\"dia inválido\")\n\t}\n\n\t// switch sem expressão, como vários if\n\tidade := 20\n\tswitch {\n\tcase idade < 18:\n\t\tfmt.Println(\"menor de idade\")\n\tcase idade >= 18:\n\t\tfmt.Println(\"maior de idade\")\n\t}\n}",
       "whereUsed": "Comum para tratar diferentes casos de um mesmo campo, como o status de um pedido ou o tipo de uma mensagem recebida.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/ref/spec#Switch_statements"
+      "documentationUrl": "https://go.dev/ref/spec#Switch_statements",
+      "resposta": "Com dia = 3, cai no case '2, 3, 4, 5, 6' e imprime 'dia de semana' (o case '1, 7' não bate). Depois, no switch sem expressão, idade = 20 satisfaz o case 'idade >= 18' e imprime 'maior de idade'."
     },
     {
       "name": "Go: JSON com marshal/unmarshal e struct tags",
@@ -165,7 +179,8 @@
       "codeExample": "package main\n\nimport (\n\t\"encoding/json\"\n\t\"fmt\"\n)\n\ntype Usuario struct {\n\tNome  string `json:\"nome\"`\n\tIdade int    `json:\"idade,omitempty\"`\n\tSenha string `json:\"-\"` // nunca aparece no JSON\n}\n\nfunc main() {\n\tu := Usuario{Nome: \"Ana\", Idade: 30, Senha: \"segredo\"}\n\n\tdados, _ := json.Marshal(u)\n\tfmt.Println(string(dados)) // {\"nome\":\"Ana\",\"idade\":30}\n\n\tvar outro Usuario\n\tjson.Unmarshal(dados, &outro)\n\tfmt.Println(outro.Nome) // Ana\n}",
       "whereUsed": "Comum em qualquer API REST que precisa receber ou responder dados no formato JSON.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://pkg.go.dev/encoding/json"
+      "documentationUrl": "https://pkg.go.dev/encoding/json",
+      "resposta": "json.Marshal(u) produz o texto {\"nome\":\"Ana\",\"idade\":30} — o campo Senha nunca aparece porque a tag é `json:\"-\"`. A linha seguinte imprime esse JSON. Depois, json.Unmarshal preenche 'outro' a partir desses mesmos bytes, e fmt.Println(outro.Nome) imprime 'Ana'."
     },
     {
       "name": "Go: testes table-driven com o pacote testing",
@@ -176,7 +191,8 @@
       "codeExample": "package main\n\nimport \"testing\"\n\nfunc Dobro(n int) int { return n * 2 }\n\nfunc TestDobro(t *testing.T) {\n\tcasos := []struct {\n\t\tnome     string\n\t\tentrada  int\n\t\tesperado int\n\t}{\n\t\t{\"positivo\", 3, 6},\n\t\t{\"zero\", 0, 0},\n\t\t{\"negativo\", -2, -4},\n\t}\n\n\tfor _, c := range casos {\n\t\tt.Run(c.nome, func(t *testing.T) {\n\t\t\tresultado := Dobro(c.entrada)\n\t\t\tif resultado != c.esperado {\n\t\t\t\tt.Errorf(\"Dobro(%d) = %d; esperado %d\", c.entrada, resultado, c.esperado)\n\t\t\t}\n\t\t})\n\t}\n}",
       "whereUsed": "Comum em qualquer arquivo `_test.go` que precisa validar uma função com múltiplos cenários de entrada e saída.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/wiki/TableDrivenTests"
+      "documentationUrl": "https://go.dev/wiki/TableDrivenTests",
+      "resposta": "Rodando 'go test -v', os três subtestes (TestDobro/positivo, TestDobro/zero, TestDobro/negativo) passam sem erro, porque Dobro(3)=6, Dobro(0)=0 e Dobro(-2)=-4 batem exatamente com o valor esperado de cada linha da tabela; o resultado final é 'PASS' e nenhuma chamada a t.Errorf chega a ser executada."
     },
     {
       "name": "Go: benchmarking com testing.B",
@@ -187,7 +203,8 @@
       "codeExample": "package main\n\nimport (\n\t\"strings\"\n\t\"testing\"\n)\n\nfunc BenchmarkConcatenacao(b *testing.B) {\n\tfor i := 0; i < b.N; i++ {\n\t\tvar sb strings.Builder\n\t\tsb.WriteString(\"olá\")\n\t\tsb.WriteString(\" mundo\")\n\t\t_ = sb.String()\n\t}\n}\n\n// rodar com: go test -bench=. -benchmem",
       "whereUsed": "Comum ao otimizar funções críticas de performance, como parsing de dados ou manipulação intensa de strings.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://pkg.go.dev/testing#hdr-Benchmarks"
+      "documentationUrl": "https://pkg.go.dev/testing#hdr-Benchmarks",
+      "resposta": "Rodando 'go test -bench=. -benchmem', a função em si não imprime nada — o framework de benchmark é que produz a saída no terminal, algo como 'BenchmarkConcatenacao-8   5000000   250 ns/op   32 B/op   2 allocs/op', com os números exatos variando conforme a máquina, indicando quantas operações por segundo a concatenação faz e quanta memória aloca por chamada."
     },
     {
       "name": "Go: módulos (go.mod e go.sum)",
@@ -198,7 +215,8 @@
       "codeExample": "// go.mod (exemplo)\nmodule github.com/usuario/meuprojeto\n\ngo 1.22\n\nrequire (\n\tgithub.com/google/uuid v1.6.0\n)\n\n// comandos úteis:\n// go mod init github.com/usuario/meuprojeto\n// go mod tidy\n// go build ./...",
       "whereUsed": "Presente na raiz de todo projeto Go real, definindo suas dependências e a versão da linguagem usada.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/doc/modules/gomod-ref"
+      "documentationUrl": "https://go.dev/doc/modules/gomod-ref",
+      "resposta": "Nenhuma execução de programa — go.mod é um arquivo de configuração, não código executável. Rodar 'go mod init github.com/usuario/meuprojeto' cria esse arquivo com o nome do módulo; 'go mod tidy' baixa a dependência github.com/google/uuid, preenche a seção require e grava os hashes no go.sum; 'go build ./...' compila o projeto usando exatamente essas versões travadas."
     },
     {
       "name": "Go: múltiplos valores de retorno",
@@ -209,7 +227,8 @@
       "codeExample": "package main\n\nimport (\n\t\"errors\"\n\t\"fmt\"\n)\n\nfunc Dividir(a, b int) (int, error) {\n\tif b == 0 {\n\t\treturn 0, errors.New(\"divisão por zero\")\n\t}\n\treturn a / b, nil\n}\n\nfunc main() {\n\tresultado, err := Dividir(10, 2)\n\tif err != nil {\n\t\tfmt.Println(\"erro:\", err)\n\t\treturn\n\t}\n\tfmt.Println(\"resultado:\", resultado)\n}",
       "whereUsed": "Presente em praticamente toda função Go que pode falhar, retornando o valor calculado junto de um error.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/ref/spec#Return_statements"
+      "documentationUrl": "https://go.dev/ref/spec#Return_statements",
+      "resposta": "Dividir(10, 2) retorna (5, nil), então err é nil, o bloco de erro é pulado e o programa imprime 'resultado: 5'. Se b fosse 0, a função retornaria (0, erro de divisão por zero) e o programa imprimiria 'erro: divisão por zero' em vez disso."
     },
     {
       "name": "Go: iota",
@@ -220,7 +239,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\ntype DiaDaSemana int\n\nconst (\n\tDomingo DiaDaSemana = iota // 0\n\tSegunda                     // 1\n\tTerca                       // 2\n\tQuarta                      // 3\n)\n\nfunc main() {\n\tfmt.Println(Domingo, Segunda, Terca, Quarta) // 0 1 2 3\n}",
       "whereUsed": "Comum para gerar sequências numéricas de constantes relacionadas, como status de pedido ou níveis de log.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/ref/spec#Iota"
+      "documentationUrl": "https://go.dev/ref/spec#Iota",
+      "resposta": "Domingo recebe 0, Segunda recebe 1, Terca recebe 2 e Quarta recebe 3, incrementados automaticamente pelo iota a cada linha do bloco const. O programa imprime exatamente '0 1 2 3'."
     },
     {
       "name": "Go: manipulação de strings (strings e strconv)",
@@ -231,7 +251,8 @@
       "codeExample": "package main\n\nimport (\n\t\"fmt\"\n\t\"strconv\"\n\t\"strings\"\n)\n\nfunc main() {\n\ttexto := \"  Go é ótimo  \"\n\tlimpo := strings.TrimSpace(texto)\n\tfmt.Println(strings.ToUpper(limpo)) // GO É ÓTIMO\n\n\tpartes := strings.Split(\"a,b,c\", \",\")\n\tfmt.Println(partes) // [a b c]\n\n\tnumero, err := strconv.Atoi(\"123\")\n\tif err == nil {\n\t\tfmt.Println(numero + 1) // 124\n\t}\n}",
       "whereUsed": "Comum em qualquer programa que processa entrada de texto, como leitura de arquivos CSV ou parsing de argumentos de linha de comando.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://pkg.go.dev/strings"
+      "documentationUrl": "https://pkg.go.dev/strings",
+      "resposta": "strings.TrimSpace remove os espaços das pontas e strings.ToUpper deixa tudo maiúsculo, imprimindo 'GO É ÓTIMO'. strings.Split quebra \"a,b,c\" pela vírgula e o Println do slice resultante imprime '[a b c]'. Por fim, strconv.Atoi converte \"123\" em 123 sem erro, e o programa imprime '124' (o número mais 1)."
     },
     {
       "name": "Go: leitura de arquivos com os e io",
@@ -242,7 +263,8 @@
       "codeExample": "package main\n\nimport (\n\t\"fmt\"\n\t\"os\"\n)\n\nfunc main() {\n\t// forma simples: lê o arquivo inteiro de uma vez\n\tdados, err := os.ReadFile(\"config.txt\")\n\tif err != nil {\n\t\tfmt.Println(\"erro ao ler:\", err)\n\t\treturn\n\t}\n\tfmt.Println(string(dados))\n\n\t// escrever em um arquivo novo\n\tos.WriteFile(\"saida.txt\", []byte(\"conteúdo gerado\"), 0644)\n}",
       "whereUsed": "Comum em programas que precisam ler arquivos de configuração, logs ou processar arquivos de dados no disco.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://pkg.go.dev/os#ReadFile"
+      "documentationUrl": "https://pkg.go.dev/os#ReadFile",
+      "resposta": "Se o arquivo config.txt existir na pasta atual, o programa imprime o conteúdo dele e depois cria (ou sobrescreve) saida.txt com o texto 'conteúdo gerado'. Se config.txt não existir — o caso mais provável ao rodar esse trecho isolado —, err não é nil, o programa imprime algo como 'erro ao ler: open config.txt: no such file or directory' e retorna antes de chegar no os.WriteFile."
     },
     {
       "name": "Go: interface vazia (any) e type assertions",
@@ -253,7 +275,8 @@
       "codeExample": "package main\n\nimport \"fmt\"\n\nfunc descrever(valor any) {\n\tswitch v := valor.(type) {\n\tcase int:\n\t\tfmt.Println(\"é um inteiro:\", v)\n\tcase string:\n\t\tfmt.Println(\"é uma string:\", v)\n\tdefault:\n\t\tfmt.Println(\"tipo desconhecido\")\n\t}\n}\n\nfunc main() {\n\tdescrever(42)\n\tdescrever(\"olá\")\n\tdescrever(3.14)\n}",
       "whereUsed": "Comum em funções genéricas de log ou serialização que precisam lidar com valores de tipo desconhecido em tempo de compilação.",
       "projectName": "Referência Geral (Go)",
-      "documentationUrl": "https://go.dev/tour/methods/15"
+      "documentationUrl": "https://go.dev/tour/methods/15",
+      "resposta": "descrever(42) cai no case int e imprime 'é um inteiro: 42'. descrever(\"olá\") cai no case string e imprime 'é uma string: olá'. descrever(3.14) não bate com nenhum case declarado (int ou string), então cai no default e imprime 'tipo desconhecido', mesmo sendo um valor numérico válido."
     }
   ]
 }

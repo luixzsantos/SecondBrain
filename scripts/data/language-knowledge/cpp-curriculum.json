@@ -11,7 +11,8 @@
       "whereUsed": "Usado como o primeiro teste ao instalar um compilador C++, para confirmar que o ambiente de desenvolvimento está configurado corretamente.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/io/cout",
-      "simpleAnalogy": "É como testar um microfone novo dizendo \"um, dois, três, testando\" antes de um show começar — não é um discurso importante, é só a forma mais simples de confirmar que tudo está ligado e funcionando. Fazer um programa mostrar \"Hello, World!\" na tela cumpre esse mesmo papel: é o primeiro \"alô, estou funcionando\" que confirma que as ferramentas do computador foram instaladas corretamente antes de partir para coisas mais complexas."
+      "simpleAnalogy": "É como testar um microfone novo dizendo \"um, dois, três, testando\" antes de um show começar — não é um discurso importante, é só a forma mais simples de confirmar que tudo está ligado e funcionando. Fazer um programa mostrar \"Hello, World!\" na tela cumpre esse mesmo papel: é o primeiro \"alô, estou funcionando\" que confirma que as ferramentas do computador foram instaladas corretamente antes de partir para coisas mais complexas.",
+      "resposta": "Depois de compilar com g++ e executar, o terminal exibe exatamente a linha \"Hello, World!\" seguida de uma quebra de linha, e o programa termina retornando o código 0 ao sistema operacional, indicando que não houve erros."
     },
     {
       "name": "C++: laços de repetição e condicionais (for, while, if/else)",
@@ -22,7 +23,8 @@
       "whereUsed": "Usado em qualquer programa que precise processar coleções de dados repetidamente ou tomar decisões, como validar formulários ou percorrer listas.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/for",
-      "simpleAnalogy": "Um laço de repetição é como programar a máquina de lavar para dar exatamente 5 enxágues seguidos sem você precisar apertar o botão manualmente a cada vez, ou para continuar girando \"enquanto ainda tiver espuma\". Uma condicional é como uma regra de bom senso do dia a dia: \"se estiver chovendo, levo o guarda-chuva; senão, deixo em casa\" — o programa escolhe um caminho ou outro dependendo de como as coisas estão naquele momento."
+      "simpleAnalogy": "Um laço de repetição é como programar a máquina de lavar para dar exatamente 5 enxágues seguidos sem você precisar apertar o botão manualmente a cada vez, ou para continuar girando \"enquanto ainda tiver espuma\". Uma condicional é como uma regra de bom senso do dia a dia: \"se estiver chovendo, levo o guarda-chuva; senão, deixo em casa\" — o programa escolhe um caminho ou outro dependendo de como as coisas estão naquele momento.",
+      "resposta": "O terminal imprime, nesta ordem: \"1 é ímpar\", \"2 é par\", \"3 é ímpar\", \"4 é par\", \"5 é ímpar\" (produzidas pelo laço for combinado com o if/else) e, em seguida, \"contando: 0\", \"contando: 1\", \"contando: 2\" (produzidas pelo laço while, que para quando contador chega a 3)."
     },
     {
       "name": "C++: ponteiros e os operadores & e *",
@@ -33,7 +35,8 @@
       "whereUsed": "Usado para passar estruturas grandes para funções sem copiá-las e para construir estruturas de dados como listas ligadas e árvores.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/pointer",
-      "simpleAnalogy": "Toda casa tem um endereço — rua, número — que é diferente da casa em si; você pode escrever esse endereço num pedacinho de papel e entregar a alguém sem precisar carregar a casa inteira junto. Um ponteiro é exatamente esse pedacinho de papel: ele guarda o \"endereço\" de onde uma informação está guardada, permitindo que alguém siga esse endereço para visitar ou até alterar o que está lá dentro, sem precisar levar a informação inteira de um lado para o outro."
+      "simpleAnalogy": "Toda casa tem um endereço — rua, número — que é diferente da casa em si; você pode escrever esse endereço num pedacinho de papel e entregar a alguém sem precisar carregar a casa inteira junto. Um ponteiro é exatamente esse pedacinho de papel: ele guarda o \"endereço\" de onde uma informação está guardada, permitindo que alguém siga esse endereço para visitar ou até alterar o que está lá dentro, sem precisar levar a informação inteira de um lado para o outro.",
+      "resposta": "O programa imprime \"Valor: 25\", depois \"Endereço: \" seguido de um endereço em hexadecimal como 0x7ffee2a3c9ac (o valor exato varia a cada execução), depois \"Valor via ponteiro: 25\" e por fim \"Novo valor: 30\" — pois a atribuição *ponteiroIdade = 30 alterou idade indiretamente através do ponteiro."
     },
     {
       "name": "C++: referências",
@@ -44,7 +47,8 @@
       "whereUsed": "Usado em parâmetros de função para modificar variáveis do chamador ou evitar cópias custosas de objetos grandes.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/reference",
-      "simpleAnalogy": "Uma referência é como um apelido oficial que uma pessoa passa a usar: se você chama \"Beto\" ou \"Roberto\", está falando exatamente da mesma pessoa, e se essa pessoa muda de endereço, os dois nomes \"mudaram\" junto, porque no fim é a mesma pessoa. Dar uma referência para uma função é como apresentar alguém pelo apelido em vez de mandar uma cópia idêntica dela: quem recebe interage diretamente com a pessoa original, sem o trabalho de duplicar ninguém."
+      "simpleAnalogy": "Uma referência é como um apelido oficial que uma pessoa passa a usar: se você chama \"Beto\" ou \"Roberto\", está falando exatamente da mesma pessoa, e se essa pessoa muda de endereço, os dois nomes \"mudaram\" junto, porque no fim é a mesma pessoa. Dar uma referência para uma função é como apresentar alguém pelo apelido em vez de mandar uma cópia idêntica dela: quem recebe interage diretamente com a pessoa original, sem o trabalho de duplicar ninguém.",
+      "resposta": "A saída é \"Valor depois: 20\" — como numero é uma referência ao parâmetro valor, a instrução numero = numero * 2 dentro de dobrar() dobra diretamente a variável valor original declarada no main, sem precisar de retorno nem de ponteiros."
     },
     {
       "name": "C++: alocação dinâmica de memória (new e delete)",
@@ -55,7 +59,8 @@
       "whereUsed": "Usado quando o tamanho dos dados só é conhecido em tempo de execução, como ao carregar um arquivo de tamanho variável.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/new",
-      "simpleAnalogy": "É como reservar uma mesa num restaurante só na hora em que você chega, em vez de já ter uma mesa fixa reservada em seu nome desde sempre — você pede a mesa quando precisa e, o mais importante, precisa avisar o garçom quando for embora, para liberá-la ao próximo cliente. Esquecer de avisar que já terminou é como deixar aquela mesa \"ocupada\" para sempre mesmo vazia, desperdiçando um espaço que ninguém está de fato usando."
+      "simpleAnalogy": "É como reservar uma mesa num restaurante só na hora em que você chega, em vez de já ter uma mesa fixa reservada em seu nome desde sempre — você pede a mesa quando precisa e, o mais importante, precisa avisar o garçom quando for embora, para liberá-la ao próximo cliente. Esquecer de avisar que já terminou é como deixar aquela mesa \"ocupada\" para sempre mesmo vazia, desperdiçando um espaço que ninguém está de fato usando.",
+      "resposta": "O programa imprime apenas \"Valor: 42\" (lido através do ponteiro numero, alocado no heap); em seguida, delete numero e delete[] vetor liberam corretamente a memória alocada sem gerar nenhuma saída visível para essas liberações — o vetor de 5 inteiros é preenchido com os quadrados de 0 a 4 (0, 1, 4, 9, 16), mas o código mostrado nunca chega a imprimi-lo."
     },
     {
       "name": "C++: classes e objetos (fundamentos de POO)",
@@ -66,7 +71,8 @@
       "whereUsed": "Usado para modelar entidades do mundo real em sistemas, como um Usuario, Pedido ou Conta bancária em um software de gestão.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/classes",
-      "simpleAnalogy": "Uma classe é como a planta baixa de uma casa modelo que uma construtora desenha: ela define quantos quartos tem, onde fica a garagem, qual é o formato geral. Um objeto é cada casa de verdade construída a partir dessa planta — famílias diferentes podem morar em casas feitas com a mesma planta, cada uma com sua própria cor de parede e seus próprios móveis, mas todas seguindo a mesma estrutura básica."
+      "simpleAnalogy": "Uma classe é como a planta baixa de uma casa modelo que uma construtora desenha: ela define quantos quartos tem, onde fica a garagem, qual é o formato geral. Um objeto é cada casa de verdade construída a partir dessa planta — famílias diferentes podem morar em casas feitas com a mesma planta, cada uma com sua própria cor de parede e seus próprios móveis, mas todas seguindo a mesma estrutura básica.",
+      "resposta": "A saída é \"Cor: vermelho, velocidade: 10\" — meuCarro.cor recebeu o valor \"vermelho\" diretamente e a chamada a acelerar() incrementou o atributo velocidade de 0 para 10."
     },
     {
       "name": "C++: construtores e destrutores",
@@ -77,7 +83,8 @@
       "whereUsed": "Usado para garantir que recursos como arquivos, conexões de rede ou memória sejam sempre liberados corretamente (padrão RAII).",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/constructor",
-      "simpleAnalogy": "Um construtor é como o ritual de \"abrir a loja de manhã\": destravar a porta, ligar as luzes, ligar o caixa — tudo acontece automaticamente assim que a loja abre, garantindo que ela comece o dia pronta para funcionar. Um destrutor é o ritual inverso, de \"fechar a loja à noite\": apagar as luzes, trancar o cofre, baixar a persiana — acontece sozinho ao encerrar, garantindo que nada fique ligado ou destrancado sem necessidade."
+      "simpleAnalogy": "Um construtor é como o ritual de \"abrir a loja de manhã\": destravar a porta, ligar as luzes, ligar o caixa — tudo acontece automaticamente assim que a loja abre, garantindo que ela comece o dia pronta para funcionar. Um destrutor é o ritual inverso, de \"fechar a loja à noite\": apagar as luzes, trancar o cofre, baixar a persiana — acontece sozinho ao encerrar, garantindo que nada fique ligado ou destrancado sem necessidade.",
+      "resposta": "O programa imprime, em ordem: \"Recurso criado\" (o construtor executa assim que r é declarado), depois \"Usando o recurso...\", e por fim \"Recurso destruído\" — impresso automaticamente pelo destrutor quando r sai de escopo ao final do main, sem que o programador precise chamar nada explicitamente."
     },
     {
       "name": "C++: encapsulamento (public, private e protected)",
@@ -88,7 +95,8 @@
       "whereUsed": "Usado para proteger dados sensíveis de uma classe, como o saldo de uma conta bancária, permitindo alterá-lo só através de regras controladas.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/access",
-      "simpleAnalogy": "É como o balcão de uma farmácia: o cliente interage com o atendente na frente do balcão, pedindo um remédio e recebendo o produto, mas não tem acesso livre ao estoque lá atrás para mexer nas caixas do jeito que quiser. Esconder o estoque atrás do balcão e liberar só um atendimento controlado evita que os remédios sejam bagunçados ou trocados de lugar por engano, mesmo que o cliente continue conseguindo comprar tranquilamente o que precisa."
+      "simpleAnalogy": "É como o balcão de uma farmácia: o cliente interage com o atendente na frente do balcão, pedindo um remédio e recebendo o produto, mas não tem acesso livre ao estoque lá atrás para mexer nas caixas do jeito que quiser. Esconder o estoque atrás do balcão e liberar só um atendimento controlado evita que os remédios sejam bagunçados ou trocados de lugar por engano, mesmo que o cliente continue conseguindo comprar tranquilamente o que precisa.",
+      "resposta": "A saída é \"Saldo: 100\" — depositar(100.0) soma ao atributo privado saldo através do método público, e a linha comentada \"conta.saldo = -500\" nem chegaria a compilar se fosse descomentada, pois saldo é private e inacessível fora da classe."
     },
     {
       "name": "C++: herança",
@@ -99,7 +107,8 @@
       "whereUsed": "Usado para modelar hierarquias, como diferentes tipos de Funcionario (Gerente, Vendedor) que compartilham comportamento comum.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/derived_class",
-      "simpleAnalogy": "Pense numa receita de bolo de chocolate que a avó criou: a mãe herda essa receita base e pode segui-la exatamente igual, ou acrescentar um recheio extra sem precisar reinventar o bolo do zero. Assim como a receita da mãe \"é uma versão\" da receita da avó, uma coisa que herda de outra \"é um tipo\" daquela outra, aproveitando tudo que já funcionava e só ajustando o que for diferente."
+      "simpleAnalogy": "Pense numa receita de bolo de chocolate que a avó criou: a mãe herda essa receita base e pode segui-la exatamente igual, ou acrescentar um recheio extra sem precisar reinventar o bolo do zero. Assim como a receita da mãe \"é uma versão\" da receita da avó, uma coisa que herda de outra \"é um tipo\" daquela outra, aproveitando tudo que já funcionava e só ajustando o que for diferente.",
+      "resposta": "O programa imprime \"Rex está comendo\" (o método comer(), herdado de Animal, usa o nome atribuído a rex) seguido de \"Rex diz: Au au!\" (o método latir(), exclusivo de Cachorro) — mostrando que o objeto derivado usa tanto seus próprios membros quanto os herdados da classe base."
     },
     {
       "name": "C++: polimorfismo e funções virtuais",
@@ -110,7 +119,8 @@
       "whereUsed": "Usado para processar coleções heterogêneas de objetos de forma genérica, como uma lista de Forma que contém Circulo, Quadrado e Triangulo.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/virtual",
-      "simpleAnalogy": "Imagine um controle remoto universal com um botão \"ligar\" que funciona tanto na TV, quanto no ar-condicionado, quanto no som — você aperta o mesmo botão físico, mas cada aparelho reage do seu próprio jeito ao receber o comando \"ligar\". Essa ideia é dar a mesma instrução geral para coisas diferentes e deixar que cada uma responda com seu comportamento próprio, sem precisar ter um controle remoto diferente e decorar botões diferentes para cada aparelho."
+      "simpleAnalogy": "Imagine um controle remoto universal com um botão \"ligar\" que funciona tanto na TV, quanto no ar-condicionado, quanto no som — você aperta o mesmo botão físico, mas cada aparelho reage do seu próprio jeito ao receber o comando \"ligar\". Essa ideia é dar a mesma instrução geral para coisas diferentes e deixar que cada uma responda com seu comportamento próprio, sem precisar ter um controle remoto diferente e decorar botões diferentes para cada aparelho.",
+      "resposta": "A saída é \"Área: 78.5398\" (aproximadamente, já que 3.14159 × 5² ≈ 78.53975) — mesmo o ponteiro forma sendo declarado como Forma*, a chamada forma->area() executa a versão de Circulo::area() por causa do despacho dinâmico habilitado pela palavra virtual, e não a versão vazia (que retornaria 0.0) da classe base."
     },
     {
       "name": "C++: structs vs classes",
@@ -121,7 +131,8 @@
       "whereUsed": "Structs são usadas para agrupar dados simples, como coordenadas ou configurações; classes são usadas para tipos com comportamento e dados protegidos.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/class",
-      "simpleAnalogy": "É como comparar dois formulários de papel quase idênticos, um usado como \"ficha de cadastro simples\" e outro como \"contrato completo\": estruturalmente os campos são parecidos e se preenchem do mesmo jeito, mas por convenção um serve para anotar dados simples (nome, telefone) e o outro para assuntos mais formais e protegidos, mesmo que nada impeça, na prática, usar qualquer um dos dois para qualquer finalidade."
+      "simpleAnalogy": "É como comparar dois formulários de papel quase idênticos, um usado como \"ficha de cadastro simples\" e outro como \"contrato completo\": estruturalmente os campos são parecidos e se preenchem do mesmo jeito, mas por convenção um serve para anotar dados simples (nome, telefone) e o outro para assuntos mais formais e protegidos, mesmo que nada impeça, na prática, usar qualquer um dos dois para qualquer finalidade.",
+      "resposta": "A saída é \"Ponto: (3, 4)\" seguida de \"Área do retângulo: 10\" — o acesso direto a p.x e p.y funciona porque em uma struct os membros são public por padrão, enquanto Retangulo usa um construtor e o método area() para operar sobre os atributos privados largura_ e altura_."
     },
     {
       "name": "C++: sobrecarga de funções",
@@ -132,7 +143,8 @@
       "whereUsed": "Usado para oferecer variações convenientes de uma mesma operação, como funções de log que aceitam diferentes tipos de mensagem.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/overload_resolution",
-      "simpleAnalogy": "É como uma tesoura de costureira que sempre se chama \"tesoura\", mas existe a versão pequena para linhas, a grande para tecido grosso e a serrilhada para acabamentos — todas com o mesmo nome, mas você escolhe a certa dependendo do que tem nas mãos para cortar. Dar o mesmo nome a ferramentas parecidas que servem para situações diferentes deixa mais fácil lembrar qual pedir, porque quem recebe o pedido escolhe automaticamente a versão certa de acordo com o que você trouxe."
+      "simpleAnalogy": "É como uma tesoura de costureira que sempre se chama \"tesoura\", mas existe a versão pequena para linhas, a grande para tecido grosso e a serrilhada para acabamentos — todas com o mesmo nome, mas você escolhe a certa dependendo do que tem nas mãos para cortar. Dar o mesmo nome a ferramentas parecidas que servem para situações diferentes deixa mais fácil lembrar qual pedir, porque quem recebe o pedido escolhe automaticamente a versão certa de acordo com o que você trouxe.",
+      "resposta": "O terminal imprime três linhas: \"5\" (a versão de somar para dois int), \"6\" (a versão para dois double, 2.5+3.5, exibida sem casas decimais por padrão de std::cout) e \"6\" (a versão com três parâmetros, 1+2+3) — o compilador escolhe automaticamente cada versão de acordo com o número e o tipo dos argumentos passados em cada chamada."
     },
     {
       "name": "C++: sobrecarga de operadores",
@@ -143,7 +155,8 @@
       "whereUsed": "Usado em bibliotecas matemáticas e de física para permitir que vetores, matrizes ou números complexos sejam somados e multiplicados com sintaxe natural.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/operators",
-      "simpleAnalogy": "Normalmente o sinal de \"+\" serve para somar números, como em 2 + 3. Mas imagine querer usar esse mesmo sinal para somar duas receitas de bolo, misturando os ingredientes de cada uma numa receita nova — para isso, é preciso primeiro ensinar explicitamente o que \"somar duas receitas\" significa. Ensinar esse novo significado para um símbolo já conhecido, aplicado a coisas que normalmente não se somariam numa calculadora, é essa ideia."
+      "simpleAnalogy": "Normalmente o sinal de \"+\" serve para somar números, como em 2 + 3. Mas imagine querer usar esse mesmo sinal para somar duas receitas de bolo, misturando os ingredientes de cada uma numa receita nova — para isso, é preciso primeiro ensinar explicitamente o que \"somar duas receitas\" significa. Ensinar esse novo significado para um símbolo já conhecido, aplicado a coisas que normalmente não se somariam numa calculadora, é essa ideia.",
+      "resposta": "A saída é \"Resultado: (4, 6)\" — a expressão v1 + v2 aciona o operator+ sobrecarregado da classe Vetor2D, que soma os componentes x e y separadamente (1+3 e 2+4) e devolve um novo objeto Vetor2D(4, 6)."
     },
     {
       "name": "C++: namespaces",
@@ -154,7 +167,8 @@
       "whereUsed": "Usado em bibliotecas e projetos grandes para evitar que nomes de funções ou classes colidam entre módulos diferentes.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/namespace",
-      "simpleAnalogy": "É como ter duas famílias diferentes, cada uma com um filho chamado \"João\": para não confundir, você diz \"o João dos Silva\" ou \"o João dos Souza\", usando o sobrenome da família para deixar claro de qual João está falando. Isso funciona como um \"sobrenome de família\" para nomes dentro do código, evitando confusão quando duas partes diferentes usam o mesmo nome para coisas diferentes."
+      "simpleAnalogy": "É como ter duas famílias diferentes, cada uma com um filho chamado \"João\": para não confundir, você diz \"o João dos Silva\" ou \"o João dos Souza\", usando o sobrenome da família para deixar claro de qual João está falando. Isso funciona como um \"sobrenome de família\" para nomes dentro do código, evitando confusão quando duas partes diferentes usam o mesmo nome para coisas diferentes.",
+      "resposta": "O terminal imprime \"5\" (resultado de matematica::somar(2, 3), a soma normal) seguido de \"6\" (resultado de fisica::somar(2, 3), que por causa da lógica fictícia soma mais 1 ao resultado) — o prefixo de cada namespace evita que as duas funções somar() com o mesmo nome entrem em conflito."
     },
     {
       "name": "C++: const correctness",
@@ -165,7 +179,8 @@
       "whereUsed": "Usado em APIs e bibliotecas para deixar explícito quais funções e métodos apenas leem dados, prevenindo modificações acidentais.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/cv",
-      "simpleAnalogy": "É como colocar uma placa de \"não tocar\" em cima de um quadro pendurado numa exposição: qualquer visitante pode olhar e admirar à vontade, mas ninguém tem permissão de tirá-lo da parede ou reposicioná-lo. Avisar antecipadamente \"isto aqui só pode ser observado, nunca alterado\" faz com que qualquer tentativa de mexer nisso por engano seja barrada antes mesmo de causar um problema."
+      "simpleAnalogy": "É como colocar uma placa de \"não tocar\" em cima de um quadro pendurado numa exposição: qualquer visitante pode olhar e admirar à vontade, mas ninguém tem permissão de tirá-lo da parede ou reposicioná-lo. Avisar antecipadamente \"isto aqui só pode ser observado, nunca alterado\" faz com que qualquer tentativa de mexer nisso por engano seja barrada antes mesmo de causar um problema.",
+      "resposta": "A saída é \"Olá, Maria!\" — getNome() pode ser chamado mesmo em um objeto const Pessoa p porque o próprio método é marcado const, e imprimirSaudacao recebe o nome por referência const, sem copiar a string nem correr risco de alterá-la por engano."
     },
     {
       "name": "C++: std::vector (arrays dinâmicos da STL)",
@@ -176,7 +191,8 @@
       "whereUsed": "Usado como estrutura padrão para armazenar listas de dados de tamanho variável, como uma lista de usuários carregada de um banco de dados.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/container/vector",
-      "simpleAnalogy": "Uma lista de compras escrita à mão numa folha comum tem um número fixo de linhas; se precisar de mais itens do que cabe ali, você tem que pegar outra folha e reescrever tudo. Já uma lista de compras num aplicativo de celular cresce sozinha conforme você vai digitando novos itens, sem se preocupar com \"quanto espaço ainda cabe\" — essa lista que se ajusta automaticamente ao próprio tamanho é a ideia por trás dessa ferramenta."
+      "simpleAnalogy": "Uma lista de compras escrita à mão numa folha comum tem um número fixo de linhas; se precisar de mais itens do que cabe ali, você tem que pegar outra folha e reescrever tudo. Já uma lista de compras num aplicativo de celular cresce sozinha conforme você vai digitando novos itens, sem se preocupar com \"quanto espaço ainda cabe\" — essa lista que se ajusta automaticamente ao próprio tamanho é a ideia por trás dessa ferramenta.",
+      "resposta": "O terminal imprime três linhas: \"numeros[0] = 10\", \"numeros[1] = 20\" e \"numeros[2] = 30\" — cada chamada a push_back() adicionou um elemento ao final do vetor, que cresceu automaticamente de tamanho 0 até 3 sem que o programador precisasse definir esse tamanho de antemão."
     },
     {
       "name": "C++: std::string",
@@ -187,7 +203,8 @@
       "whereUsed": "Usado em praticamente todo programa que precisa ler, exibir ou processar texto, como nomes de usuário, mensagens ou conteúdo de arquivos.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/string/basic_string",
-      "simpleAnalogy": "É como ter um caderninho pronto especificamente para escrever frases e nomes, que já vem com um jeito de contar quantas letras você escreveu e um índice para achar uma palavra rapidamente — bem mais prático do que colar letra por letra numa folha solta e contar tudo na mão. Essa ferramenta é esse \"caderninho\" pronto para lidar com texto sem dor de cabeça, cuidando sozinha do espaço necessário conforme a frase cresce ou diminui."
+      "simpleAnalogy": "É como ter um caderninho pronto especificamente para escrever frases e nomes, que já vem com um jeito de contar quantas letras você escreveu e um índice para achar uma palavra rapidamente — bem mais prático do que colar letra por letra numa folha solta e contar tudo na mão. Essa ferramenta é esse \"caderninho\" pronto para lidar com texto sem dor de cabeça, cuidando sozinha do espaço necessário conforme a frase cresce ou diminui.",
+      "resposta": "O terminal imprime \"Nome completo: Ana Silva\", depois \"Tamanho: 9 caracteres\" (o comprimento de \"Ana Silva\", incluindo o espaço) e por fim \"Contém 'Silva'? 1\" — porque find(\"Silva\") encontra a substring e a comparação com std::string::npos resulta em true, exibido como 1 quando enviado a std::cout."
     },
     {
       "name": "C++: arquivos de cabeçalho e o modelo de compilação (.h/.cpp)",
@@ -198,7 +215,8 @@
       "whereUsed": "Usado em qualquer projeto C++ com mais de um arquivo-fonte, para organizar bibliotecas e permitir compilação incremental de builds grandes.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/preprocessor/include",
-      "simpleAnalogy": "É como separar, num restaurante, o cardápio — que só lista os nomes dos pratos e uma breve descrição — da cozinha, onde o prato de fato é preparado passo a passo. O cliente olha só o cardápio para saber o que pedir, sem entrar na cozinha para ver como é feito; da mesma forma, um arquivo mostra apenas \"o que existe e pode ser chamado\", enquanto outro guarda \"como aquilo realmente funciona por dentro\", permitindo montar um projeto grande em pedaços organizados e reaproveitáveis."
+      "simpleAnalogy": "É como separar, num restaurante, o cardápio — que só lista os nomes dos pratos e uma breve descrição — da cozinha, onde o prato de fato é preparado passo a passo. O cliente olha só o cardápio para saber o que pedir, sem entrar na cozinha para ver como é feito; da mesma forma, um arquivo mostra apenas \"o que existe e pode ser chamado\", enquanto outro guarda \"como aquilo realmente funciona por dentro\", permitindo montar um projeto grande em pedaços organizados e reaproveitáveis.",
+      "resposta": "Depois de compilar os três arquivos e linkedi-los em um único executável, rodar o programa imprime apenas \"5\" — resultado de calc.somar(2, 3), cuja implementação está em calculadora.cpp mas cuja assinatura foi declarada em calculadora.h e importada em main.cpp através do #include."
     },
     {
       "name": "C++: tratamento de exceções (try, catch e throw)",
@@ -209,7 +227,8 @@
       "whereUsed": "Usado para tratar erros previsíveis mas excepcionais, como falha ao abrir um arquivo, entrada inválida do usuário ou falta de memória.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/exceptions",
-      "simpleAnalogy": "É como ter um plano de emergência num avião: em vez de o piloto checar manualmente a cada dois segundos \"ainda está tudo bem?\", existe um alarme que dispara sozinho quando surge um problema real, e a tripulação segue um protocolo específico só para reagir a esse alarme. Sinalizar um erro é acionar esse alarme, e o trecho que trata a situação é o protocolo de emergência que resolve o problema sem misturar isso com o funcionamento normal do voo."
+      "simpleAnalogy": "É como ter um plano de emergência num avião: em vez de o piloto checar manualmente a cada dois segundos \"ainda está tudo bem?\", existe um alarme que dispara sozinho quando surge um problema real, e a tripulação segue um protocolo específico só para reagir a esse alarme. Sinalizar um erro é acionar esse alarme, e o trecho que trata a situação é o protocolo de emergência que resolve o problema sem misturar isso com o funcionamento normal do voo.",
+      "resposta": "O terminal imprime \"5\" (resultado de dividir(10, 2)); ao tentar dividir(5, 0), a exceção lançada por throw é capturada pelo catch antes de qualquer segundo número ser exibido, então em vez de um resultado aparece a linha \"Erro capturado: divisão por zero não é permitida\" — e o programa termina normalmente, sem travar."
     },
     {
       "name": "C++: templates (funções e classes genéricas)",
@@ -220,7 +239,8 @@
       "whereUsed": "Usado para criar código genérico e reutilizável, como contêineres (std::vector) e algoritmos que funcionam com qualquer tipo de dado.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/language/templates",
-      "simpleAnalogy": "É como ter um molde de biscoito em formato de estrela que serve tanto para massa de chocolate quanto de baunilha quanto integral — o formato da estrela é sempre o mesmo, só o recheio muda a cada vez que você usa o molde. Em vez de esculpir manualmente uma estrela nova para cada sabor de massa, você usa o mesmo molde genérico e ele se adapta ao ingrediente que for colocado dentro dele."
+      "simpleAnalogy": "É como ter um molde de biscoito em formato de estrela que serve tanto para massa de chocolate quanto de baunilha quanto integral — o formato da estrela é sempre o mesmo, só o recheio muda a cada vez que você usa o molde. Em vez de esculpir manualmente uma estrela nova para cada sabor de massa, você usa o mesmo molde genérico e ele se adapta ao ingrediente que for colocado dentro dele.",
+      "resposta": "O terminal imprime três linhas: \"7\" (resultado de maximo<int>(3, 7)), \"2.5\" (resultado de maximo<double>(2.5, 1.5)) e \"z\" (resultado de maximo<char>('a', 'z')) — o mesmo código-fonte de maximo() foi instanciado pelo compilador três vezes, uma para cada tipo usado nas chamadas."
     },
     {
       "name": "C++: ponteiros inteligentes (std::unique_ptr e std::shared_ptr)",
@@ -231,7 +251,8 @@
       "whereUsed": "Usado no C++ moderno como substituto seguro para new/delete manual, evitando vazamentos de memória em qualquer aplicação.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/memory/unique_ptr",
-      "simpleAnalogy": "Lembra do \"pedacinho de papel com o endereço da casa\"? Isso é como contratar um zelador responsável por aquele endereço: ele garante sozinho que a casa será fechada e as luzes apagadas assim que ninguém mais precisar dela, sem que você precise lembrar manualmente de voltar lá para trancar tudo. Uma versão do zelador cuida de uma casa que só uma pessoa pode usar por vez; outra permite que várias pessoas compartilhem a mesma casa, e só quando o último morador sai é que ele finalmente tranca a porta."
+      "simpleAnalogy": "Lembra do \"pedacinho de papel com o endereço da casa\"? Isso é como contratar um zelador responsável por aquele endereço: ele garante sozinho que a casa será fechada e as luzes apagadas assim que ninguém mais precisar dela, sem que você precise lembrar manualmente de voltar lá para trancar tudo. Uma versão do zelador cuida de uma casa que só uma pessoa pode usar por vez; outra permite que várias pessoas compartilhem a mesma casa, e só quando o último morador sai é que ele finalmente tranca a porta.",
+      "resposta": "O terminal imprime \"Usando o recurso\" (via r1->usar()), depois \"Contagem de referências: 2\" (pois r2 e r3 apontam para o mesmo objeto compartilhado) e, ao final do main, duas linhas \"Recurso liberado automaticamente\" — uma para o objeto de r1 e outra para o objeto compartilhado por r2/r3 — sem que delete tenha sido chamado manualmente em nenhum momento."
     },
     {
       "name": "C++: algoritmos da STL e iteradores (std::sort)",
@@ -242,7 +263,8 @@
       "whereUsed": "Usado para ordenar, buscar ou processar coleções de dados de forma eficiente e legível, evitando reimplementar algoritmos clássicos manualmente.",
       "projectName": "Referência Geral (C++)",
       "documentationUrl": "https://en.cppreference.com/w/cpp/algorithm/sort",
-      "simpleAnalogy": "É como ter uma régua universal que serve para medir tanto uma mesa de madeira quanto um tecido quanto uma parede, desde que você saiba percorrer o objeto do início ao fim com ela. Percorrer item por item ao longo de uma fila de coisas é como deslizar o dedo por essa fila, do primeiro até o último; e uma ferramenta pronta para colocar essa fila em ordem crescente sabe usar esse mesmo \"dedo deslizante\" em qualquer tipo de fila — números, nomes ou qualquer outra coisa — sem que você precise reinventar o jeito de organizar cada fila diferente."
+      "simpleAnalogy": "É como ter uma régua universal que serve para medir tanto uma mesa de madeira quanto um tecido quanto uma parede, desde que você saiba percorrer o objeto do início ao fim com ela. Percorrer item por item ao longo de uma fila de coisas é como deslizar o dedo por essa fila, do primeiro até o último; e uma ferramenta pronta para colocar essa fila em ordem crescente sabe usar esse mesmo \"dedo deslizante\" em qualquer tipo de fila — números, nomes ou qualquer outra coisa — sem que você precise reinventar o jeito de organizar cada fila diferente.",
+      "resposta": "O terminal imprime a linha \"1 2 5 8 9 \" — o vetor original {5, 2, 8, 1, 9} foi reordenado em ordem crescente por std::sort(numeros.begin(), numeros.end()), e o laço com iteradores percorre e imprime cada elemento já ordenado, separado por um espaço."
     }
   ]
 }

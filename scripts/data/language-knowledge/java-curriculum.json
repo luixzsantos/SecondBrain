@@ -11,7 +11,8 @@
       "codeExample": "public class HelloWorld {\n    public static void main(String[] args) {\n        System.out.println(\"Hello, World!\");\n    }\n}\n\n// Para compilar e rodar pelo terminal:\n// javac HelloWorld.java   -> gera HelloWorld.class\n// java HelloWorld          -> imprime: Hello, World!",
       "whereUsed": "Ponto de partida obrigatório de qualquer programa Java, do menor script ao maior sistema corporativo",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/getStarted/application/index.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/getStarted/application/index.html",
+      "resposta": "Ao compilar com javac HelloWorld.java e executar com java HelloWorld, o console exibe exatamente a linha: Hello, World! seguida de uma quebra de linha."
     },
     {
       "name": "Java: Estruturas de repetição (for, while, do-while, for-each)",
@@ -22,7 +23,8 @@
       "codeExample": "// for: repete um número conhecido de vezes\nfor (int i = 1; i <= 3; i++) {\n    System.out.println(\"for: \" + i);\n}\n\n// while: repete enquanto a condição for verdadeira\nint contador = 0;\nwhile (contador < 3) {\n    System.out.println(\"while: \" + contador);\n    contador++;\n}\n\n// do-while: executa pelo menos uma vez\nint x = 10;\ndo {\n    System.out.println(\"do-while executou: \" + x);\n} while (x < 5);\n\n// for-each: percorre cada elemento de um array\nint[] numeros = {5, 10, 15};\nfor (int numero : numeros) {\n    System.out.println(\"for-each: \" + numero);\n}",
       "whereUsed": "Processar listas de pedidos, repetir uma validação até o usuário fornecer um valor válido, percorrer todos os itens de um carrinho de compras",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/for.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/for.html",
+      "resposta": "O console imprime, em sequência: for: 1, for: 2, for: 3 (laço for); while: 0, while: 1, while: 2 (laço while); do-while executou: 10 uma única vez (o do-while testa a condição só depois de rodar, e como x já é 10, a condição x < 5 já começa falsa, então não repete); e por fim for-each: 5, for-each: 10, for-each: 15 ao percorrer o array numeros."
     },
     {
       "name": "Java: Arrays (vetores)",
@@ -33,7 +35,8 @@
       "codeExample": "// Array de inteiros já com valores\nint[] notas = {8, 9, 7, 10};\n\n// Array vazio com tamanho definido\nString[] nomes = new String[3];\nnomes[0] = \"Ana\";\nnomes[1] = \"Bruno\";\nnomes[2] = \"Carla\";\n\n// Acessando por índice (começa em 0)\nSystem.out.println(notas[0]); // 8\n\n// Percorrendo com o tamanho (length)\nfor (int i = 0; i < notas.length; i++) {\n    System.out.println(\"Nota \" + i + \": \" + notas[i]);\n}",
       "whereUsed": "Guardar as notas de uma turma, os dias da semana, ou os pixels de uma imagem em memória",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/nutsandbolts/arrays.html",
+      "resposta": "O console imprime primeiro 8 (o valor em notas[0]), e depois, ao percorrer o array com o for baseado em length, imprime Nota 0: 8, Nota 1: 9, Nota 2: 7 e Nota 3: 10, cada nota junto com seu índice."
     },
     {
       "name": "Java: Classes e objetos",
@@ -44,7 +47,8 @@
       "codeExample": "public class Carro {\n    // atributos (características de cada carro)\n    String cor;\n    int velocidade;\n\n    // método (comportamento de cada carro)\n    void acelerar() {\n        velocidade = velocidade + 10;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        // criando dois objetos (instâncias) a partir da classe Carro\n        Carro carroDoJoao = new Carro();\n        carroDoJoao.cor = \"vermelho\";\n        carroDoJoao.acelerar();\n\n        Carro carroDaMaria = new Carro();\n        carroDaMaria.cor = \"azul\";\n\n        System.out.println(carroDoJoao.velocidade); // 10\n        System.out.println(carroDaMaria.velocidade); // 0\n    }\n}",
       "whereUsed": "Base de qualquer sistema orientado a objetos em Java, como modelar Cliente, Produto e Pedido em um e-commerce",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/classes.html",
+      "resposta": "O console imprime 10 (a velocidade de carroDoJoao depois de chamar acelerar(), que soma 10 ao valor inicial 0) e depois 0 (a velocidade de carroDaMaria, que nunca teve acelerar() chamado) — mostrando que cada objeto guarda seu próprio valor de velocidade, independente do outro."
     },
     {
       "name": "Java: Construtores",
@@ -55,7 +59,8 @@
       "codeExample": "public class Carro {\n    String cor;\n    int velocidade;\n\n    // construtor: mesmo nome da classe, sem tipo de retorno\n    public Carro(String cor) {\n        this.cor = cor;\n        this.velocidade = 0;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        // o construtor já entrega o objeto configurado\n        Carro carro = new Carro(\"preto\");\n        System.out.println(carro.cor); // preto\n    }\n}",
       "whereUsed": "Garantir que todo objeto Pedido já nasça com um número de identificação e uma data de criação válidos",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/constructors.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/constructors.html",
+      "resposta": "O console imprime preto, porque o construtor Carro(String cor) já recebe e atribui esse valor ao atributo cor no momento em que o objeto é criado com new Carro(\"preto\"), sem precisar de nenhuma atribuição manual posterior."
     },
     {
       "name": "Java: Encapsulamento (atributos private, getters e setters)",
@@ -66,7 +71,8 @@
       "codeExample": "public class Carro {\n    private String cor;\n    private int velocidade;\n\n    public String getCor() {\n        return cor;\n    }\n\n    public void setCor(String cor) {\n        this.cor = cor;\n    }\n\n    public int getVelocidade() {\n        return velocidade;\n    }\n\n    public void setVelocidade(int velocidade) {\n        if (velocidade < 0) {\n            throw new IllegalArgumentException(\"Velocidade não pode ser negativa\");\n        }\n        this.velocidade = velocidade;\n    }\n}",
       "whereUsed": "Impedir que o saldo de uma conta bancária seja alterado para um valor inválido de fora da classe Conta",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/accesscontrol.html",
+      "resposta": "Nenhuma saída aparece — esse trecho só declara a classe Carro com atributos privados e métodos de acesso. O efeito só aparece quando outro código chama setVelocidade(): passar um valor negativo faz o setter lançar IllegalArgumentException com a mensagem 'Velocidade não pode ser negativa', enquanto um valor válido é aceito e fica guardado no atributo privado velocidade."
     },
     {
       "name": "Java: A palavra-chave this",
@@ -77,7 +83,8 @@
       "codeExample": "public class Pessoa {\n    private String nome;\n    private int idade;\n\n    public Pessoa(String nome, int idade) {\n        // this.nome é o atributo; nome (sem this) é o parâmetro\n        this.nome = nome;\n        this.idade = idade;\n    }\n\n    public void aniversario() {\n        this.idade = this.idade + 1;\n        System.out.println(this.nome + \" agora tem \" + this.idade + \" anos\");\n    }\n}",
       "whereUsed": "Construtores e setters que recebem parâmetros com o mesmo nome do atributo que estão inicializando",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/thiskey.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/thiskey.html",
+      "resposta": "Nenhuma saída direta — o trecho apenas define a classe Pessoa, seu construtor e o método aniversario(). Se, por exemplo, você criar new Pessoa(\"Ana\", 30) e chamar aniversario(), o console exibiria: Ana agora tem 31 anos."
     },
     {
       "name": "Java: Herança (extends)",
@@ -88,7 +95,8 @@
       "codeExample": "public class Veiculo {\n    protected int velocidade;\n\n    public void acelerar() {\n        velocidade += 10;\n    }\n}\n\n// Carro herda tudo de Veiculo e ainda ganha algo próprio\npublic class Carro extends Veiculo {\n    private int numeroDePortas = 4;\n\n    public void buzinar() {\n        System.out.println(\"Fon fon!\");\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Carro carro = new Carro();\n        carro.acelerar();   // método herdado de Veiculo\n        carro.buzinar();    // método próprio de Carro\n        System.out.println(carro.velocidade); // 10\n    }\n}",
       "whereUsed": "Modelar Gerente e Estagiario como subclasses de uma superclasse comum Funcionario",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/IandI/subclasses.html",
+      "resposta": "O console imprime Fon fon! (do método buzinar(), próprio da classe Carro) e depois 10 (o valor de velocidade após acelerar() ser chamado), mostrando que Carro herdou o atributo velocidade e o método acelerar() da superclasse Veiculo."
     },
     {
       "name": "Java: Sobrescrita e sobrecarga de métodos (override vs overload)",
@@ -99,7 +107,8 @@
       "codeExample": "// Sobrecarga: mesmo nome, parâmetros diferentes, mesma classe\npublic class Calculadora {\n    int somar(int a, int b) {\n        return a + b;\n    }\n\n    double somar(double a, double b, double c) {\n        return a + b + c;\n    }\n}\n\n// Sobrescrita: subclasse redefine um método da superclasse\nclass Animal {\n    void emitirSom() {\n        System.out.println(\"Som genérico de animal\");\n    }\n}\n\nclass Cachorro extends Animal {\n    @Override\n    void emitirSom() {\n        System.out.println(\"Au au!\");\n    }\n}",
       "whereUsed": "Sobrecarga em métodos utilitários que aceitam formatos diferentes de entrada; sobrescrita quando cada subclasse de Forma precisa calcular sua própria área",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/IandI/override.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/IandI/override.html",
+      "resposta": "Nenhuma saída direta — o trecho define os métodos sobrecarregados somar() na classe Calculadora e o método sobrescrito emitirSom() em Cachorro. Se você chamar new Cachorro().emitirSom(), o console mostraria Au au! em vez do 'Som genérico de animal' definido em Animal; e calculadora.somar(2, 3) executaria a versão int enquanto somar(1.0, 2.0, 3.0) executaria a versão double, dependendo dos argumentos passados."
     },
     {
       "name": "Java: Polimorfismo",
@@ -110,7 +119,8 @@
       "codeExample": "class Animal {\n    void emitirSom() {\n        System.out.println(\"Som genérico\");\n    }\n}\n\nclass Cachorro extends Animal {\n    @Override\n    void emitirSom() { System.out.println(\"Au au!\"); }\n}\n\nclass Gato extends Animal {\n    @Override\n    void emitirSom() { System.out.println(\"Miau!\"); }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Animal[] animais = { new Cachorro(), new Gato() };\n        for (Animal animal : animais) {\n            animal.emitirSom(); // chama a versão certa para cada objeto\n        }\n    }\n}",
       "whereUsed": "Processar uma lista de formas geométricas diferentes chamando calcularArea() sem precisar saber o tipo exato de cada uma",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/IandI/polymorphism.html",
+      "resposta": "O console imprime Au au! seguido de Miau! — mesmo percorrendo o array através da referência genérica Animal, cada chamada a emitirSom() executa a versão sobrescrita correspondente ao tipo real do objeto (Cachorro ou Gato) em tempo de execução."
     },
     {
       "name": "Java: Classes abstratas",
@@ -121,7 +131,8 @@
       "codeExample": "public abstract class Forma {\n    // método abstrato: sem corpo, cada subclasse deve implementar\n    public abstract double calcularArea();\n\n    // método concreto: já implementado, compartilhado por todas as subclasses\n    public void exibirArea() {\n        System.out.println(\"Área: \" + calcularArea());\n    }\n}\n\npublic class Quadrado extends Forma {\n    private double lado;\n\n    public Quadrado(double lado) {\n        this.lado = lado;\n    }\n\n    @Override\n    public double calcularArea() {\n        return lado * lado;\n    }\n}\n// new Forma(); // erro de compilação: classe abstrata não pode ser instanciada",
       "whereUsed": "Definir um esqueleto comum RelatorioBase que obriga cada tipo específico de relatório a implementar seu próprio método de geração",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/IandI/abstract.html",
+      "resposta": "Nenhuma saída direta — o trecho apenas declara a classe abstrata Forma e a subclasse concreta Quadrado. A linha comentada new Forma() de fato não compilaria, pois classes abstratas não podem ser instanciadas; mas se você criar new Quadrado(4) e chamar exibirArea(), o console mostraria Área: 16.0."
     },
     {
       "name": "Java: Interfaces",
@@ -132,7 +143,8 @@
       "codeExample": "public interface Pagavel {\n    void processarPagamento(double valor);\n}\n\npublic class CartaoDeCredito implements Pagavel {\n    @Override\n    public void processarPagamento(double valor) {\n        System.out.println(\"Pagando R$\" + valor + \" no cartão\");\n    }\n}\n\npublic class Pix implements Pagavel {\n    @Override\n    public void processarPagamento(double valor) {\n        System.out.println(\"Pagando R$\" + valor + \" via Pix\");\n    }\n}\n\n// Uma função pode receber qualquer Pagavel, sem saber o tipo concreto\npublic static void finalizarCompra(Pagavel metodo, double valor) {\n    metodo.processarPagamento(valor);\n}",
       "whereUsed": "Definir um contrato NotificacaoEnviavel que Email, SMS e Push implementam cada um à sua maneira",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/IandI/createinterface.html",
+      "resposta": "Nenhuma saída direta — o trecho define o contrato Pagavel e duas implementações. Se você chamar finalizarCompra(new CartaoDeCredito(), 100.0), o console exibiria Pagando R$100.0 no cartão; passando um Pix no lugar, exibiria Pagando R$100.0 via Pix — a mesma chamada de método reagindo de acordo com o objeto real recebido."
     },
     {
       "name": "Java: Membros estáticos vs de instância",
@@ -143,7 +155,8 @@
       "codeExample": "public class Carro {\n    static int totalDeCarrosCriados = 0; // compartilhado por todos os objetos\n    String cor; // exclusivo de cada objeto\n\n    public Carro(String cor) {\n        this.cor = cor;\n        totalDeCarrosCriados++; // incrementa o contador compartilhado\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        new Carro(\"vermelho\");\n        new Carro(\"azul\");\n        // acessa direto pela classe, sem precisar de um objeto\n        System.out.println(Carro.totalDeCarrosCriados); // 2\n    }\n}",
       "whereUsed": "Um contador estático de quantos usuários foram cadastrados no sistema, ou uma constante compartilhada como a alíquota de imposto",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/classvars.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/classvars.html",
+      "resposta": "O console imprime 2, porque cada chamada ao construtor Carro incrementa o contador static totalDeCarrosCriados, que é compartilhado por todos os objetos da classe — não existe uma cópia separada desse contador para o carro vermelho e outra para o azul."
     },
     {
       "name": "Java: Pacotes e imports",
@@ -154,7 +167,8 @@
       "codeExample": "package com.exemplo.modelo;\n\n// import de uma classe da biblioteca padrão do Java (pacote java.util)\nimport java.util.ArrayList;\nimport java.util.List;\n\npublic class GerenciadorDeClientes {\n    public List<String> listarNomes() {\n        List<String> nomes = new ArrayList<>();\n        nomes.add(\"Ana\");\n        nomes.add(\"Bruno\");\n        return nomes;\n    }\n}",
       "whereUsed": "Organizar um sistema grande separando as classes em pacotes como modelo, servico e repositorio",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/package/index.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/package/index.html",
+      "resposta": "Nenhuma saída direta — o trecho apenas declara a classe e o método listarNomes(), que devolve uma List<String> contendo 'Ana' e 'Bruno'. O efeito observável só aparece quando outro código chama esse método e imprime ou usa a lista retornada."
     },
     {
       "name": "Java: Tratamento de exceções (try, catch, finally, throw e throws)",
@@ -165,7 +179,8 @@
       "codeExample": "public class Divisor {\n    // 'throws' avisa que este método pode propagar essa exceção checked\n    public static int lerEDividir(String texto, int divisor) throws NumberFormatException {\n        int numero = Integer.parseInt(texto); // pode lançar NumberFormatException\n        if (divisor == 0) {\n            throw new ArithmeticException(\"Divisão por zero não é permitida\");\n        }\n        return numero / divisor;\n    }\n\n    public static void main(String[] args) {\n        try {\n            int resultado = lerEDividir(\"10\", 0);\n            System.out.println(resultado);\n        } catch (ArithmeticException e) {\n            System.out.println(\"Erro matemático: \" + e.getMessage());\n        } catch (NumberFormatException e) {\n            System.out.println(\"Texto inválido para número: \" + e.getMessage());\n        } finally {\n            System.out.println(\"Isso sempre executa, com ou sem erro\");\n        }\n    }\n}",
       "whereUsed": "Capturar um erro ao ler um arquivo de configuração ou ao converter um texto digitado pelo usuário em número",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html",
+      "resposta": "O console imprime Erro matemático: Divisão por zero não é permitida (porque divisor é 0, o método lança ArithmeticException, capturada pelo primeiro catch) e, na linha seguinte, Isso sempre executa, com ou sem erro, já que o bloco finally roda independentemente do que aconteceu no try."
     },
     {
       "name": "Java: Métodos de String e imutabilidade",
@@ -176,7 +191,8 @@
       "codeExample": "String nome = \"joão\";\n\nString nomeMaiusculo = nome.toUpperCase(); // \"JOÃO\"\nSystem.out.println(nome);           // ainda \"joão\": original não muda\nSystem.out.println(nomeMaiusculo);  // \"JOÃO\"\n\nString saudacao = \"Olá, \" + nome + \"!\";\nSystem.out.println(saudacao.length());        // número de caracteres\nSystem.out.println(saudacao.substring(0, 3)); // \"Olá\"\n\n// comparação de conteúdo: sempre use equals, não ==\nString a = \"teste\";\nString b = \"teste\";\nSystem.out.println(a.equals(b)); // true",
       "whereUsed": "Validar e formatar o texto digitado por um usuário em um formulário, como remover espaços e padronizar maiúsculas/minúsculas",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/data/strings.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/data/strings.html",
+      "resposta": "O console imprime, em sequência: joão (o original, inalterado), JOÃO (a cópia em maiúsculas), 10 (o número de caracteres de 'Olá, joão!'), Olá (os três primeiros caracteres via substring) e true (porque a.equals(b) compara o conteúdo, não a referência)."
     },
     {
       "name": "Java: StringBuilder",
@@ -187,7 +203,8 @@
       "codeExample": "StringBuilder construtor = new StringBuilder();\n\nfor (int i = 1; i <= 5; i++) {\n    construtor.append(\"Item \").append(i).append(\"; \");\n}\n\nString resultado = construtor.toString();\nSystem.out.println(resultado);\n// Item 1; Item 2; Item 3; Item 4; Item 5;",
       "whereUsed": "Montar um relatório de texto grande a partir de centenas de linhas dentro de um laço, sem gerar milhares de strings descartadas",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/data/buffers.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/data/buffers.html",
+      "resposta": "O console imprime: Item 1; Item 2; Item 3; Item 4; Item 5; — a string final construída incrementalmente pelo StringBuilder, sem gerar cinco strings intermediárias descartadas como aconteceria com concatenação comum dentro do laço."
     },
     {
       "name": "Java: ArrayList e o framework Collections (List, Map, Set)",
@@ -198,7 +215,8 @@
       "codeExample": "import java.util.ArrayList;\nimport java.util.HashMap;\nimport java.util.HashSet;\nimport java.util.List;\nimport java.util.Map;\nimport java.util.Set;\n\nList<String> tarefas = new ArrayList<>();\ntarefas.add(\"Estudar Java\");\ntarefas.add(\"Fazer exercícios\");\nSystem.out.println(tarefas.get(0)); // Estudar Java\n\nSet<String> emailsUnicos = new HashSet<>();\nemailsUnicos.add(\"a@teste.com\");\nemailsUnicos.add(\"a@teste.com\"); // ignorado, já existe\nSystem.out.println(emailsUnicos.size()); // 1\n\nMap<String, Integer> idadesPorNome = new HashMap<>();\nidadesPorNome.put(\"Ana\", 30);\nidadesPorNome.put(\"Bruno\", 25);\nSystem.out.println(idadesPorNome.get(\"Ana\")); // 30",
       "whereUsed": "Guardar a lista de produtos de um carrinho de compras (List), os e-mails já cadastrados sem duplicar (Set), ou o estoque de produtos indexado por código (Map)",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/collections/index.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/collections/index.html",
+      "resposta": "O console imprime Estudar Java (primeiro elemento da lista), depois 1 (o HashSet ignora a segunda inserção de 'a@teste.com' porque já existe, então o tamanho continua 1) e por fim 30 (o valor associado à chave 'Ana' no HashMap)."
     },
     {
       "name": "Java: Generics (fundamentos)",
@@ -209,7 +227,8 @@
       "codeExample": "public class Caixa<T> {\n    private T conteudo;\n\n    public void guardar(T conteudo) {\n        this.conteudo = conteudo;\n    }\n\n    public T abrir() {\n        return conteudo;\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        Caixa<String> caixaDeTexto = new Caixa<>();\n        caixaDeTexto.guardar(\"presente\");\n        String valor = caixaDeTexto.abrir(); // sem precisar de casting manual\n\n        Caixa<Integer> caixaDeNumero = new Caixa<>();\n        caixaDeNumero.guardar(42);\n        // caixaDeNumero.guardar(\"erro\"); // não compila: tipo errado\n    }\n}",
       "whereUsed": "Coleções do Java como List<Produto> e Map<String, Cliente>, além de classes utilitárias próprias que precisam funcionar com qualquer tipo de dado",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/generics/index.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/generics/index.html",
+      "resposta": "Nenhuma saída no console — o trecho só cria e usa objetos Caixa<String> e Caixa<Integer>, sem nenhum System.out.println. Se você descomentasse a linha caixaDeNumero.guardar(\"erro\"), o código simplesmente não compilaria, pois o compilador impede colocar um valor de tipo diferente do declarado em T."
     },
     {
       "name": "Java: Enums",
@@ -220,7 +239,8 @@
       "codeExample": "public enum StatusPedido {\n    PENDENTE, PAGO, ENVIADO, CANCELADO\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        StatusPedido status = StatusPedido.PAGO;\n\n        switch (status) {\n            case PENDENTE -> System.out.println(\"Aguardando pagamento\");\n            case PAGO -> System.out.println(\"Pagamento confirmado\");\n            case ENVIADO -> System.out.println(\"A caminho\");\n            case CANCELADO -> System.out.println(\"Pedido cancelado\");\n        }\n    }\n}",
       "whereUsed": "Representar o status de um pedido, os dias da semana, ou os níveis de prioridade (BAIXA, MEDIA, ALTA) de uma tarefa",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/enum.html",
+      "resposta": "O console imprime Pagamento confirmado, porque a variável status recebe StatusPedido.PAGO e o switch expression correspondente a esse case é executado."
     },
     {
       "name": "Java: equals(), hashCode() e toString()",
@@ -231,7 +251,8 @@
       "codeExample": "import java.util.Objects;\n\npublic class Pessoa {\n    private String cpf;\n    private String nome;\n\n    public Pessoa(String cpf, String nome) {\n        this.cpf = cpf;\n        this.nome = nome;\n    }\n\n    @Override\n    public boolean equals(Object outro) {\n        if (this == outro) return true;\n        if (!(outro instanceof Pessoa)) return false;\n        Pessoa outraPessoa = (Pessoa) outro;\n        return cpf.equals(outraPessoa.cpf);\n    }\n\n    @Override\n    public int hashCode() {\n        return Objects.hash(cpf);\n    }\n\n    @Override\n    public String toString() {\n        return \"Pessoa{nome='\" + nome + \"', cpf='\" + cpf + \"'}\";\n    }\n}",
       "whereUsed": "Comparar dois objetos Cliente pelo CPF em vez de pela referência de memória, ou usar objetos personalizados como chave em um HashMap",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html"
+      "documentationUrl": "https://docs.oracle.com/javase/8/docs/api/java/lang/Object.html",
+      "resposta": "Nenhuma saída direta — o trecho apenas define os métodos sobrescritos da classe Pessoa. Se você criar duas Pessoa com o mesmo CPF mas nomes diferentes e comparar com equals(), o resultado será true (porque a comparação usa apenas o CPF); e imprimir um objeto Pessoa diretamente mostraria algo como Pessoa{nome='Ana', cpf='12345678900'} em vez do padrão pouco legível herdado de Object."
     },
     {
       "name": "Java: Expressões lambda e interfaces funcionais",
@@ -242,7 +263,8 @@
       "codeExample": "import java.util.function.Predicate;\nimport java.util.Comparator;\nimport java.util.List;\nimport java.util.ArrayList;\n\n// Predicate<Integer>: recebe um número, devolve true/false\nPredicate<Integer> ehPar = numero -> numero % 2 == 0;\nSystem.out.println(ehPar.test(4)); // true\n\n// Usando lambda para ordenar uma lista de strings por tamanho\nList<String> nomes = new ArrayList<>(List.of(\"Ana\", \"Bernardo\", \"Zé\"));\nnomes.sort((a, b) -> a.length() - b.length());\nSystem.out.println(nomes); // [Zé, Ana, Bernardo]",
       "whereUsed": "Definir uma regra de ordenação personalizada para uma lista, ou um filtro de validação passado como argumento para outro método",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html",
+      "resposta": "O console imprime true (porque 4 é par, testado pela lambda ehPar) e depois [Zé, Ana, Bernardo] — a lista original reordenada pelo comprimento de cada nome, do mais curto para o mais longo, graças ao Comparator definido como lambda."
     },
     {
       "name": "Java: API Stream (map, filter, collect)",
@@ -253,7 +275,8 @@
       "codeExample": "import java.util.List;\nimport java.util.stream.Collectors;\n\npublic class Main {\n    public static void main(String[] args) {\n        List<String> nomes = List.of(\"Ana\", \"Bernardo\", \"Bruno\", \"Zé\");\n\n        List<String> nomesComB = nomes.stream()\n                .filter(nome -> nome.startsWith(\"B\"))   // mantém só os que começam com B\n                .map(String::toUpperCase)                // transforma em maiúsculas\n                .collect(Collectors.toList());            // reúne em uma nova lista\n\n        System.out.println(nomesComB); // [BERNARDO, BRUNO]\n    }\n}",
       "whereUsed": "Filtrar apenas os pedidos com status PAGO de uma lista e extrair só os valores totais para somar em um relatório",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html"
+      "documentationUrl": "https://docs.oracle.com/javase/8/docs/api/java/util/stream/Stream.html",
+      "resposta": "O console imprime [BERNARDO, BRUNO] — a stream filtra da lista original apenas os nomes que começam com 'B' (Bernardo e Bruno), transforma cada um em maiúsculas com map, e o collect reúne o resultado final em uma nova lista."
     },
     {
       "name": "Java: try-with-resources",
@@ -264,7 +287,8 @@
       "codeExample": "import java.io.BufferedReader;\nimport java.io.FileReader;\nimport java.io.IOException;\n\npublic class LeitorDeArquivo {\n    public static void lerPrimeiraLinha(String caminho) {\n        // o BufferedReader é fechado automaticamente ao final, mesmo se der erro\n        try (BufferedReader leitor = new BufferedReader(new FileReader(caminho))) {\n            String primeiraLinha = leitor.readLine();\n            System.out.println(primeiraLinha);\n        } catch (IOException e) {\n            System.out.println(\"Erro ao ler o arquivo: \" + e.getMessage());\n        }\n    }\n}",
       "whereUsed": "Ler um arquivo de configuração ou executar uma consulta em banco de dados garantindo que a conexão sempre seja fechada corretamente",
       "projectName": "Referência Geral (Java)",
-      "documentationUrl": "https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html"
+      "documentationUrl": "https://docs.oracle.com/javase/tutorial/essential/exceptions/tryResourceClose.html",
+      "resposta": "Não há uma saída fixa: o resultado depende do arquivo apontado por caminho. Se o arquivo existir, o console imprime sua primeira linha de texto; se não existir ou houver erro de leitura, o catch imprime Erro ao ler o arquivo: seguido da mensagem da IOException. Em ambos os casos, o BufferedReader é fechado automaticamente ao final, graças ao try-with-resources."
     }
   ]
 }

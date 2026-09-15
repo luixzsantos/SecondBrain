@@ -69,6 +69,7 @@ foreach ($p in (Invoke-RestMethod -Uri "$ApiBase/projects" -Method Get)) { $proj
 
 $fenceByTag = @{
     go = "go"; csharp = "csharp"; cpp = "cpp"; python = "python"; java = "java"; javascript = "javascript"
+    redis = "bash"; postgresql = "sql"
 }
 # 3 backticks como variavel evita ter que escapar backtick dentro de string
 # interpolada do PowerShell (onde backtick e o caractere de escape).
@@ -162,6 +163,14 @@ Get-ChildItem -Path $DataDir -Filter "*.json" | ForEach-Object {
                 "$fence3$fence"
                 $concept.codeExample
                 $fence3
+            )
+            if ($concept.PSObject.Properties.Name -contains "resposta" -and $concept.resposta) {
+                $noteLines += ""
+                $noteLines += "## Resposta esperada"
+                $noteLines += ""
+                $noteLines += $concept.resposta
+            }
+            $noteLines += @(
                 ""
                 "## Onde isso aparece na pratica"
                 ""

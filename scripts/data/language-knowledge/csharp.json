@@ -10,7 +10,8 @@
       "codeExample": "public class Concept\n{\n    public Guid Id { get; set; }\n    public string Name { get; set; } = string.Empty;\n    public string? Description { get; set; }\n    public DateTime CreatedAt { get; set; }\n    public DateTime UpdatedAt { get; set; }\n}",
       "whereUsed": "src/SecondBrain.Domain/Entities/Concept.cs — entidade central do SecondBrain, mapeada depois pro banco via EF Core",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "Pense numa ficha de cadastro impressa, tipo aquela que você preenche numa academia ou clínica: ela tem campos como nome, telefone e data de nascimento, cada um com seu espacinho reservado. Uma classe é como o modelo dessa ficha em branco, e cada ficha preenchida de verdade é uma cópia dela com dados diferentes. As propriedades automáticas são simplesmente esses espaços já prontos pra preencher e reler depois, sem você precisar desenhar a linha do campo toda vez que cria uma ficha nova."
+      "simpleAnalogy": "Pense numa ficha de cadastro impressa, tipo aquela que você preenche numa academia ou clínica: ela tem campos como nome, telefone e data de nascimento, cada um com seu espacinho reservado. Uma classe é como o modelo dessa ficha em branco, e cada ficha preenchida de verdade é uma cópia dela com dados diferentes. As propriedades automáticas são simplesmente esses espaços já prontos pra preencher e reler depois, sem você precisar desenhar a linha do campo toda vez que cria uma ficha nova.",
+      "resposta": "Nenhuma saída no console — isso apenas declara a classe Concept. O efeito só aparece depois, ao criar `new Concept()` e ler/gravar Id, Name, Description etc.; por exemplo, `concept.Name` sem atribuição prévia retorna string.Empty (nunca null), e CreatedAt/UpdatedAt começam com o DateTime padrão (01/01/0001) até serem atribuídos explicitamente."
     },
     {
       "name": "C#: enums",
@@ -20,7 +21,8 @@
       "codeExample": "public enum ProjectStatus\n{\n    Active,\n    Paused,\n    Completed,\n    Archived,\n}",
       "whereUsed": "src/SecondBrain.Domain/Entities/ProjectStatus.cs — estado de um Project no SecondBrain",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "Imagine o painel de status de uma entrega dos Correios, que só pode estar em algumas poucas situações: \"Postado\", \"Em trânsito\", \"Entregue\" ou \"Devolvido\" — nunca outra coisa fora dessa lista. Um enum é exatamente isso: uma lista fechada de opções válidas pra descrever o estado de algo, evitando que alguém digite um valor inventado que não faz sentido nenhum ali."
+      "simpleAnalogy": "Imagine o painel de status de uma entrega dos Correios, que só pode estar em algumas poucas situações: \"Postado\", \"Em trânsito\", \"Entregue\" ou \"Devolvido\" — nunca outra coisa fora dessa lista. Um enum é exatamente isso: uma lista fechada de opções válidas pra descrever o estado de algo, evitando que alguém digite um valor inventado que não faz sentido nenhum ali.",
+      "resposta": "Nenhuma saída — isso só declara o tipo ProjectStatus com os valores Active=0, Paused=1, Completed=2 e Archived=3. O efeito aparece ao usar: `ProjectStatus.Active` vale 0 internamente, mas graças ao JsonStringEnumConverter, ao serializar para JSON aparece o texto \"Active\" em vez do número 0."
     },
     {
       "name": "C#: records para DTOs imutáveis",
@@ -30,7 +32,8 @@
       "codeExample": "public record ConceptDto(\n    Guid Id,\n    string Name,\n    string? Description,\n    DateTime CreatedAt,\n    DateTime UpdatedAt\n);",
       "whereUsed": "src/SecondBrain.Application/DTOs/ConceptDtos.cs — formato de resposta de GET/POST /api/concepts",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "É como o recibo impresso que você recebe depois de pagar numa loja: uma vez emitido, ele representa exatamente aquela compra, e não faz sentido nenhum alguém rabiscar por cima mudando o valor depois. Esse tipo de informação é pensado pra funcionar assim — criado uma vez, com os dados corretos, e tratado como definitivo dali pra frente, sem edição."
+      "simpleAnalogy": "É como o recibo impresso que você recebe depois de pagar numa loja: uma vez emitido, ele representa exatamente aquela compra, e não faz sentido nenhum alguém rabiscar por cima mudando o valor depois. Esse tipo de informação é pensado pra funcionar assim — criado uma vez, com os dados corretos, e tratado como definitivo dali pra frente, sem edição.",
+      "resposta": "Nenhuma saída — isso só declara o record ConceptDto. Ao instanciar, por exemplo `new ConceptDto(id, \"X\", null, dt1, dt2)`, dois records criados com exatamente os mesmos valores são considerados iguais por Equals/== (igualdade por valor), e tentar reatribuir uma propriedade depois de criado gera erro de compilação, pois todas são somente-leitura (init-only)."
     },
     {
       "name": "C#: Data Annotations pra validação de entrada",
@@ -40,7 +43,8 @@
       "codeExample": "public class CreateConceptRequest\n{\n    [Required(ErrorMessage = \"Name é obrigatório.\")]\n    [MaxLength(150, ErrorMessage = \"Name deve ter no máximo 150 caracteres.\")]\n    public string Name { get; set; } = string.Empty;\n\n    [MaxLength(4000, ErrorMessage = \"Description deve ter no máximo 4000 caracteres.\")]\n    public string? Description { get; set; }\n}",
       "whereUsed": "src/SecondBrain.Application/DTOs/ConceptDtos.cs — valida o corpo de POST /api/concepts",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "É como aquelas etiquetas de aviso coladas direto num formulário de papel, dizendo \"campo obrigatório\" ou \"máximo de 20 caracteres\" bem do lado da linha a ser preenchida. Em vez de alguém ter que conferir manualmente, depois de pronto, se o formulário seguiu as regras, as próprias etiquetas fazem essa checagem sozinhas assim que a pessoa tenta entregar o formulário, recusando na hora se algo estiver fora do combinado."
+      "simpleAnalogy": "É como aquelas etiquetas de aviso coladas direto num formulário de papel, dizendo \"campo obrigatório\" ou \"máximo de 20 caracteres\" bem do lado da linha a ser preenchida. Em vez de alguém ter que conferir manualmente, depois de pronto, se o formulário seguiu as regras, as próprias etiquetas fazem essa checagem sozinhas assim que a pessoa tenta entregar o formulário, recusando na hora se algo estiver fora do combinado.",
+      "resposta": "Nenhuma execução direta — são atributos de validação. Ao enviar um POST /api/concepts com Name vazio ou com mais de 150 caracteres, o model binding do ASP.NET Core intercepta a requisição antes do controller, e a API responde automaticamente com HTTP 400 trazendo a mensagem \"Name é obrigatório.\" ou \"Name deve ter no máximo 150 caracteres.\", sem nenhum código customizado no controller."
     },
     {
       "name": "C#: interfaces e Dependency Injection nativa",
@@ -50,7 +54,8 @@
       "codeExample": "public interface IConceptRepository\n{\n    Task<Concept?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);\n    Task AddAsync(Concept concept, CancellationToken cancellationToken = default);\n}\n\n// registro do container de DI:\nservices.AddScoped<IConceptRepository, ConceptRepository>();",
       "whereUsed": "src/SecondBrain.Application/Interfaces/IConceptRepository.cs + src/SecondBrain.Infrastructure/DependencyInjection.cs — Application não conhece Postgres/EF Core, só essa interface",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "Pense num restaurante que pede \"um entregador\" pro serviço de logística, sem se importar se quem aparece dirige moto, carro ou vem de bicicleta — o que importa é que a entrega chegue. A descrição do que precisa ser feito (entregar o pedido) é combinada de antemão, e existe uma espécie de central que decide, na hora, qual entregador específico vai atender aquele pedido, sem o restaurante precisar escolher isso manualmente toda vez."
+      "simpleAnalogy": "Pense num restaurante que pede \"um entregador\" pro serviço de logística, sem se importar se quem aparece dirige moto, carro ou vem de bicicleta — o que importa é que a entrega chegue. A descrição do que precisa ser feito (entregar o pedido) é combinada de antemão, e existe uma espécie de central que decide, na hora, qual entregador específico vai atender aquele pedido, sem o restaurante precisar escolher isso manualmente toda vez.",
+      "resposta": "Nenhuma saída de console — a interface só declara o contrato, e `services.AddScoped<IConceptRepository, ConceptRepository>()` apenas registra a regra no container de DI. O efeito observável aparece quando alguém injeta IConceptRepository num construtor: o ASP.NET Core entrega automaticamente uma instância de ConceptRepository, criada uma vez por requisição (escopo \"Scoped\")."
     },
     {
       "name": "C#: async/await com Task",
@@ -60,7 +65,8 @@
       "codeExample": "public async Task<ConceptDto> CreateAsync(CreateConceptRequest request, CancellationToken cancellationToken = default)\n{\n    var existing = await repository.GetByNameAsync(request.Name, cancellationToken);\n    if (existing is not null)\n        throw new ConflictException($\"Já existe um concept com o nome '{request.Name}'.\");\n\n    await repository.AddAsync(concept, cancellationToken);\n    await repository.SaveChangesAsync(cancellationToken);\n    return ToDto(concept);\n}",
       "whereUsed": "src/SecondBrain.Application/Services/ConceptService.cs — todo o fluxo de criar um Concept, do banco até a resposta",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "É como pedir um prato num restaurante e, em vez de ficar plantado na frente da cozinha esperando, voltar pra mesa e continuar a conversa até o garçom te chamar quando o prato estiver pronto. O programa faz algo parecido: pede uma informação demorada, como consultar um banco de dados, e enquanto espera a resposta aproveita esse tempo pra atender outras tarefas, em vez de travar parado só esperando."
+      "simpleAnalogy": "É como pedir um prato num restaurante e, em vez de ficar plantado na frente da cozinha esperando, voltar pra mesa e continuar a conversa até o garçom te chamar quando o prato estiver pronto. O programa faz algo parecido: pede uma informação demorada, como consultar um banco de dados, e enquanto espera a resposta aproveita esse tempo pra atender outras tarefas, em vez de travar parado só esperando.",
+      "resposta": "Se já existir um concept com o mesmo Name, CreateAsync lança uma ConflictException com a mensagem \"Já existe um concept com o nome '<nome>'.\", que o middleware de erro traduz depois em HTTP 409. Se o nome for novo, o método salva o registro no banco (usando await, sem bloquear a thread enquanto espera) e retorna um ConceptDto correspondente ao Concept recém-criado."
     },
     {
       "name": "C#: LINQ",
@@ -70,7 +76,8 @@
       "codeExample": "public async Task<List<ConceptDto>> GetAllAsync(CancellationToken cancellationToken = default)\n{\n    var concepts = await repository.GetAllAsync(cancellationToken);\n    return concepts.Select(ToDto).ToList();\n}\n\n// e no repositório, virando SQL de verdade via EF Core:\nawait context.Concepts.AsNoTracking().OrderBy(c => c.Name).ToListAsync(cancellationToken);",
       "whereUsed": "src/SecondBrain.Application/Services/ConceptService.cs + src/SecondBrain.Infrastructure/Persistence/ConceptRepository.cs",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "Imagine que, em vez de folhear página por página uma lista telefônica pra achar manualmente todo mundo que mora numa certa rua, você simplesmente diz numa frase o que quer: \"me dê todos os moradores dessa rua, em ordem alfabética\". Esse recurso é justamente essa forma de pedir o resultado que você quer de um monte de dados descrevendo o que precisa, sem escrever o passo a passo de como vasculhar item por item."
+      "simpleAnalogy": "Imagine que, em vez de folhear página por página uma lista telefônica pra achar manualmente todo mundo que mora numa certa rua, você simplesmente diz numa frase o que quer: \"me dê todos os moradores dessa rua, em ordem alfabética\". Esse recurso é justamente essa forma de pedir o resultado que você quer de um monte de dados descrevendo o que precisa, sem escrever o passo a passo de como vasculhar item por item.",
+      "resposta": "GetAllAsync retorna uma List<ConceptDto> com todos os concepts do banco já convertidos via `.Select(ToDto)` — por exemplo, se existirem 3 concepts cadastrados, o retorno é uma lista com os 3 DTOs correspondentes. A consulta EF Core equivalente (`.AsNoTracking().OrderBy(c => c.Name).ToListAsync()`) é traduzida em SQL real (um SELECT ... ORDER BY name) executado no Postgres, não em um loop em memória."
     },
     {
       "name": "C#: exceções customizadas + middleware global de erro",
@@ -80,7 +87,8 @@
       "codeExample": "public class NotFoundException(string message) : Exception(message);\npublic class ConflictException(string message) : Exception(message);\n\n// no middleware:\nvar (statusCode, title) = ex switch\n{\n    NotFoundException => (HttpStatusCode.NotFound, ex.Message),\n    ConflictException => (HttpStatusCode.Conflict, ex.Message),\n    _ => (HttpStatusCode.InternalServerError, \"Ocorreu um erro inesperado.\"),\n};",
       "whereUsed": "src/SecondBrain.Application/Exceptions/AppExceptions.cs + src/SecondBrain.API/Middleware/ExceptionHandlingMiddleware.cs",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "É como um shopping center que tem um único posto de segurança central: em vez de cada loja ter seu próprio segurança decidindo sozinho o que fazer com cada tipo de confusão, qualquer problema é encaminhado pra esse posto único, que já sabe o procedimento padrão pra cada tipo de ocorrência. Assim, nenhuma loja individual precisa reinventar como lidar com um problema — existe um só lugar central cuidando disso pra toda a construção."
+      "simpleAnalogy": "É como um shopping center que tem um único posto de segurança central: em vez de cada loja ter seu próprio segurança decidindo sozinho o que fazer com cada tipo de confusão, qualquer problema é encaminhado pra esse posto único, que já sabe o procedimento padrão pra cada tipo de ocorrência. Assim, nenhuma loja individual precisa reinventar como lidar com um problema — existe um só lugar central cuidando disso pra toda a construção.",
+      "resposta": "Nenhuma saída direta — isso só define as classes de exceção e a lógica de mapeamento. Na prática, se um service lançar `new NotFoundException(\"...\")`, o middleware captura essa exceção em qualquer request e a resposta HTTP passa a ser 404 com o Message da exceção como corpo; uma exceção não mapeada (ex.: NullReferenceException) cai no case `_` e retorna 500 com a mensagem genérica \"Ocorreu um erro inesperado.\", sem expor o detalhe interno do erro."
     },
     {
       "name": "C#: primary constructors (C# 12)",
@@ -90,7 +98,8 @@
       "codeExample": "public class ConceptService(\n    IConceptRepository repository,\n    INoteRepository noteRepository,\n    IProjectRepository projectRepository,\n    ITagRepository tagRepository,\n    ILogger<ConceptService> logger) : IConceptService\n{\n    // repository, noteRepository etc já ficam disponíveis aqui, sem precisar\n    // declarar campo nem construtor explícito\n}",
       "whereUsed": "src/SecondBrain.Application/Services/ConceptService.cs",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "É como preencher um crachá de visitante já na entrada do prédio, escrevendo nome e empresa numa única linha, em vez de primeiro pegar um crachá em branco, ir numa mesa separada preencher os dados e só depois grudar um no outro. Esse recurso deixa você declarar, logo de cara, o que aquela \"coisa\" vai precisar pra existir, sem repetir a mesma informação em dois lugares diferentes do código."
+      "simpleAnalogy": "É como preencher um crachá de visitante já na entrada do prédio, escrevendo nome e empresa numa única linha, em vez de primeiro pegar um crachá em branco, ir numa mesa separada preencher os dados e só depois grudar um no outro. Esse recurso deixa você declarar, logo de cara, o que aquela \"coisa\" vai precisar pra existir, sem repetir a mesma informação em dois lugares diferentes do código.",
+      "resposta": "Nenhuma saída — isso só declara ConceptService com os parâmetros do construtor primário. O efeito aparece dentro dos métodos da classe: repository, noteRepository, projectRepository etc. já ficam disponíveis diretamente pelo nome, sem precisar declarar campos privados nem escrever um construtor explícito atribuindo cada um."
     },
     {
       "name": "C#: Entity Framework Core (DbContext + Fluent API)",
@@ -100,7 +109,8 @@
       "codeExample": "public class SecondBrainDbContext(DbContextOptions<SecondBrainDbContext> options) : DbContext(options)\n{\n    public DbSet<Concept> Concepts => Set<Concept>();\n\n    protected override void OnModelCreating(ModelBuilder modelBuilder)\n    {\n        modelBuilder.Entity<Concept>(entity =>\n        {\n            entity.ToTable(\"concepts\");\n            entity.Property(c => c.Name).IsRequired().HasMaxLength(150);\n            entity.HasIndex(c => c.Name).IsUnique();\n        });\n    }\n}",
       "whereUsed": "src/SecondBrain.Infrastructure/Persistence/SecondBrainDbContext.cs",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "Pense num sistema de cartório que traduz automaticamente cada ficha de cliente pra uma pasta física guardada numa prateleira específica, sem você ter que carimbar e arquivar cada papel manualmente. Essa ferramenta faz esse trabalho de tradução entre os dados que o programa usa no dia a dia e as tabelas guardadas de fato no banco de dados, incluindo decidir detalhes finos de como cada pasta deve ficar organizada na prateleira."
+      "simpleAnalogy": "Pense num sistema de cartório que traduz automaticamente cada ficha de cliente pra uma pasta física guardada numa prateleira específica, sem você ter que carimbar e arquivar cada papel manualmente. Essa ferramenta faz esse trabalho de tradução entre os dados que o programa usa no dia a dia e as tabelas guardadas de fato no banco de dados, incluindo decidir detalhes finos de como cada pasta deve ficar organizada na prateleira.",
+      "resposta": "Nenhuma saída de console — isso configura o mapeamento. O efeito é que a tabela concepts no Postgres passa a exigir que a coluna Name tenha no máximo 150 caracteres, não aceite nulo, e tenha um índice único — logo, tentar inserir dois concepts com o mesmo Name faz o SaveChanges lançar uma exceção de violação de índice único (DbUpdateException)."
     },
     {
       "name": "C#: relação N:N com tabela de junção explícita",
@@ -110,7 +120,8 @@
       "codeExample": "public class ConceptNote\n{\n    public Guid ConceptId { get; set; }\n    public Concept Concept { get; set; } = null!;\n    public Guid NoteId { get; set; }\n    public Note Note { get; set; } = null!;\n    public DateTime CreatedAt { get; set; }\n}\n\n// mapeamento com chave composta e FK explícitas:\nentity.HasKey(cn => new { cn.ConceptId, cn.NoteId });\nentity.HasOne(cn => cn.Concept).WithMany(c => c.ConceptNotes).HasForeignKey(cn => cn.ConceptId);",
       "whereUsed": "src/SecondBrain.Domain/Entities/ConceptNote.cs + SecondBrainDbContext.cs — relação Concept↔Note (\"explicado em\")",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "Imagine a lista de matrículas de uma escola de idiomas, onde um aluno pode estar em várias turmas e uma turma tem vários alunos — pra registrar isso direito, existe uma folha própria de \"matrícula\" ligando cada aluno a cada turma, com a data em que ele entrou. Em vez de deixar essa ligação escondida, o sistema cria essa folha de matrícula como algo real e visível, guardando inclusive detalhes extras sobre a própria ligação entre os dois lados."
+      "simpleAnalogy": "Imagine a lista de matrículas de uma escola de idiomas, onde um aluno pode estar em várias turmas e uma turma tem vários alunos — pra registrar isso direito, existe uma folha própria de \"matrícula\" ligando cada aluno a cada turma, com a data em que ele entrou. Em vez de deixar essa ligação escondida, o sistema cria essa folha de matrícula como algo real e visível, guardando inclusive detalhes extras sobre a própria ligação entre os dois lados.",
+      "resposta": "Nenhuma saída — isso só declara a entidade ConceptNote e como ela mapeia a chave composta. O efeito aparece ao salvar: criar um ConceptNote com um dado ConceptId e NoteId e chamar SaveChanges insere uma linha na tabela de junção com esses dois IDs mais o CreatedAt, e tentar inserir a mesma combinação ConceptId+NoteId duas vezes viola a chave composta e lança DbUpdateException."
     },
     {
       "name": "C#: busca full-text nativa do Postgres via EF.Functions",
@@ -120,7 +131,8 @@
       "codeExample": "await context.Concepts\n    .Where(c => EF.Functions.ToTsVector(\"simple\", c.Name + \" \" + (c.Description ?? \"\"))\n        .Matches(EF.Functions.PlainToTsQuery(\"simple\", query)))\n    .OrderBy(c => c.Name)\n    .ToListAsync(cancellationToken);",
       "whereUsed": "src/SecondBrain.Infrastructure/Persistence/SearchRepository.cs — usado por GET /api/search",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "É como usar a busca de dentro de um leitor de e-book que entende palavras inteiras e ignora acentuação ou pontuação, em vez de só comparar um trecho de texto igualzinho, letra por letra. Esse recurso aproveita um mecanismo de busca inteligente já embutido no banco de dados pra encontrar textos que contenham a palavra procurada, não importa em que parte da frase ela apareça."
+      "simpleAnalogy": "É como usar a busca de dentro de um leitor de e-book que entende palavras inteiras e ignora acentuação ou pontuação, em vez de só comparar um trecho de texto igualzinho, letra por letra. Esse recurso aproveita um mecanismo de busca inteligente já embutido no banco de dados pra encontrar textos que contenham a palavra procurada, não importa em que parte da frase ela apareça.",
+      "resposta": "Executar essa consulta com, por exemplo, query = \"backup\" retorna a lista de Concepts cujo Name ou Description contém a palavra \"backup\" em qualquer posição do texto (não só no começo, como faria um LIKE), ordenados por Name — o Postgres tokeniza o texto, então \"Backup automático\" e \"Rotina de Backup\" aparecem ambos no resultado."
     },
     {
       "name": "C#: Controllers do ASP.NET Core com roteamento por atributo",
@@ -130,7 +142,8 @@
       "codeExample": "[ApiController]\n[Route(\"api/[controller]\")]\npublic class ConceptsController(IConceptService conceptService) : ControllerBase\n{\n    [HttpGet(\"{id:guid}\")]\n    public async Task<ActionResult<ConceptDetailDto>> GetById(Guid id, CancellationToken cancellationToken)\n    {\n        var concept = await conceptService.GetDetailByIdAsync(id, cancellationToken);\n        return Ok(concept);\n    }\n}",
       "whereUsed": "src/SecondBrain.API/Controllers/ConceptsController.cs",
       "projectName": "SecondBrain",
-      "simpleAnalogy": "Pense numa central telefônica antiga em que cada ramal já vem etiquetado na própria mesa do atendente, dizendo pra qual assunto aquele ramal deve responder — sem precisar de uma lista separada, em outra sala, dizendo quem atende o quê. Cada \"endereço\" do sistema já tem, colado bem em cima do trecho que resolve aquele pedido, o aviso dizendo que é ele quem deve atender aquela chamada."
+      "simpleAnalogy": "Pense numa central telefônica antiga em que cada ramal já vem etiquetado na própria mesa do atendente, dizendo pra qual assunto aquele ramal deve responder — sem precisar de uma lista separada, em outra sala, dizendo quem atende o quê. Cada \"endereço\" do sistema já tem, colado bem em cima do trecho que resolve aquele pedido, o aviso dizendo que é ele quem deve atender aquela chamada.",
+      "resposta": "Uma requisição GET /api/concepts/{id} com um Guid existente retorna HTTP 200 com o corpo JSON do ConceptDetailDto correspondente. Se o Guid não existir, GetDetailByIdAsync lança uma NotFoundException, que o middleware global converte em HTTP 404 antes mesmo de o controller montar uma resposta explícita para esse caso."
     }
   ]
 }

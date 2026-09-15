@@ -11,7 +11,8 @@
       "whereUsed": "É o primeiro programa escrito por praticamente todo iniciante em Python, usado para testar se a instalação da linguagem está funcionando.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/library/functions.html#print",
-      "simpleAnalogy": "É como testar um microfone novo dizendo \"alô, alô, está funcionando?\" antes de um show: o conteúdo não importa, o que importa é confirmar que o equipamento está ligado e funcionando direito. Esse primeiro programinha só mostra uma mensagem na tela para confirmar que tudo foi instalado corretamente e que dá para seguir em frente."
+      "simpleAnalogy": "É como testar um microfone novo dizendo \"alô, alô, está funcionando?\" antes de um show: o conteúdo não importa, o que importa é confirmar que o equipamento está ligado e funcionando direito. Esse primeiro programinha só mostra uma mensagem na tela para confirmar que tudo foi instalado corretamente e que dá para seguir em frente.",
+      "resposta": "Ao executar python ola_mundo.py no terminal, a única saída exibida na tela é o texto Hello, World! sem aspas, confirmando que o Python está instalado e funcionando corretamente."
     },
     {
       "name": "Python: dicionários",
@@ -22,7 +23,8 @@
       "whereUsed": "Usado para representar registros com campos nomeados, como dados de um usuário vindos de um formulário ou de uma resposta de API em JSON.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/tutorial/datastructures.html#dictionaries",
-      "simpleAnalogy": "É como uma agenda de contatos telefônicos: você não procura o número de alguém pela posição da página no caderno, você procura pelo nome da pessoa. Aqui funciona parecido — cada informação é guardada junto de um \"nome\" de referência escolhido por você, e depois você busca o valor perguntando por esse nome, e não por uma posição numérica."
+      "simpleAnalogy": "É como uma agenda de contatos telefônicos: você não procura o número de alguém pela posição da página no caderno, você procura pelo nome da pessoa. Aqui funciona parecido — cada informação é guardada junto de um \"nome\" de referência escolhido por você, e depois você busca o valor perguntando por esse nome, e não por uma posição numérica.",
+      "resposta": "O programa imprime primeiro Ana; depois, ao percorrer pessoa.items() já atualizado, imprime 'nome -> Ana', 'idade -> 31' (valor atualizado), 'cidade -> Recife' e 'profissao -> Engenheira' (chave nova); por fim, como 'telefone' não existe no dicionário, pessoa.get() retorna o valor padrão e imprime 'nao informado'."
     },
     {
       "name": "Python: conjuntos (sets)",
@@ -33,7 +35,8 @@
       "whereUsed": "Usado para eliminar itens duplicados de uma lista de dados ou para comparar rapidamente dois grupos de elementos, como permissões de usuários.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/tutorial/datastructures.html#sets",
-      "simpleAnalogy": "Pense numa lista de presença de festa em que cada nome só pode aparecer uma vez, não importa quantas vezes a pessoa tente se inscrever de novo, e em que não existe uma ordem fixa de quem chegou primeiro. Essa forma de organizar é ótima para duas coisas do dia a dia: garantir que não haja nomes repetidos numa lista e checar rapidamente se alguém já faz parte daquele grupo ou não."
+      "simpleAnalogy": "Pense numa lista de presença de festa em que cada nome só pode aparecer uma vez, não importa quantas vezes a pessoa tente se inscrever de novo, e em que não existe uma ordem fixa de quem chegou primeiro. Essa forma de organizar é ótima para duas coisas do dia a dia: garantir que não haja nomes repetidos numa lista e checar rapidamente se alguém já faz parte daquele grupo ou não.",
+      "resposta": "O print(frutas) mostra o conjunto já sem a duplicata 'maca' (a ordem pode variar, já que sets não garantem ordem); 'banana' in frutas imprime True; e as operações finais imprimem {1, 2, 3, 4} para a união, {2, 3} para a interseção e {1} para a diferença entre a e b."
     },
     {
       "name": "Python: métodos de string e f-strings",
@@ -44,7 +47,8 @@
       "whereUsed": "Usado para limpar dados de entrada e montar mensagens dinâmicas, como um e-mail personalizado ou uma linha de log com o horário e o nome do usuário.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/reference/lexical_analysis.html#f-strings",
-      "simpleAnalogy": "É como pegar um nome escrito de qualquer jeito num formulário de papel e passá-lo por um \"ajeitador\" automático, que tira os espaços em branco extras e deixa a primeira letra maiúscula, deixando tudo pronto para ser exibido de forma apresentável. Já encaixar um valor dentro de uma frase pronta, do tipo \"Olá, [nome do cliente]!\", é como preencher os espaços em branco de um cartão de convite personalizado, colocando a informação certa no lugar certo dentro do texto fixo."
+      "simpleAnalogy": "É como pegar um nome escrito de qualquer jeito num formulário de papel e passá-lo por um \"ajeitador\" automático, que tira os espaços em branco extras e deixa a primeira letra maiúscula, deixando tudo pronto para ser exibido de forma apresentável. Já encaixar um valor dentro de uma frase pronta, do tipo \"Olá, [nome do cliente]!\", é como preencher os espaços em branco de um cartão de convite personalizado, colocando a informação certa no lugar certo dentro do texto fixo.",
+      "resposta": "O programa imprime Joao (o nome formatado com a primeira letra maiúscula e sem espaços extras), depois 'Ola, Joao! Voce tem 28 anos.' (a f-string com os valores interpolados), e por fim a lista ['python', 'dados', 'automacao'], resultado de dividir a string original pelas vírgulas."
     },
     {
       "name": "Python: *args e **kwargs em funções",
@@ -55,7 +59,8 @@
       "whereUsed": "Usado em funções e bibliotecas que precisam aceitar um número flexível de argumentos, como funções de log ou wrappers que repassam parâmetros para outra função.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/tutorial/controlflow.html#arbitrary-argument-lists",
-      "simpleAnalogy": "É como um salão de festas que aceita qualquer quantidade de convidados avulsos que cheguem sem nome marcado na lista, todos entrando juntos num mesmo grupo, e que separadamente também aceita convidados especiais já identificados por uma etiqueta com nome, como \"acompanhante do noivo\". Assim, uma tarefa pode receber uma quantidade flexível de informações, sem que você precise saber de antemão exatamente quantas pessoas, ou dados, vão aparecer."
+      "simpleAnalogy": "É como um salão de festas que aceita qualquer quantidade de convidados avulsos que cheguem sem nome marcado na lista, todos entrando juntos num mesmo grupo, e que separadamente também aceita convidados especiais já identificados por uma etiqueta com nome, como \"acompanhante do noivo\". Assim, uma tarefa pode receber uma quantidade flexível de informações, sem que você precise saber de antemão exatamente quantas pessoas, ou dados, vão aparecer.",
+      "resposta": "A chamada resumo(...) imprime 'Titulo: Compras', depois \"Itens: ('pao', 'leite', 'ovos')\" (a tupla com os argumentos extras) e \"Detalhes: {'urgente': True, 'local': 'mercado'}\" (o dicionário com os nomeados); em seguida, print(*valores, **opcoes) imprime '1 - 2 - 3', já que o desempacotamento equivale a print(1, 2, 3, sep=' - ')."
     },
     {
       "name": "Python: funções lambda",
@@ -66,7 +71,8 @@
       "whereUsed": "Usado como critério de ordenação (key=) em sorted() ou como função rápida passada para map() e filter() sem precisar criar uma função separada.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/tutorial/controlflow.html#lambda-expressions",
-      "simpleAnalogy": "É como escrever um bilhetinho rápido e sem assinatura colado na geladeira, só para um recado pontual, tipo \"multiplique por dois\", em vez de redigir uma carta formal com cabeçalho para algo tão simples e usado uma única vez. Geralmente esse bilhete é entregue direto na mão de outra tarefa que pediu uma instrução curtinha, como o critério para colocar uma lista em ordem."
+      "simpleAnalogy": "É como escrever um bilhetinho rápido e sem assinatura colado na geladeira, só para um recado pontual, tipo \"multiplique por dois\", em vez de redigir uma carta formal com cabeçalho para algo tão simples e usado uma única vez. Geralmente esse bilhete é entregue direto na mão de outra tarefa que pediu uma instrução curtinha, como o critério para colocar uma lista em ordem.",
+      "resposta": "O print(pessoas_ordenadas) mostra a lista reordenada por idade crescente: [{'nome': 'Bia', 'idade': 22}, {'nome': 'Carlos', 'idade': 35}, {'nome': 'Diego', 'idade': 40}]; depois é impresso 25 (o quadrado de 5); e por fim [2, 4, 6], os números pares filtrados da lista original."
     },
     {
       "name": "Python: módulos e importação (import e from-import)",
@@ -77,7 +83,8 @@
       "whereUsed": "Usado em praticamente todo programa Python para reaproveitar código da biblioteca padrão (como math e datetime) ou de bibliotecas externas instaladas via pip.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/tutorial/modules.html",
-      "simpleAnalogy": "É como ter uma caixa de ferramentas guardada em outro cômodo da casa e, em vez de comprar tudo de novo, você simplesmente vai lá buscar emprestada só a ferramenta específica de que precisa. Isso evita que cada cômodo da casa — ou cada programa — precise ter sua própria cópia de tudo, permitindo reaproveitar ferramentas já prontas feitas por outras pessoas."
+      "simpleAnalogy": "É como ter uma caixa de ferramentas guardada em outro cômodo da casa e, em vez de comprar tudo de novo, você simplesmente vai lá buscar emprestada só a ferramenta específica de que precisa. Isso evita que cada cômodo da casa — ou cada programa — precise ter sua própria cópia de tudo, permitindo reaproveitar ferramentas já prontas feitas por outras pessoas.",
+      "resposta": "O programa imprime 4.0 (a raiz quadrada de 16), depois um número inteiro aleatório entre 1 e 10 (o valor exato varia a cada execução, pois vem de randint), e por fim 2.5, a média aritmética da lista [1, 2, 3, 4]."
     },
     {
       "name": "Python: entrada e saída de arquivos (open, read, write, with)",
@@ -88,7 +95,8 @@
       "whereUsed": "Usado para salvar e carregar dados em disco, como arquivos de configuração, relatórios em texto ou arquivos CSV de dados.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/tutorial/inputoutput.html#reading-and-writing-files",
-      "simpleAnalogy": "É como abrir uma caderneta de anotações, escrever ou ler algo nela, e depois fechá-la de volta antes de guardar no armário — se você esquecer de fechar, corre o risco de perder o que escreveu ou deixar tudo bagunçado. Existe até um jeito de pegar essa caderneta que garante que ela sempre volte fechada sozinha depois de usada, mesmo se algo inesperado atrapalhar no meio do caminho."
+      "simpleAnalogy": "É como abrir uma caderneta de anotações, escrever ou ler algo nela, e depois fechá-la de volta antes de guardar no armário — se você esquecer de fechar, corre o risco de perder o que escreveu ou deixar tudo bagunçado. Existe até um jeito de pegar essa caderneta que garante que ela sempre volte fechada sozinha depois de usada, mesmo se algo inesperado atrapalhar no meio do caminho.",
+      "resposta": "O programa primeiro cria o arquivo notas.txt com duas linhas; ao ler tudo com .read(), o print(conteudo) exibe 'Primeira linha' e 'Segunda linha' mantendo a quebra de linha entre elas; por fim, o laço linha por linha imprime 'Linha lida: Primeira linha' e 'Linha lida: Segunda linha', já sem as quebras de linha extras por causa do strip()."
     },
     {
       "name": "Python: decoradores",
@@ -99,7 +107,8 @@
       "whereUsed": "Usado para medir desempenho, registrar chamadas em log, checar autenticação ou aplicar cache em funções, sem duplicar esse código em cada uma delas.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/glossary.html#term-decorator",
-      "simpleAnalogy": "Pense em embrulhar um presente que já existe: o objeto continua sendo o mesmo por dentro, mas o papel de embrulho acrescenta uma experiência extra antes de a pessoa efetivamente vê-lo, como abrir uma caixa bonita antes de chegar ao presente em si. Da mesma forma, é possível \"envolver\" uma tarefa pronta com uma camada extra de comportamento, como cronometrar quanto tempo ela demora, sem precisar reescrever a tarefa original por dentro."
+      "simpleAnalogy": "Pense em embrulhar um presente que já existe: o objeto continua sendo o mesmo por dentro, mas o papel de embrulho acrescenta uma experiência extra antes de a pessoa efetivamente vê-lo, como abrir uma caixa bonita antes de chegar ao presente em si. Da mesma forma, é possível \"envolver\" uma tarefa pronta com uma camada extra de comportamento, como cronometrar quanto tempo ela demora, sem precisar reescrever a tarefa original por dentro.",
+      "resposta": "Ao chamar somar_ate(1000000), o wrapper mede o tempo de execução e imprime algo como 'somar_ate levou 0.0521 segundos' (o valor exato varia a cada execução), e em seguida o print externo exibe 500000500000, que é o resultado de sum(range(1000001))."
     },
     {
       "name": "Python: geradores e a palavra-chave yield",
@@ -110,7 +119,8 @@
       "whereUsed": "Usado para processar arquivos muito grandes linha por linha ou para criar sequências de dados sob demanda, sem consumir memória excessiva.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/reference/expressions.html#yield-expressions",
-      "simpleAnalogy": "É como uma máquina de senhas numa padaria: ela não imprime de uma vez todos os números que algum dia poderiam existir, ela entrega um número por vez, exatamente quando alguém aperta o botão, lembrando internamente qual foi o último número entregue. Isso evita desperdiçar papel — ou, no caso do programa, memória — imprimindo de antemão milhares de senhas que talvez nunca sejam usadas."
+      "simpleAnalogy": "É como uma máquina de senhas numa padaria: ela não imprime de uma vez todos os números que algum dia poderiam existir, ela entrega um número por vez, exatamente quando alguém aperta o botão, lembrando internamente qual foi o último número entregue. Isso evita desperdiçar papel — ou, no caso do programa, memória — imprimindo de antemão milhares de senhas que talvez nunca sejam usadas.",
+      "resposta": "O laço for imprime, um por linha, os números 0, 2, 4, 6, 8 e 10 (até o limite 10, incluído); depois, ao chamar next(gerador) duas vezes sobre um novo gerador com limite 4, o programa imprime 0 e depois 2, pausando e retomando a execução da função exatamente onde o yield parou."
     },
     {
       "name": "Python: gerenciadores de contexto (with, __enter__, __exit__)",
@@ -121,7 +131,8 @@
       "whereUsed": "Usado para garantir que arquivos, conexões de banco de dados ou travas sejam liberados corretamente, mesmo quando ocorre um erro durante o processamento.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/reference/datamodel.html#context-managers",
-      "simpleAnalogy": "É como fazer check-in e check-out automático num hotel: alguém prepara o quarto antes de você chegar e, assim que você sai, alguém garante que tudo seja arrumado e a porta trancada de novo, sem que você precise lembrar de fazer isso na mão. Esse serviço automático de \"preparar antes e arrumar depois\" é usado sempre que algo precisa ser aberto com cuidado no início e devidamente encerrado no final, mesmo que algo dê errado no meio do caminho."
+      "simpleAnalogy": "É como fazer check-in e check-out automático num hotel: alguém prepara o quarto antes de você chegar e, assim que você sai, alguém garante que tudo seja arrumado e a porta trancada de novo, sem que você precise lembrar de fazer isso na mão. Esse serviço automático de \"preparar antes e arrumar depois\" é usado sempre que algo precisa ser aberto com cuidado no início e devidamente encerrado no final, mesmo que algo dê errado no meio do caminho.",
+      "resposta": "A execução imprime, em ordem, 'Abrindo conexao...', 'Usando a conexao' e 'Fechando conexao...'; depois, o bloco com @contextmanager imprime 'inicio', 'fazendo algo no meio' e 'fim', mostrando que o código antes do yield roda na entrada do with e o código depois do yield roda automaticamente na saída, mesmo sem um return explícito."
     },
     {
       "name": "Python: herança em orientação a objetos",
@@ -132,7 +143,8 @@
       "whereUsed": "Usado para modelar hierarquias de objetos que compartilham comportamento comum, como diferentes tipos de usuário (Administrador, Cliente) que herdam de uma classe Usuario base.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/tutorial/classes.html#inheritance",
-      "simpleAnalogy": "É como herdar a receita de bolo da sua avó: você recebe pronta toda a base da receita sem precisar reinventá-la, mas pode mudar um detalhe, como a cobertura, mantendo o resto igual. Assim, dá para criar uma versão nova e mais específica de algo que já existe, aproveitando o que já funciona bem e ajustando apenas a parte que precisa ser diferente."
+      "simpleAnalogy": "É como herdar a receita de bolo da sua avó: você recebe pronta toda a base da receita sem precisar reinventá-la, mas pode mudar um detalhe, como a cobertura, mantendo o resto igual. Assim, dá para criar uma versão nova e mais específica de algo que já existe, aproveitando o que já funciona bem e ajustando apenas a parte que precisa ser diferente.",
+      "resposta": "O programa imprime 'Rex -> Au au!' (o método sobrescrito de Cachorro) e depois 'Mimi -> Algum som generico (na verdade, Miau!)', pois o método fazer_som de Gato usa super() para reaproveitar o texto genérico da classe Animal e complementa com sua própria parte."
     },
     {
       "name": "Python: métodos mágicos (__init__, __str__, __repr__, __len__)",
@@ -143,7 +155,8 @@
       "whereUsed": "Usado para fazer classes próprias se comportarem de forma natural com print(), len() e outras funções embutidas do Python, como em uma classe que representa uma coleção de itens.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/reference/datamodel.html#special-method-names",
-      "simpleAnalogy": "Pense num crachá de convidado que, sozinho, já mostra o nome da pessoa de um jeito padronizado sempre que alguém olha para ele — ninguém precisa perguntar \"qual é o seu nome?\", o crachá já se apresenta daquele jeito automaticamente. Da mesma forma, existem comportamentos automáticos e padronizados que algo ganha só por seguir certas regras de nomenclatura, como se apresentar de um jeito específico sempre que alguém \"olha\" para aquilo ou pergunta quantos itens tem dentro."
+      "simpleAnalogy": "Pense num crachá de convidado que, sozinho, já mostra o nome da pessoa de um jeito padronizado sempre que alguém olha para ele — ninguém precisa perguntar \"qual é o seu nome?\", o crachá já se apresenta daquele jeito automaticamente. Da mesma forma, existem comportamentos automáticos e padronizados que algo ganha só por seguir certas regras de nomenclatura, como se apresentar de um jeito específico sempre que alguém \"olha\" para aquilo ou pergunta quantos itens tem dentro.",
+      "resposta": "O programa imprime 'Carrinho com 2 item(ns)' (via __str__), depois \"Carrinho(itens=['livro', 'caneta'])\" (via __repr__, mostrando a representação técnica com repr dos itens) e por fim 2 (via __len__, contando os itens da lista interna)."
     },
     {
       "name": "Python: ambientes virtuais e pip (venv e requirements.txt)",
@@ -154,7 +167,8 @@
       "whereUsed": "Usado em praticamente todo projeto Python real para isolar as bibliotecas de cada projeto e garantir que ele funcione igual em outra máquina ou servidor.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/tutorial/venv.html",
-      "simpleAnalogy": "É como, em vez de usar a despensa comum de um prédio — onde todo mundo compartilha os mesmos temperos, que podem acabar ou entrar em conflito entre receitas de vizinhos diferentes — montar uma despensa particular só para uma receita específica, com exatamente os ingredientes e quantidades que ela precisa. Assim, cada projeto tem seu próprio estoque isolado de ferramentas extras, sem bagunçar o estoque usado por outros projetos no mesmo computador."
+      "simpleAnalogy": "É como, em vez de usar a despensa comum de um prédio — onde todo mundo compartilha os mesmos temperos, que podem acabar ou entrar em conflito entre receitas de vizinhos diferentes — montar uma despensa particular só para uma receita específica, com exatamente os ingredientes e quantidades que ela precisa. Assim, cada projeto tem seu próprio estoque isolado de ferramentas extras, sem bagunçar o estoque usado por outros projetos no mesmo computador.",
+      "resposta": "Esses comandos não imprimem uma saída Python tradicional; eles criam a pasta venv com uma cópia isolada do Python, ativam esse ambiente no terminal (o prompt passa a exibir (venv) no início da linha), instalam a biblioteca requests apenas dentro dele, e geram o arquivo requirements.txt listando as dependências do projeto com suas versões exatas."
     },
     {
       "name": "Python: list comprehension vs expressão geradora",
@@ -165,7 +179,8 @@
       "whereUsed": "Usado para escolher entre economizar memória (expressão geradora) ou poder reaproveitar/indexar os resultados várias vezes (list comprehension) ao processar grandes volumes de dados.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/reference/expressions.html#generator-expressions",
-      "simpleAnalogy": "É a diferença entre uma lanchonete que prepara de uma vez os cem sanduíches do dia e os deixa prontos numa bandeja enorme ocupando espaço no balcão, e uma lanchonete que só prepara cada sanduíche exatamente no momento em que um cliente pede, sem estoque parado. A segunda economiza espaço, mas só serve cada sanduíche uma única vez — depois que o cliente já comeu o dele, não dá para pedir o mesmo de novo sem preparar outro do zero."
+      "simpleAnalogy": "É a diferença entre uma lanchonete que prepara de uma vez os cem sanduíches do dia e os deixa prontos numa bandeja enorme ocupando espaço no balcão, e uma lanchonete que só prepara cada sanduíche exatamente no momento em que um cliente pede, sem estoque parado. A segunda economiza espaço, mas só serve cada sanduíche uma única vez — depois que o cliente já comeu o dele, não dá para pedir o mesmo de novo sem preparar outro do zero.",
+      "resposta": "O programa imprime <class 'list'> para o tipo de lista e <class 'generator'> para o tipo de gerador; por fim, soma recebe o resultado de sum(x*x for x in range(1000000)), que é 333332833333500000, calculado sem nunca guardar o milhão de valores intermediários em memória de uma vez."
     },
     {
       "name": "Python: type hints com o módulo typing",
@@ -176,7 +191,8 @@
       "whereUsed": "Usado em projetos maiores e em equipes para deixar explícito que tipo de dado cada função espera receber e devolver, facilitando leitura e detecção de erros por ferramentas como o mypy.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/library/typing.html",
-      "simpleAnalogy": "É como escrever numa caixa de mudança \"CUIDADO: LOUÇA\" com caneta, apenas como aviso para quem for carregar — isso não impede fisicamente que alguém jogue a caixa longe, mas ajuda bastante a pessoa a saber o que esperar lá dentro antes mesmo de abrir. Da mesma forma, é possível anotar no código, como um lembrete opcional, que tipo de informação se espera receber ou entregar em cada parte, ajudando quem lê — e certas ferramentas de revisão — a perceber erros antes mesmo de rodar o programa."
+      "simpleAnalogy": "É como escrever numa caixa de mudança \"CUIDADO: LOUÇA\" com caneta, apenas como aviso para quem for carregar — isso não impede fisicamente que alguém jogue a caixa longe, mas ajuda bastante a pessoa a saber o que esperar lá dentro antes mesmo de abrir. Da mesma forma, é possível anotar no código, como um lembrete opcional, que tipo de informação se espera receber ou entregar em cada parte, ajudando quem lê — e certas ferramentas de revisão — a perceber erros antes mesmo de rodar o programa.",
+      "resposta": "O programa imprime 8.233333333333333 (a média calculada de [7.5, 8.0, 9.2]), e depois None, já que buscar_usuario(3) não encontra a chave 3 no dicionário interno de usuários — exatamente o comportamento sinalizado pelo type hint Optional[str]."
     },
     {
       "name": "Python: operadores is e ==",
@@ -187,7 +203,8 @@
       "whereUsed": "Usado principalmente para verificar se uma variável é None (variavel is None), evitando o erro comum de comparar identidade de objetos com ==.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/reference/expressions.html#is-not",
-      "simpleAnalogy": "É a diferença entre perguntar \"essas duas pessoas se parecem exatamente iguais?\" e perguntar \"essas duas pessoas são, na real, a mesmíssima pessoa?\": dois gêmeos idênticos podem parecer completamente iguais fisicamente, mas continuam sendo duas pessoas diferentes. Uma comparação verifica se o conteúdo é igual, enquanto a outra verifica se é literalmente a mesma coisa, guardada no mesmíssimo lugar."
+      "simpleAnalogy": "É a diferença entre perguntar \"essas duas pessoas se parecem exatamente iguais?\" e perguntar \"essas duas pessoas são, na real, a mesmíssima pessoa?\": dois gêmeos idênticos podem parecer completamente iguais fisicamente, mas continuam sendo duas pessoas diferentes. Uma comparação verifica se o conteúdo é igual, enquanto a outra verifica se é literalmente a mesma coisa, guardada no mesmíssimo lugar.",
+      "resposta": "O programa imprime True (a == b, mesmo conteúdo), False (a is b, objetos diferentes na memória), True (a is c, mesma referência), e por fim True duas vezes seguidas para 'valor is None' e 'valor == None', já que valor realmente é None — mas apenas a primeira forma é considerada idiomática."
     },
     {
       "name": "Python: tipos mutáveis e imutáveis",
@@ -198,7 +215,8 @@
       "whereUsed": "Entender essa diferença evita bugs comuns, como alterar uma lista compartilhada por engano ou usar um valor de parâmetro padrão mutável em uma função.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/glossary.html#term-immutable",
-      "simpleAnalogy": "É a diferença entre um quadro branco, que pode ser apagado e reescrito quantas vezes você quiser continuando sendo o mesmo quadro físico, e um documento já carimbado, no qual qualquer \"correção\" na real significa imprimir uma folha nova do zero, deixando a original intacta em algum lugar. Saber qual desses dois comportamentos uma informação tem evita surpresas, como perceber que alterar uma coisa sem querer também mudou outra que parecia ser completamente independente."
+      "simpleAnalogy": "É a diferença entre um quadro branco, que pode ser apagado e reescrito quantas vezes você quiser continuando sendo o mesmo quadro físico, e um documento já carimbado, no qual qualquer \"correção\" na real significa imprimir uma folha nova do zero, deixando a original intacta em algum lugar. Saber qual desses dois comportamentos uma informação tem evita surpresas, como perceber que alterar uma coisa sem querer também mudou outra que parecia ser completamente independente.",
+      "resposta": "O programa imprime [1, 2, 3, 4] para outra_referencia, pois lista e outra_referencia apontam para o mesmo objeto mutável alterado por append(); depois imprime 'ola' para texto_original (que não mudou) e 'ola, mundo' para texto (que agora aponta para uma nova string); por fim imprime 'ponto A', mostrando que a tupla (1, 2), por ser imutável, funciona como chave de dicionário."
     },
     {
       "name": "Python: hierarquia de exceções e exceções personalizadas",
@@ -209,7 +227,8 @@
       "whereUsed": "Usado para criar erros específicos e significativos de um sistema, como SaldoInsuficienteError em um sistema bancário ou UsuarioNaoEncontradoError em um sistema de login.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/library/exceptions.html",
-      "simpleAnalogy": "É como a triagem de um pronto-socorro, que organiza os problemas de saúde em categorias mais amplas e, dentro delas, em diagnósticos bem específicos: um médico pode escolher tratar só \"fraturas\", ou, de forma mais ampla, qualquer coisa classificada como \"problema ortopédico\". Da mesma forma, os erros de um programa são organizados em famílias, permitindo reagir de um jeito bem específico a um problema conhecido, ou de forma mais genérica a qualquer contratempo daquele grupo maior — e é até possível criar categorias de problema próprias, específicas de um sistema."
+      "simpleAnalogy": "É como a triagem de um pronto-socorro, que organiza os problemas de saúde em categorias mais amplas e, dentro delas, em diagnósticos bem específicos: um médico pode escolher tratar só \"fraturas\", ou, de forma mais ampla, qualquer coisa classificada como \"problema ortopédico\". Da mesma forma, os erros de um programa são organizados em famílias, permitindo reagir de um jeito bem específico a um problema conhecido, ou de forma mais genérica a qualquer contratempo daquele grupo maior — e é até possível criar categorias de problema próprias, específicas de um sistema.",
+      "resposta": "Como conta.sacar(150) tenta retirar mais do que o saldo de 100, o programa levanta um SaldoInsuficienteError e o except específico o captura, imprimindo 'Nao foi possivel sacar: Saldo de 100 e insuficiente para sacar 150'; o except Exception genérico nem chega a ser executado, porque a exceção mais específica já tratou o erro."
     },
     {
       "name": "Python: datas e horários com o módulo datetime",
@@ -220,7 +239,8 @@
       "whereUsed": "Usado para registrar quando um evento ocorreu (timestamps de log), calcular prazos de vencimento ou formatar datas para exibição ao usuário.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/library/datetime.html",
-      "simpleAnalogy": "É como ter um calendário de parede e um relógio combinados numa ferramenta só, que já sabe automaticamente que fevereiro tem menos dias, que certos anos são bissextos, e consegue calcular sozinha \"quantos dias faltam até tal data\" sem você precisar contar no dedo. Ela também sabe transformar uma data num formato bonito para mostrar às pessoas, como \"15 de setembro de 2026\", ou fazer o caminho inverso, entendendo uma data escrita à mão."
+      "simpleAnalogy": "É como ter um calendário de parede e um relógio combinados numa ferramenta só, que já sabe automaticamente que fevereiro tem menos dias, que certos anos são bissextos, e consegue calcular sozinha \"quantos dias faltam até tal data\" sem você precisar contar no dedo. Ela também sabe transformar uma data num formato bonito para mostrar às pessoas, como \"15 de setembro de 2026\", ou fazer o caminho inverso, entendendo uma data escrita à mão.",
+      "resposta": "Como agora = datetime.now() depende do momento da execução, a saída exata varia a cada vez; usando o próprio exemplo do código (agora em 15/09/2026 14:30), o programa imprime esse instante, a data formatada '15/09/2026 14:30', uma data uma semana depois, e por fim 'Faltam 100 dias para o Natal', já que faltam exatamente 100 dias de 15/09/2026 até 25/12/2026."
     },
     {
       "name": "Python: pathlib para manipulação de caminhos",
@@ -231,7 +251,8 @@
       "whereUsed": "Usado em scripts que precisam navegar por pastas, montar caminhos de arquivos de forma portátil entre Windows/Linux/Mac, ou ler e escrever arquivos rapidamente.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/library/pathlib.html",
-      "simpleAnalogy": "É como escrever um endereço completo juntando bairro, rua e número de forma organizada, sem se preocupar se numa cidade se usa vírgula e noutra se usa hífen entre as partes — a ferramenta já sabe montar o endereço do jeito certo para cada \"cidade\" (o sistema do computador, como Windows ou Mac). Ela também vem com atalhos prontos, como perguntar \"esse endereço existe mesmo?\" ou \"isso é uma casa ou um prédio?\", sem você precisar descobrir isso na unha."
+      "simpleAnalogy": "É como escrever um endereço completo juntando bairro, rua e número de forma organizada, sem se preocupar se numa cidade se usa vírgula e noutra se usa hífen entre as partes — a ferramenta já sabe montar o endereço do jeito certo para cada \"cidade\" (o sistema do computador, como Windows ou Mac). Ela também vem com atalhos prontos, como perguntar \"esse endereço existe mesmo?\" ou \"isso é uma casa ou um prédio?\", sem você precisar descobrir isso na unha.",
+      "resposta": "O programa imprime True (o arquivo foi criado com sucesso), resumo.txt (o nome do arquivo), .txt (a extensão), o caminho da pasta pai dados/relatorios (usando o separador do sistema operacional em uso) e por fim 'Relatorio gerado com sucesso.', o conteúdo que foi escrito e depois lido do arquivo."
     },
     {
       "name": "Python: compreensão de dicionários e conjuntos",
@@ -242,7 +263,8 @@
       "whereUsed": "Usado para transformar rapidamente uma lista em um dicionário de busca por identificador, ou para obter os valores únicos derivados de uma coleção de dados.",
       "projectName": "Referência Geral (Python)",
       "documentationUrl": "https://docs.python.org/3/reference/expressions.html#dictionary-displays",
-      "simpleAnalogy": "É como, ao organizar a entrada de uma festa, já montar de uma vez uma lista de crachás em que cada nome vem junto com um dado dele, como o tamanho da camiseta, tudo numa única passada pela fila de convidados. É a mesma ideia usada para montar rapidamente uma segunda lista, dessa vez só com os nomes que não se repetem, filtrando duplicatas automaticamente enquanto organiza tudo."
+      "simpleAnalogy": "É como, ao organizar a entrada de uma festa, já montar de uma vez uma lista de crachás em que cada nome vem junto com um dado dele, como o tamanho da camiseta, tudo numa única passada pela fila de convidados. É a mesma ideia usada para montar rapidamente uma segunda lista, dessa vez só com os nomes que não se repetem, filtrando duplicatas automaticamente enquanto organiza tudo.",
+      "resposta": "O programa imprime {'Ana': 3, 'Bruno': 5, 'Carla': 5, 'ana': 3} (o dicionário com o tamanho de cada nome), depois {'ana', 'bruno', 'carla'} (o conjunto de nomes em minúsculas, com 'Ana' e 'ana' unificados em um só valor), e por fim {'Bruno': 5, 'Carla': 5}, filtrando apenas os nomes com mais de 3 letras."
     }
   ]
 }

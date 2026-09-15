@@ -11,7 +11,8 @@
       "whereUsed": "É o primeiro programa que qualquer pessoa escreve ao aprender C#, normalmente logo depois de instalar o .NET SDK e criar um projeto com `dotnet new console`.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/tutorials/exploration/hello-world",
-      "simpleAnalogy": "É como o teste de som antes de um show começar: o técnico fala \"um, dois, três, testando\" só pra confirmar que o microfone está ligado e funcionando, antes de tocar a música de verdade. Escrever um programa que só mostra \"Olá, mundo!\" na tela serve exatamente pra isso — confirmar que tudo foi instalado corretamente antes de tentar construir algo mais complicado."
+      "simpleAnalogy": "É como o teste de som antes de um show começar: o técnico fala \"um, dois, três, testando\" só pra confirmar que o microfone está ligado e funcionando, antes de tocar a música de verdade. Escrever um programa que só mostra \"Olá, mundo!\" na tela serve exatamente pra isso — confirmar que tudo foi instalado corretamente antes de tentar construir algo mais complicado.",
+      "resposta": "No terminal aparece a linha `Hello, World!` depois que `dotnet run` compila e executa o programa."
     },
     {
       "name": "C#: variáveis, tipos primitivos e operadores",
@@ -22,7 +23,8 @@
       "whereUsed": "Usado em absolutamente todo programa C#, desde calcular o total de um carrinho de compras até validar se um usuário pode acessar um recurso.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/fundamentals/types/",
-      "simpleAnalogy": "Uma variável é como uma caixinha de guardados com uma etiqueta escrita à mão, tipo \"idade\" ou \"nome\", onde você guarda uma coisa específica dentro. Cada caixinha já vem marcada pra só aceitar um tipo de conteúdo — uma caixa de números não aceita uma frase guardada dentro dela — e os operadores são as ferramentas, tipo somar ou comparar, que você usa pra mexer no que está guardado nessas caixinhas."
+      "simpleAnalogy": "Uma variável é como uma caixinha de guardados com uma etiqueta escrita à mão, tipo \"idade\" ou \"nome\", onde você guarda uma coisa específica dentro. Cada caixinha já vem marcada pra só aceitar um tipo de conteúdo — uma caixa de números não aceita uma frase guardada dentro dela — e os operadores são as ferramentas, tipo somar ou comparar, que você usa pra mexer no que está guardado nessas caixinhas.",
+      "resposta": "No console aparecem duas linhas: \"Ana tem 25 anos.\" e \"É adulto e alto? True\". soma vale 30 (25+5) e ehAdultoEAlto é True porque maiorDeIdade (25>=18) e altura>1.70 (1.78>1.70) são ambas verdadeiras, mas soma e ehAdultoEAlto não são impressas nesse trecho."
     },
     {
       "name": "C#: if/else e switch (instruções condicionais)",
@@ -33,7 +35,8 @@
       "whereUsed": "Presente em praticamente toda regra de negócio, como decidir o frete de um pedido conforme o valor da compra ou validar permissões de um usuário.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/language-reference/statements/selection-statements",
-      "simpleAnalogy": "É a mesma lógica de uma máquina de bebidas: se você colocar a moeda certa, ela libera a lata; se colocar moeda errada, devolve o troco; e quando existem muitos botões diferentes, tipo refrigerante, água ou suco, a máquina já direciona direto pro produto certo do botão apertado, em vez de checar um por um numa fila enorme de possibilidades. Essas instruções são justamente essa capacidade de fazer o programa escolher um caminho diferente dependendo da situação, do mesmo jeito que a máquina decide o que fazer conforme o que você coloca ou aperta."
+      "simpleAnalogy": "É a mesma lógica de uma máquina de bebidas: se você colocar a moeda certa, ela libera a lata; se colocar moeda errada, devolve o troco; e quando existem muitos botões diferentes, tipo refrigerante, água ou suco, a máquina já direciona direto pro produto certo do botão apertado, em vez de checar um por um numa fila enorme de possibilidades. Essas instruções são justamente essa capacidade de fazer o programa escolher um caminho diferente dependendo da situação, do mesmo jeito que a máquina decide o que fazer conforme o que você coloca ou aperta.",
+      "resposta": "No console aparecem duas linhas: \"Aprovado\" (do if/else, pois nota=7 satisfaz nota >= 7) e \"Nota registrada.\" (do switch statement, pois 7 não bate com o case 10 e cai no default). A variável situacao, calculada pela switch expression, também recebe \"Aprovado\" pelo mesmo motivo, mas não é impressa nesse trecho."
     },
     {
       "name": "C#: loops (for, foreach, while, do-while)",
@@ -44,7 +47,8 @@
       "whereUsed": "Usado para processar listas de pedidos, validar cada item de um formulário ou repetir uma tentativa de conexão até um número máximo de vezes.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/language-reference/statements/iteration-statements",
-      "simpleAnalogy": "Pense numa esteira de fábrica de biscoitos que carimba a mesma marquinha em cada biscoito que passa, um atrás do outro, sem alguém precisar carimbar manualmente biscoito por biscoito. Um loop é essa repetição automática de uma mesma tarefa várias vezes, seja um número certo de vezes, como carimbar exatamente cem biscoitos, seja até que uma condição mande parar, como acabar a massa."
+      "simpleAnalogy": "Pense numa esteira de fábrica de biscoitos que carimba a mesma marquinha em cada biscoito que passa, um atrás do outro, sem alguém precisar carimbar manualmente biscoito por biscoito. Um loop é essa repetição automática de uma mesma tarefa várias vezes, seja um número certo de vezes, como carimbar exatamente cem biscoitos, seja até que uma condição mande parar, como acabar a massa.",
+      "resposta": "No console aparecem, em sequência: for: 0, for: 1, for: 2 (laço for); foreach: maçã, foreach: banana, foreach: uva (percorrendo o array frutas); while: 0, while: 1, while: 2; e do-while: 0, do-while: 1, do-while: 2 — cada estrutura repete exatamente 3 vezes."
     },
     {
       "name": "C#: arrays",
@@ -55,7 +59,8 @@
       "whereUsed": "Comum para guardar conjuntos pequenos e de tamanho fixo, como os dias da semana, os meses do ano ou os pixels de uma imagem.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/programming-guide/arrays/",
-      "simpleAnalogy": "É como uma caixa de ovos com espaços numerados: sempre tem uma quantidade fixa de compartimentos, e cada ovo fica guardado numa posição específica que dá pra apontar diretamente, tipo \"o ovo do terceiro compartimento\". Essa estrutura é assim: posições numeradas, com tamanho fixo desde o começo, guardando vários itens do mesmo tipo lado a lado."
+      "simpleAnalogy": "É como uma caixa de ovos com espaços numerados: sempre tem uma quantidade fixa de compartimentos, e cada ovo fica guardado numa posição específica que dá pra apontar diretamente, tipo \"o ovo do terceiro compartimento\". Essa estrutura é assim: posições numeradas, com tamanho fixo desde o começo, guardando vários itens do mesmo tipo lado a lado.",
+      "resposta": "No console aparece primeiro 8 (notas[0]), depois 4 (notas.Length). Em seguida, o foreach imprime 8, 10, 9 e 6 — o segundo valor já mudou de 7 para 10 por causa da atribuição notas[1] = 10 feita antes do laço."
     },
     {
       "name": "C#: List<T> e Dictionary<TKey, TValue>",
@@ -66,7 +71,8 @@
       "whereUsed": "List<T> é comum para guardar resultados de uma consulta ou itens de um carrinho de compras; Dictionary é comum para caches, contadores e mapeamentos rápidos como \"código do produto -> preço\".",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/standard/collections/",
-      "simpleAnalogy": "A primeira é como aquela lista de compras de papel que você vai riscando e acrescentando itens conforme lembra ou já comprou, sem um limite fixo de linhas. A segunda é mais parecida com uma agenda telefônica de verdade: em vez de procurar um nome folheando página por página, você vai direto no nome (a chave) e já encontra o telefone (o valor) associado a ele, sem passar pelos outros contatos no caminho."
+      "simpleAnalogy": "A primeira é como aquela lista de compras de papel que você vai riscando e acrescentando itens conforme lembra ou já comprou, sem um limite fixo de linhas. A segunda é mais parecida com uma agenda telefônica de verdade: em vez de procurar um nome folheando página por página, você vai direto no nome (a chave) e já encontra o telefone (o valor) associado a ele, sem passar pelos outros contatos no caminho.",
+      "resposta": "O único texto que aparece no console é \"Carlos não encontrado\", pois \"Carlos\" não existe no dicionário e TryGetValue cai no else. As outras operações não têm saída visível: nomes fica só com [\"Bruno\"] depois do Add/Remove, e idadeDoBruno vale 30, mas nenhuma delas é impressa nesse trecho."
     },
     {
       "name": "C#: métodos e parâmetros (ref, out, params)",
@@ -77,7 +83,8 @@
       "whereUsed": "Métodos organizam qualquer aplicação em partes menores e testáveis; out aparece bastante em métodos como int.TryParse, e params é comum em métodos utilitários como Console.WriteLine ou string.Format.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/method-parameters",
-      "simpleAnalogy": "Um método é como a receita de um bolo escrita uma vez só num caderno, que você segue de novo cada vez que quiser fazer outro bolo, sem reescrever o passo a passo toda vez. Os parâmetros são os ingredientes que você fornece pra receita, tipo quantos ovos ou que sabor, e existem formas especiais de fornecer ingrediente que voltam alterados pro seu lado no final, ou de aceitar uma quantidade variável de um mesmo ingrediente sem precisar reescrever a receita pra cada quantidade diferente."
+      "simpleAnalogy": "Um método é como a receita de um bolo escrita uma vez só num caderno, que você segue de novo cada vez que quiser fazer outro bolo, sem reescrever o passo a passo toda vez. Os parâmetros são os ingredientes que você fornece pra receita, tipo quantos ovos ou que sabor, e existem formas especiais de fornecer ingrediente que voltam alterados pro seu lado no final, ou de aceitar uma quantidade variável de um mesmo ingrediente sem precisar reescrever a receita pra cada quantidade diferente.",
+      "resposta": "Esse trecho não tem nenhum Console.WriteLine, então não há saída visível — os comentários mostram os valores resultantes: valor passa a ser 10 depois de Dobrar(ref valor), divisao recebe 5 via o parâmetro out em TentarDividir(10, 2, out resultado), e soma vale 10 (1+2+3+4) graças ao params aceitando uma quantidade variável de argumentos."
     },
     {
       "name": "C#: classes, objetos, construtores e encapsulamento",
@@ -88,7 +95,8 @@
       "whereUsed": "Base de qualquer sistema orientado a objetos, como modelar um Cliente, um Produto ou uma ContaBancaria em um sistema de e-commerce ou bancário.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/fundamentals/object-oriented/classes",
-      "simpleAnalogy": "Uma classe é como a planta de uma casa, com o desenho de quantos quartos tem e onde fica cada cômodo, e um objeto é uma casa de verdade construída seguindo aquela planta — dá pra construir várias casas iguais a partir da mesma planta, cada uma com seus próprios moradores e móveis. O construtor é como a vistoria de entrega, que garante que a casa já saia pronta pra morar em vez de incompleta, e o encapsulamento é como manter a caixa de fusíveis trancada numa área técnica, deixando só um eletricista mexer diretamente nela em vez de qualquer visitante."
+      "simpleAnalogy": "Uma classe é como a planta de uma casa, com o desenho de quantos quartos tem e onde fica cada cômodo, e um objeto é uma casa de verdade construída seguindo aquela planta — dá pra construir várias casas iguais a partir da mesma planta, cada uma com seus próprios moradores e móveis. O construtor é como a vistoria de entrega, que garante que a casa já saia pronta pra morar em vez de incompleta, e o encapsulamento é como manter a caixa de fusíveis trancada numa área técnica, deixando só um eletricista mexer diretamente nela em vez de qualquer visitante.",
+      "resposta": "O console mostra 100 — Depositar(100) soma esse valor ao campo privado saldo (que começa em 0 por causa do construtor), e ConsultarSaldo() expõe esse valor de forma controlada, sem permitir que código externo altere saldo diretamente."
     },
     {
       "name": "C#: herança",
@@ -99,7 +107,8 @@
       "whereUsed": "Comum quando várias classes compartilham comportamento em comum, como diferentes tipos de Funcionario (Gerente, Vendedor) que herdam campos e regras de uma classe base Funcionario.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/fundamentals/object-oriented/inheritance",
-      "simpleAnalogy": "É como uma receita de família passada de mãe pra filha: a filha herda a receita básica do bolo da vovó, mas pode ajustar só o recheio do seu jeito, sem precisar reinventar a massa do zero. Essa ideia é exatamente isso — algo novo reaproveita o que já existe em algo mais geral, mudando só a parte que precisa ser diferente."
+      "simpleAnalogy": "É como uma receita de família passada de mãe pra filha: a filha herda a receita básica do bolo da vovó, mas pode ajustar só o recheio do seu jeito, sem precisar reinventar a massa do zero. Essa ideia é exatamente isso — algo novo reaproveita o que já existe em algo mais geral, mudando só a parte que precisa ser diferente.",
+      "resposta": "O console mostra Au au! — como Cachorro sobrescreve (override) o método virtual EmitirSom() da classe base Animal, é essa versão específica que é executada, em vez do \"...\" genérico definido em Animal."
     },
     {
       "name": "C#: polimorfismo",
@@ -110,7 +119,8 @@
       "whereUsed": "Muito usado em sistemas de pagamento com vários métodos (Cartao, Boleto, Pix) processados de forma uniforme através de uma interface ou classe base comum.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/fundamentals/object-oriented/polymorphism",
-      "simpleAnalogy": "Pense no controle remoto de um portão automático: apertar o mesmo botão funciona tanto pra um portão de correr quanto pra um basculante, mas cada tipo de portão reage do seu próprio jeito ao receber o comando. É essa ideia de dar a mesma ordem pra coisas diferentes e deixar cada uma responder do seu jeito específico, sem quem manda o comando precisar saber os detalhes de como cada uma vai reagir por dentro."
+      "simpleAnalogy": "Pense no controle remoto de um portão automático: apertar o mesmo botão funciona tanto pra um portão de correr quanto pra um basculante, mas cada tipo de portão reage do seu próprio jeito ao receber o comando. É essa ideia de dar a mesma ordem pra coisas diferentes e deixar cada uma responder do seu jeito específico, sem quem manda o comando precisar saber os detalhes de como cada uma vai reagir por dentro.",
+      "resposta": "No console aparecem duas linhas, uma para cada animal da lista: \"Rex: Au au!\" (usando o override de Cachorro visto no exemplo de herança) e \"Mia: \" seguido do som que a própria versão de EmitirSom() de Gato define — cada linha usa a implementação da subclasse real do objeto, mesmo o foreach percorrendo tudo como se fosse só Animal."
     },
     {
       "name": "C#: classes abstratas vs interfaces",
@@ -121,7 +131,8 @@
       "whereUsed": "Classes abstratas aparecem em hierarquias de domínio como formas geométricas ou funcionários; interfaces aparecem em praticamente todo contrato de serviço injetado via Dependency Injection.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/abstract",
-      "simpleAnalogy": "A primeira é como uma apostila-modelo de curso técnico, que já vem com boa parte do conteúdo pronto mas deixa alguns capítulos em branco pra cada turma completar do seu jeito. A segunda é mais como um contrato de prestação de serviço, que só lista o que precisa ser entregue no final, tipo \"atender em até 24 horas\", sem se importar nem um pouco com o processo interno de como isso vai ser cumprido."
+      "simpleAnalogy": "A primeira é como uma apostila-modelo de curso técnico, que já vem com boa parte do conteúdo pronto mas deixa alguns capítulos em branco pra cada turma completar do seu jeito. A segunda é mais como um contrato de prestação de serviço, que só lista o que precisa ser entregue no final, tipo \"atender em até 24 horas\", sem se importar nem um pouco com o processo interno de como isso vai ser cumprido.",
+      "resposta": "Nenhuma saída — esse trecho só declara os tipos. O efeito apareceria ao usar, por exemplo, `new Circulo { Raio = 2 }.Descrever()`, que chamaria CalcularArea() (implementado em Circulo como Math.PI * Raio²) e imprimiria algo como \"Área: 12,566370614359172\", enquanto Desenhar() imprimiria \"Desenhando círculo\"."
     },
     {
       "name": "C#: try/catch/finally",
@@ -132,7 +143,8 @@
       "whereUsed": "Essencial em qualquer operação que pode falhar por motivos fora do controle do programa, como ler um arquivo, chamar uma API externa ou acessar um banco de dados.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/fundamentals/exceptions/exception-handling",
-      "simpleAnalogy": "É como andar de bicicleta com joelheira e cotoveleira: você tenta pedalar normalmente, mas se cair, a proteção evita que o estrago seja grande, e você já sabe exatamente o que fazer nesse tombo em vez de ficar paralisado. E, caindo ou não, no final você sempre guarda a bicicleta na garagem — isso equivale à parte que sempre roda no fim, erro tendo acontecido ou não."
+      "simpleAnalogy": "É como andar de bicicleta com joelheira e cotoveleira: você tenta pedalar normalmente, mas se cair, a proteção evita que o estrago seja grande, e você já sabe exatamente o que fazer nesse tombo em vez de ficar paralisado. E, caindo ou não, no final você sempre guarda a bicicleta na garagem — isso equivale à parte que sempre roda no fim, erro tendo acontecido ou não.",
+      "resposta": "No console aparecem duas linhas: \"Erro: Index was outside the bounds of the array.\" (a IndexOutOfRangeException capturada pelo catch específico, já que o array só tem 3 elementos e o índice 10 não existe) e, por fim, \"Isso sempre executa, com ou sem erro.\", pois o bloco finally roda independentemente de ter ocorrido exceção."
     },
     {
       "name": "C#: interpolação de strings e formatação",
@@ -143,7 +155,8 @@
       "whereUsed": "Usado em qualquer lugar que monte mensagens para o usuário, logs, e-mails ou relatórios com valores formatados como moeda e data.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/language-reference/tokens/interpolated",
-      "simpleAnalogy": "É como preencher uma carta-modelo que só tem espaços em branco pra encaixar o nome do destinatário e um valor, tipo \"Prezado [NOME], seu pedido de [VALOR] foi confirmado\", em vez de escrever a carta inteira à mão de novo pra cada pessoa. A interpolação é esse encaixe automático dos dados certos dentro de um texto pronto, já formatando números e datas do jeito que devem aparecer."
+      "simpleAnalogy": "É como preencher uma carta-modelo que só tem espaços em branco pra encaixar o nome do destinatário e um valor, tipo \"Prezado [NOME], seu pedido de [VALOR] foi confirmado\", em vez de escrever a carta inteira à mão de novo pra cada pessoa. A interpolação é esse encaixe automático dos dados certos dentro de um texto pronto, já formatando números e datas do jeito que devem aparecer.",
+      "resposta": "No console aparecem três linhas: \"Ana tem 25 anos.\"; \"Preço: R$19,90\" (o :C formata 19.9m como moeda, no formato da cultura ativa — no Brasil, R$); e \"Data: \" seguido da data atual formatada como dd/MM/yyyy, por exemplo \"Data: 15/09/2026\"."
     },
     {
       "name": "C#: nullable reference types e operador ?.",
@@ -154,7 +167,8 @@
       "whereUsed": "Fundamental em qualquer código que trabalhe com dados opcionais vindos de um banco de dados ou de uma API externa, onde nem todo campo é obrigatório.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/nullable-references",
-      "simpleAnalogy": "Pense em perguntar \"qual é o nome do meio do seu cachorro?\" pra alguém que não tem cachorro — a pergunta não quebra nada, a resposta simplesmente é \"não se aplica\", em vez de travar a conversa. Esse recurso ajuda a lidar com informações que às vezes simplesmente não existem, como um endereço que a pessoa nunca preencheu, avisando de antemão onde isso pode acontecer e evitando que buscar algo inexistente trave tudo."
+      "simpleAnalogy": "Pense em perguntar \"qual é o nome do meio do seu cachorro?\" pra alguém que não tem cachorro — a pergunta não quebra nada, a resposta simplesmente é \"não se aplica\", em vez de travar a conversa. Esse recurso ajuda a lidar com informações que às vezes simplesmente não existem, como um endereço que a pessoa nunca preencheu, avisando de antemão onde isso pode acontecer e evitando que buscar algo inexistente trave tudo.",
+      "resposta": "O console mostra não informado — como Endereco não foi atribuído ao criar pessoa, ele fica null; o operador ?. evita a NullReferenceException ao tentar ler .Cidade e retorna null em cadeia, e o ?? substitui esse null pelo valor padrão \"não informado\"."
     },
     {
       "name": "C#: pattern matching e switch expressions",
@@ -165,7 +179,8 @@
       "whereUsed": "Muito usado para processar respostas de APIs com múltiplos formatos possíveis, ou para desestruturar records e DTOs de forma concisa.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/fundamentals/functional/pattern-matching",
-      "simpleAnalogy": "É como um funcionário dos Correios que, ao pegar uma encomenda, já reconhece na hora, só de olhar o formato e o tamanho da caixa, se é uma carta, uma caixa pequena ou um pacote grande, e decide o processo certo pra cada um sem precisar abrir tudo pra conferir. É essa capacidade de reconhecer rapidamente que \"formato\" de informação é aquele e já decidir o que fazer, tudo numa única checada."
+      "simpleAnalogy": "É como um funcionário dos Correios que, ao pegar uma encomenda, já reconhece na hora, só de olhar o formato e o tamanho da caixa, se é uma carta, uma caixa pequena ou um pacote grande, e decide o processo certo pra cada um sem precisar abrir tudo pra conferir. É essa capacidade de reconhecer rapidamente que \"formato\" de informação é aquele e já decidir o que fazer, tudo numa única checada.",
+      "resposta": "O console mostra número negativo — -3 é int e bate no primeiro padrão que usa a cláusula `when n < 0` dentro da switch expression, então nem chega a avaliar os padrões seguintes (positivo, string vazia, nulo etc.)."
     },
     {
       "name": "C#: generics",
@@ -176,7 +191,8 @@
       "whereUsed": "Base de praticamente toda coleção do .NET (List<T>, Dictionary, Queue) e de padrões como repositórios genéricos (Repository<T>) em aplicações com banco de dados.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/fundamentals/types/generics",
-      "simpleAnalogy": "Imagine uma caixa organizadora universal, do tipo que serve tanto pra guardar parafusos quanto botões ou moedas — a caixa em si é sempre a mesma, só muda o que você decide colocar dentro dela em cada uso. Esse recurso é esse molde de guardar coisas que funciona pra qualquer tipo de conteúdo, definido só na hora de usar, mas garantindo que ninguém misture parafuso com moeda por engano na caixa errada."
+      "simpleAnalogy": "Imagine uma caixa organizadora universal, do tipo que serve tanto pra guardar parafusos quanto botões ou moedas — a caixa em si é sempre a mesma, só muda o que você decide colocar dentro dela em cada uso. Esse recurso é esse molde de guardar coisas que funciona pra qualquer tipo de conteúdo, definido só na hora de usar, mas garantindo que ninguém misture parafuso com moeda por engano na caixa errada.",
+      "resposta": "Esse trecho não imprime nada no console — apenas cria caixaDeNumero (Caixa<int> com Conteudo=42) e caixaDeTexto (Caixa<string> com Conteudo=\"olá\"), e calcula maiorNumero, que vale 20, pois Maior usa CompareTo para comparar 10 e 20 e retorna o maior dos dois."
     },
     {
       "name": "C#: delegates, events e lambda expressions",
@@ -187,7 +203,8 @@
       "whereUsed": "Eventos aparecem em interfaces gráficas (clique de botão) e em sistemas que precisam notificar múltiplos módulos sobre uma mudança, como enviar um e-mail quando um pedido é fechado.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/programming-guide/delegates/",
-      "simpleAnalogy": "Pense numa campainha de loja: o dono não sabe de antemão quem vai tocar nem quando, mas combina de antemão o que deve acontecer quando ela tocar, tipo o funcionário ir até a porta. Um aviso desses funciona assim — algo é combinado pra acontecer quando um sinal específico disparar — e existe até um jeito rápido de anotar essa tarefa numa linha só, sem escrever um manual de procedimento inteiro só pra ela."
+      "simpleAnalogy": "Pense numa campainha de loja: o dono não sabe de antemão quem vai tocar nem quando, mas combina de antemão o que deve acontecer quando ela tocar, tipo o funcionário ir até a porta. Um aviso desses funciona assim — algo é combinado pra acontecer quando um sinal específico disparar — e existe até um jeito rápido de anotar essa tarefa numa linha só, sem escrever um manual de procedimento inteiro só pra ela.",
+      "resposta": "No console aparecem duas linhas, na ordem: \"Pedido fechado.\" (impresso dentro do próprio método Fechar) e \"Notificação: O pedido foi fechado!\" (impresso pela lambda inscrita no evento OnFechado, disparada por OnFechado?.Invoke com essa mensagem)."
     },
     {
       "name": "C#: extension methods",
@@ -198,7 +215,8 @@
       "whereUsed": "Base de todo o LINQ (.Where, .Select, .OrderBy) e comum em bibliotecas utilitárias que adicionam conveniências a tipos como string ou DateTime.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/programming-guide/classes-and-structs/extension-methods",
-      "simpleAnalogy": "É como comprar um acessório avulso pra colar na parte de trás do celular e ganhar uma função nova, tipo um suporte que também carrega o aparelho, sem precisar abrir o celular e mexer na fábrica dele. Esse recurso deixa você \"colar\" uma função nova em algo que já existe e que você não pode alterar por dentro, fazendo parecer que aquela função sempre esteve ali."
+      "simpleAnalogy": "É como comprar um acessório avulso pra colar na parte de trás do celular e ganhar uma função nova, tipo um suporte que também carrega o aparelho, sem precisar abrir o celular e mexer na fábrica dele. Esse recurso deixa você \"colar\" uma função nova em algo que já existe e que você não pode alterar por dentro, fazendo parecer que aquela função sempre esteve ali.",
+      "resposta": "Esse trecho não imprime nada — apenas calcula resultado, que vale true, pois \"arara\" sem espaços e em minúsculas é igual ao seu próprio reverso, confirmando que EhPalindromo() funciona chamado diretamente sobre a string como se fosse um método nativo."
     },
     {
       "name": "C#: tuples e deconstruction",
@@ -209,7 +227,8 @@
       "whereUsed": "Comum para métodos que precisam retornar múltiplos valores relacionados rapidamente, como coordenadas (x, y) ou um par (sucesso, mensagemDeErro).",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/value-tuples",
-      "simpleAnalogy": "É como pedir um combo de lanchonete que já vem com hambúrguer, batata e refrigerante numa bandeja só, em vez de pedir três coisas separadas e carregar cada uma na mão. Essa bandeja é o agrupamento de vários valores relacionados vindo juntos de uma vez, e a desconstrução é o momento de tirar cada item da bandeja e colocar cada um no seu próprio prato, já separado."
+      "simpleAnalogy": "É como pedir um combo de lanchonete que já vem com hambúrguer, batata e refrigerante numa bandeja só, em vez de pedir três coisas separadas e carregar cada uma na mão. Essa bandeja é o agrupamento de vários valores relacionados vindo juntos de uma vez, e a desconstrução é o momento de tirar cada item da bandeja e colocar cada um no seu próprio prato, já separado.",
+      "resposta": "No console aparecem duas linhas: \"Quociente: 3, Resto: 2\" (17 dividido por 5 dá quociente 3 e resto 2, já desconstruído em variáveis separadas) e depois 3 (resultado.Quociente, acessado pelo nome do campo na tupla sem precisar desconstruir de novo)."
     },
     {
       "name": "C#: IEnumerable vs IQueryable",
@@ -220,7 +239,8 @@
       "whereUsed": "Central em qualquer aplicação que usa Entity Framework Core para consultar um banco de dados de forma eficiente sem trazer dados desnecessários para a memória.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/api/system.linq.iqueryable",
-      "simpleAnalogy": "É a diferença entre folhear um catálogo de roupas impresso que você já tem em mãos, item por item, e ligar pra uma loja e pedir só as peças na cor azul, deixando o vendedor separar lá no estoque antes de mandar qualquer coisa pra você. Numa forma, tudo já foi trazido pra perto antes de filtrar; na outra, o pedido de filtro vai direto pra fonte, que devolve só o que interessa, economizando tempo e esforço."
+      "simpleAnalogy": "É a diferença entre folhear um catálogo de roupas impresso que você já tem em mãos, item por item, e ligar pra uma loja e pedir só as peças na cor azul, deixando o vendedor separar lá no estoque antes de mandar qualquer coisa pra você. Numa forma, tudo já foi trazido pra perto antes de filtrar; na outra, o pedido de filtro vai direto pra fonte, que devolve só o que interessa, economizando tempo e esforço.",
+      "resposta": "Esse trecho não imprime nada — produtosCaros só é preenchido no momento de consulta.ToList(), quando o filtro Preco > 100 é traduzido em SQL e executado no banco, trazendo só os produtos caros. Já a segunda consulta (AsEnumerable() antes do Where) já traz todos os produtos da tabela para a memória antes de aplicar o filtro em C#, o que é bem menos eficiente numa tabela grande."
     },
     {
       "name": "C#: using statement e IDisposable",
@@ -231,7 +251,8 @@
       "whereUsed": "Essencial ao trabalhar com arquivos, conexões de banco de dados (como DbContext do Entity Framework), streams de rede ou qualquer recurso externo que precise ser fechado explicitamente.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/csharp/language-reference/statements/using",
-      "simpleAnalogy": "É como pegar emprestada uma chave de armário de academia: você é responsável por devolver a chave na saída, e o jeito mais seguro de garantir isso é um cadeado que solta e devolve a chave sozinho assim que você termina, mesmo que você saia correndo com pressa ou aconteça algum imprevisto no meio do caminho. Esse recurso garante que \"recursos emprestados\", como um arquivo aberto, sejam sempre devolvidos direitinho no final, mesmo se algo der errado antes disso."
+      "simpleAnalogy": "É como pegar emprestada uma chave de armário de academia: você é responsável por devolver a chave na saída, e o jeito mais seguro de garantir isso é um cadeado que solta e devolve a chave sozinho assim que você termina, mesmo que você saia correndo com pressa ou aconteça algum imprevisto no meio do caminho. Esse recurso garante que \"recursos emprestados\", como um arquivo aberto, sejam sempre devolvidos direitinho no final, mesmo se algo der errado antes disso.",
+      "resposta": "A saída depende do conteúdo real de dados.txt — leitor.ReadToEnd() imprime o texto inteiro do arquivo. O ponto observável do exemplo é o Dispose(): ele é chamado automaticamente ao sair do bloco using (na primeira forma) ou ao final do método LerArquivo (na forma com `using var`), fechando o arquivo mesmo que ReadToEnd() lançasse uma exceção no meio do caminho."
     },
     {
       "name": "C#: testes unitários com xUnit",
@@ -242,7 +263,8 @@
       "whereUsed": "Usado em qualquer projeto .NET que valorize qualidade e queira evitar regressões, como testar regras de negócio de uma API antes de fazer deploy.",
       "projectName": "Referência Geral (C#)",
       "documentationUrl": "https://learn.microsoft.com/dotnet/core/testing/unit-testing-with-dotnet-test",
-      "simpleAnalogy": "É como testar cada peça de um brinquedo de montar separadamente antes de entregar pro cliente, apertando o botão de som pra ver se toca e girando a rodinha pra ver se gira, em vez de só descobrir que uma peça está quebrada depois que o brinquedo inteiro já foi montado e embalado. Esses testes são pequenas verificações automáticas que confirmam se cada parte do sistema continua funcionando certinho, permitindo pegar erros cedo, antes que cheguem no usuário final."
+      "simpleAnalogy": "É como testar cada peça de um brinquedo de montar separadamente antes de entregar pro cliente, apertando o botão de som pra ver se toca e girando a rodinha pra ver se gira, em vez de só descobrir que uma peça está quebrada depois que o brinquedo inteiro já foi montado e embalado. Esses testes são pequenas verificações automáticas que confirmam se cada parte do sistema continua funcionando certinho, permitindo pegar erros cedo, antes que cheguem no usuário final.",
+      "resposta": "Ao rodar `dotnet test`, o test runner do xUnit executa cada [Fact]/[Theory] e reporta os resultados: Somar_DoisMaisDois_DeveRetornarQuatro passa, pois calculadora.Somar(2, 2) retorna 4 e bate com Assert.Equal(4, resultado); os três casos do [Theory] (InlineData) também passam, pois 1+1=2, -1+1=0 e 0+0=0 coincidem com os valores esperados informados em cada linha."
     }
   ]
 }
