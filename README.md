@@ -69,18 +69,20 @@ existe), e o conteúdo completo (limpo de sintaxe Markdown/wikilinks) vira uma `
 Script: [`scripts/sync-obsidian.ps1`](scripts/sync-obsidian.ps1). Hoje é sob demanda (você decide quando
 rodar); automatizar via tarefa agendada do Windows é uma opção futura, ainda não configurada.
 
-## Base de conhecimento de linguagens
+## Base de conhecimento de linguagens e bancos de dados
 
-O SecondBrain vem com **222 verbetes** cobrindo 6 linguagens, do "Hello World" a tópicos avançados (OOP,
-generics, async, ponteiros inteligentes...):
+O SecondBrain vem com **233 verbetes** cobrindo 6 linguagens + Redis + PostgreSQL, do "Hello World" a tópicos
+avançados (OOP, generics, async, ponteiros inteligentes, consumer groups, índices parciais...):
 
-- **85 vêm de código real** dos próprios projetos do usuário — não são exemplos inventados: **Go**
-  (Notification Engine), **C#** (este projeto), **C++/Arduino** (PlatformIO-Projects), **Java** e
-  **JavaScript** (all-notes) e **Python** (Python-notes, pid-system-in-Python, pdf-editor).
-- **137 são currículo de referência geral** — o restante do que uma linguagem tem, do básico ao avançado,
-  pensado pra alguém que não sabe nada do assunto: exemplos genéricos corretos (não vêm de um repositório
-  específico, por isso ficam num Project à parte, "Referência Geral (Linguagem)"), cada um com um link pra
-  documentação oficial (MDN, docs.python.org, Microsoft Learn, Oracle, cppreference, go.dev).
+- **91 vêm de código real** dos próprios projetos do usuário — não são exemplos inventados: **Go**, **Redis**
+  e **PostgreSQL** (Notification Engine — Redis Streams/consumer groups e SQL puro sobre `database/sql`), **C#**
+  (este projeto), **C++/Arduino** (PlatformIO-Projects), **Java** e **JavaScript** (all-notes) e **Python**
+  (Python-notes, pid-system-in-Python, pdf-editor).
+- **142 são currículo de referência geral** — o restante do que uma linguagem/tecnologia tem, do básico ao
+  avançado, pensado pra alguém que não sabe nada do assunto: exemplos genéricos corretos (não vêm de um
+  repositório específico, por isso ficam num Project à parte, "Referência Geral (Linguagem)"), cada um com um
+  link pra documentação oficial (MDN, docs.python.org, Microsoft Learn, Oracle, cppreference, go.dev,
+  redis.io, postgresql.org).
 
 Cada verbete tem um **nível** (`Concept.Level`: Básico/Intermediário/Avançado) que ordena toda listagem e
 filtro por linguagem — a interface nunca mistura conteúdo básico com avançado na mesma tela, seguindo a
@@ -88,13 +90,15 @@ progressão de quem está aprendendo do zero. Verbetes criados manualmente pela 
 nível (aparecem por último, fora da progressão).
 
 A anotação de cada verbete segue uma ordem fixa de leitura: primeiro uma **analogia em linguagem simples**
-(pra alguém que nunca programou), depois o nível e a explicação técnica com o exemplo de código, e só no
-final o **repositório real** onde aquele mesmo código foi usado — do mais simples ao mais técnico, terminando
-sempre em "isso é real, não é um exemplo de livro".
+(pra alguém que nunca programou), depois o nível e a explicação técnica com o exemplo de código, depois a
+**resposta esperada** (o que aparece de fato no console/terminal/retorno ao rodar aquele código — a "resposta"
+que faltava só com o exemplo + a explicação), e só no final o **repositório real** onde aquele mesmo código
+foi usado — do mais simples ao mais técnico, terminando sempre em "isso é real, não é um exemplo de livro".
 
 Scripts: [`scripts/import-language-knowledge.ps1`](scripts/import-language-knowledge.ps1), lendo os dados de
-[`scripts/data/language-knowledge/`](scripts/data/language-knowledge) (um arquivo por linguagem/origem, com
-`level` e `simpleAnalogy` por conceito). Idempotente (roda de novo sem duplicar, só atualiza). Requer a API no ar.
+[`scripts/data/language-knowledge/`](scripts/data/language-knowledge) (um arquivo por linguagem/tecnologia, com
+`level`, `simpleAnalogy` e `resposta` por conceito). Idempotente (roda de novo sem duplicar, só atualiza).
+Requer a API no ar.
 
 ## Arquitetura
 
@@ -331,6 +335,12 @@ só validação manual.
   JSON de conhecimento das linguagens guarda `"básico"/"intermediário"/"avançado"` (legível pra quem edita o
   arquivo); o enum C# usa `Basico/Intermediario/Avancado` (sem acento, serializado como texto). O script
   normaliza antes de mandar pra API — sem isso a deserialização do enum falharia silenciosamente.
+- **Redis e PostgreSQL como duas Tags separadas, não uma única "Banco de Dados".** Cada tecnologia tem logo
+  próprio (devicon) e uma progressão básico→avançado independente — misturar as duas sob um rótulo genérico
+  perderia a possibilidade de filtrar só por uma delas, o mesmo raciocínio já usado para as 6 linguagens.
+- **Campo `resposta` é conteúdo, não schema.** Diferente do `Concept.Level` (uma coluna nova, com migration),
+  `resposta` vive só dentro do texto da `Note` gerada pelo script de import — não exigiu nenhuma mudança no
+  banco, só no template da nota e nos dados de origem.
 - **Sync do Obsidian é sob demanda, não automático ainda.** Rodar em background (tarefa agendada do Windows)
   exigiria a API sempre no ar; hoje ela só sobe quando você chama `start.bat`. Preferi entregar o sync
   funcionando primeiro e decidir a automação depois, com o usuário confirmando explicitamente (criar uma
@@ -343,6 +353,9 @@ só validação manual.
 - **V0.3.1 ✅** — Nível de dificuldade (`Concept.Level`) ordenando toda listagem/filtro (nunca mistura básico
   com avançado) e reestruturação das notas de linguagem: analogia simples primeiro, depois nível + explicação
   técnica, repositório real só no final.
+- **V0.3.2 ✅** — Campo `resposta` (o resultado esperado de rodar o exemplo) retroativo nos 224 verbetes
+  existentes, mais duas categorias novas na sidebar — **Redis** e **PostgreSQL** — com 26 verbetes extraídos
+  do código real do Notification Engine (Streams, consumer groups, índices, constraints, pool de conexões).
 - **V0.4** — Users, login, JWT (adiado da V0.3 original — o grafo tinha prioridade maior: sem ele, o app ainda
   parecia "um Notion simplificado"; com ele, começa a parecer um mapa do que você sabe).
 - **V0.5** — Timeline de aprendizado (já dá pra fazer sem schema novo — `CreatedAt` já existe em tudo).
