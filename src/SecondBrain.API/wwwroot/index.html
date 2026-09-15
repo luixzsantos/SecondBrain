@@ -176,6 +176,9 @@
   .item .d { color: var(--muted); font-size: 13px; white-space: pre-wrap; }
   .item.relation-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; }
   .item.relation-item .d { margin: 0; }
+  .item.project-item { display: flex; align-items: flex-start; gap: 10px; }
+  .item.project-item .item-icon { color: var(--muted); flex-shrink: 0; margin-top: 2px; }
+  .item.project-item .item-icon svg { width: 16px; height: 16px; }
   .item-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 12px; flex-shrink: 0; }
   .item-remove:hover { color: var(--danger); }
   .code-block {
@@ -271,6 +274,8 @@ const ICONS = {
   sun: '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>',
   back: '<line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>',
   close: '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>',
+  folder: '<path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>',
+  book: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>',
 };
 function svg(name, size) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:${size || 18}px;height:${size || 18}px">${ICONS[name]}</svg>`;
@@ -285,22 +290,33 @@ async function ensureAllConceptsCache() {
   return state.allConceptsCache;
 }
 
-// Logo oficial (colorido) de cada linguagem via devicon, num círculo neutro —
-// nada de bandeira colorida no fundo (isso seria "enfeite"), só o logo real.
+// Logo oficial (colorido) de cada linguagem, num círculo neutro — nada de bandeira
+// colorida no fundo (isso seria "enfeite"), só o logo real. Servido localmente
+// (wwwroot/icons/, baixado do devicon) em vez de uma CDN externa: depois de
+// enfrentar dois comportamentos inconsistentes diferentes com jsdelivr (o mirror
+// "gh" sem versão falhava pra alguns ícones, e a versão fixa via npm falhava pra
+// OUTROS ícones, num padrão que não se repetia entre testes), vender os SVGs
+// elimina de vez a dependência de rede/cache de terceiros pra 9 arquivos pequenos.
 // Tag sem logo conhecido cai no fallback: as 2 primeiras letras do nome.
 const TAG_LOGOS = {
-  go: 'go/go-original.svg',
-  csharp: 'csharp/csharp-original.svg',
-  cpp: 'cplusplus/cplusplus-original.svg',
-  python: 'python/python-original.svg',
-  java: 'java/java-original.svg',
-  javascript: 'javascript/javascript-original.svg',
-  redis: 'redis/redis-original.svg',
-  postgresql: 'postgresql/postgresql-original.svg',
-  html: 'html5/html5-original.svg',
+  go: 'go.svg',
+  csharp: 'csharp.svg',
+  cpp: 'cplusplus.svg',
+  python: 'python.svg',
+  java: 'java.svg',
+  javascript: 'javascript.svg',
+  redis: 'redis.svg',
+  postgresql: 'postgresql.svg',
+  html: 'html5.svg',
 };
-const DEVICON_BASE = 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/';
+const DEVICON_BASE = 'icons/';
 function tagLabel(name) { return name.slice(0, 2).toUpperCase(); }
+
+// "Referência Geral (...)" é conteúdo genérico, não um repositório de verdade —
+// ganha o ícone de livro. Todo o resto é um projeto/repositório real — ícone de pasta.
+function projectIcon(name) {
+  return name.startsWith('Referência Geral') ? svg('book', 16) : svg('folder', 16);
+}
 
 async function loadTags() {
   state.tags = await api('/api/tags');
@@ -607,7 +623,12 @@ async function renderConceptDetail(c) {
 
       <div class="section">
         <div class="section-title">Usado nos projetos · ${c.projects.length}</div>
-        ${c.projects.map(p => `<div class="item"><div class="t">${escapeHtml(p.name)}</div><div class="d">${escapeHtml(p.description || '')}</div></div>`).join('') || '<div class="item-empty">Nenhum ainda.</div>'}
+        ${c.projects.map(p => `
+          <div class="item project-item">
+            <div class="item-icon">${projectIcon(p.name)}</div>
+            <div><div class="t">${escapeHtml(p.name)}</div><div class="d">${escapeHtml(p.description || '')}</div></div>
+          </div>
+        `).join('') || '<div class="item-empty">Nenhum ainda.</div>'}
       </div>
 
       <div id="detailMsg" class="msg"></div>
