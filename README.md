@@ -15,6 +15,7 @@ Este README documenta até a **V0.2 — Knowledge** (Note, Tag, Project, relaç�
 - [Visão do produto](#visão-do-produto)
 - [A interface (pra qualquer pessoa usar)](#a-interface-pra-qualquer-pessoa-usar)
 - [Sincronizar com o Obsidian](#sincronizar-com-o-obsidian)
+- [Base de conhecimento de linguagens](#base-de-conhecimento-de-linguagens)
 - [Arquitetura](#arquitetura)
 - [Modelo de dados](#modelo-de-dados)
 - [Stack](#stack)
@@ -65,6 +66,19 @@ existe), e o conteúdo completo (limpo de sintaxe Markdown/wikilinks) vira uma `
 
 Script: [`scripts/sync-obsidian.ps1`](scripts/sync-obsidian.ps1). Hoje é sob demanda (você decide quando
 rodar); automatizar via tarefa agendada do Windows é uma opção futura, ainda não configurada.
+
+## Base de conhecimento de linguagens
+
+O SecondBrain já vem com 85 verbetes reais extraídos dos próprios projetos do usuário — não são exemplos
+inventados, é código de verdade puxado de cada repositório: **Go** (Notification Engine), **C#** (este
+projeto), **C++/Arduino** (PlatformIO-Projects), **Java** e **JavaScript** (all-notes) e **Python**
+(Python-notes, pid-system-in-Python, pdf-editor). Cada verbete tem uma definição curta + uma anotação com a
+explicação completa (básico → avançado) e o trecho de código real, já relacionado à Tag da linguagem e ao
+Project de origem.
+
+Script: [`scripts/import-language-knowledge.ps1`](scripts/import-language-knowledge.ps1), lendo os dados de
+[`scripts/data/language-knowledge/`](scripts/data/language-knowledge). Idempotente (roda de novo sem duplicar,
+só atualiza). Requer a API no ar.
 
 ## Arquitetura
 
@@ -268,6 +282,12 @@ só validação manual.
   adicionar uma lib pra isso agora seria peso sem ganho real.
 - **.NET 8 (LTS)**, não a versão mais nova instalada na máquina — prioriza maturidade de tooling/documentação
   pra um projeto que também é estudo de C#/ASP.NET Core.
+- **Base de conhecimento de linguagens gerada com apoio de agentes em paralelo.** Extrair e escrever ~85
+  verbetes de 6 linguagens a partir de código real de vários repositórios era grande demais pra fazer em série
+  — um agente por linguagem/repo leu o código de verdade e escreveu explicação+exemplo, sempre com instrução
+  explícita de nunca inventar um trecho de código (só citar o que realmente existe no arquivo, pulando o
+  conceito se não achasse exemplo real). Eu revisei e escrevi Go e C# diretamente (projetos que já conhecia
+  bem nesta sessão); C++, Java/JavaScript e Python vieram de agentes.
 - **Sync do Obsidian é sob demanda, não automático ainda.** Rodar em background (tarefa agendada do Windows)
   exigiria a API sempre no ar; hoje ela só sobe quando você chama `start.bat`. Preferi entregar o sync
   funcionando primeiro e decidir a automação depois, com o usuário confirmando explicitamente (criar uma

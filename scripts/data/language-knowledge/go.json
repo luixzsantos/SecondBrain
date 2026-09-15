@@ -1,0 +1,141 @@
+{
+  "language": "Go",
+  "tag": "go",
+  "concepts": [
+    {
+      "name": "Go: structs e tipos nomeados",
+      "level": "básico",
+      "shortDescription": "Struct agrupa campos relacionados num tipo próprio; um tipo nomeado (ex: type ChannelType string) dá significado a um valor primitivo.",
+      "explanation": "Em Go não existe classe — struct é o jeito de agrupar dados relacionados (nome, campos, tipos) num único tipo. É comum também criar um tipo nomeado em cima de um primitivo (ex: 'type ChannelType string') só para deixar explícito o que aquele valor representa e evitar passar qualquer string onde só um canal válido faz sentido. No Notification Engine, Notification é a struct central: reúne tudo que uma notificação carrega (canal, destino, mensagem, anexos, status) num só lugar, e ChannelType/Status são strings nomeadas em vez de strings soltas.",
+      "codeExample": "type ChannelType string\n\nconst (\n\tChannelDiscord  ChannelType = \"discord\"\n\tChannelTelegram ChannelType = \"telegram\"\n\tChannelWebhook  ChannelType = \"webhook\"\n)\n\ntype Notification struct {\n\tID      string            `json:\"id\"`\n\tChannel ChannelType       `json:\"channel\"`\n\tTarget  string            `json:\"target\"`\n\tMessage string            `json:\"message\"`\n\tStatus      Status     `json:\"status\"`\n\tAttempts    int        `json:\"attempts\"`\n\tCreatedAt   time.Time  `json:\"created_at\"`\n}",
+      "whereUsed": "internal/domain/notification.go — a struct que representa toda notificação no sistema, do recebimento na API até a entrega final",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: constantes como enum",
+      "level": "básico",
+      "shortDescription": "Go não tem enum nativo — o padrão é declarar um bloco de const do mesmo tipo nomeado, cada um com um valor fixo.",
+      "explanation": "Como Go não tem uma palavra-chave 'enum', o padrão idiomático é criar um tipo nomeado (geralmente sobre string ou int) e declarar um bloco `const` com os valores válidos. Isso dá segurança de tipo (o compilador não deixa passar uma string qualquer onde se espera um Status) e ainda mantém o valor legível quando serializado em JSON ou logado, já que por baixo é só uma string. No Notification Engine isso aparece tanto em ChannelType (quais canais existem) quanto em Status (por quais estados uma notificação passa).",
+      "codeExample": "type Status string\n\nconst (\n\tStatusPending  Status = \"pending\"  // aceita e enfileirada, aguardando processamento\n\tStatusSuccess  Status = \"success\"  // entregue com sucesso\n\tStatusRetrying Status = \"retrying\" // falhou, aguardando NextRetryAt para nova tentativa\n\tStatusDLQ      Status = \"dlq\"      // esgotou as tentativas, requer intervenção manual\n)",
+      "whereUsed": "internal/domain/notification.go — estados do ciclo de vida de uma notificação",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: ponteiros e métodos com receiver",
+      "level": "básico",
+      "shortDescription": "Um método em Go é uma função com um 'receiver' antes do nome; usar *T (ponteiro) no receiver permite que o método altere o valor original.",
+      "explanation": "Go não tem 'this' automático dentro de uma classe — cada método declara explicitamente a quem ele pertence através do receiver, escrito entre 'func' e o nome do método. Quando o receiver é um ponteiro (*Notification), o método enxerga e pode modificar o valor original em vez de trabalhar numa cópia — essencial quando o método precisa alterar campos da struct, como validar e normalizar dados nela mesma.",
+      "codeExample": "func (n *Notification) Validate() error {\n\tif !IsValidChannel(n.Channel) {\n\t\treturn ErrInvalidChannel\n\t}\n\tif n.Target == \"\" {\n\t\treturn ErrEmptyTarget\n\t}\n\tfor i := range n.Attachments {\n\t\tn.Attachments[i].Data = stripDataURIPrefix(n.Attachments[i].Data)\n\t}\n\treturn nil\n}",
+      "whereUsed": "internal/domain/notification.go — valida e normaliza os anexos de uma notificação antes dela seguir pro resto do sistema",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: erros como valores (if err != nil)",
+      "level": "básico",
+      "shortDescription": "Go não tem try/catch — toda função que pode falhar retorna um valor `error` extra, e quem chama decide na hora se trata ou repassa.",
+      "explanation": "Em vez de lançar uma exceção que sobe a pilha até alguém capturar, uma função em Go que pode falhar simplesmente retorna um segundo valor do tipo `error` (nil quando deu certo). Isso obriga a olhar pro erro no exato ponto onde ele pode acontecer — o fluxo de falha nunca fica escondido. Erros conhecidos do domínio viram valores sentinela criados com `errors.New`, comparáveis diretamente.",
+      "codeExample": "var (\n\tErrInvalidChannel = errors.New(\"canal de notificação inválido\")\n\tErrEmptyTarget    = errors.New(\"o campo 'target' é obrigatório\")\n\tErrNotFound       = errors.New(\"notificação não encontrada\")\n)\n\nfunc (n *Notification) Validate() error {\n\tif !IsValidChannel(n.Channel) {\n\t\treturn ErrInvalidChannel\n\t}\n\treturn nil\n}",
+      "whereUsed": "internal/domain/notification.go — erros de validação de domínio, comparados depois com errors.Is",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: interfaces implícitas",
+      "level": "intermediário",
+      "shortDescription": "Um tipo em Go satisfaz uma interface automaticamente só por ter os métodos certos — não existe a palavra 'implements'.",
+      "explanation": "Diferente de C#/Java, em Go você nunca declara que um tipo implementa uma interface: se ele tiver os métodos com a assinatura exigida, já satisfaz a interface, ponto. Isso deixa o contrato definido por quem consome (quem escreve a interface), não por quem implementa — e permite trocar a implementação concreta sem tocar em quem já usa a interface. É assim que cada canal de notificação (Discord, Telegram, e-mail...) vira intercambiável atrás de um `Sender` comum.",
+      "codeExample": "// Sender define o contrato que todo conector de canal precisa implementar\n// para disparar uma notificação. Nenhum canal declara \"implements Sender\" —\n// só precisa ter estes dois métodos.\ntype Sender interface {\n\tSend(ctx context.Context, n *Notification) error\n\tChannel() ChannelType\n}",
+      "whereUsed": "internal/domain/notification.go — contrato satisfeito por DiscordSender, TelegramSender, GmailSender etc., cada um em seu próprio arquivo",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: injeção de dependência via struct",
+      "level": "intermediário",
+      "shortDescription": "Sem framework de DI: as dependências de um tipo são só campos de uma struct, preenchidos na hora de criá-la.",
+      "explanation": "Go não usa um container de injeção de dependência como o ASP.NET Core — o padrão comum é simplesmente declarar as dependências como campos públicos (ou passadas por um construtor `NewX`) de uma struct, e montar tudo à mão no `main()`. Isso mantém o fluxo de dependências totalmente explícito e rastreável — dá pra ver exatamente o que cada peça precisa só lendo a struct.",
+      "codeExample": "// Dispatcher processa uma notificação lida da fila.\ntype Dispatcher struct {\n\tRegistry          *channel.Registry\n\tRepo              domain.Repository\n\tLimiters          *ratelimit.Limiters\n\tMaxBackoffSeconds int\n}",
+      "whereUsed": "internal/worker/dispatcher.go — montado à mão em cmd/worker/main.go com as dependências já construídas",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: wrapping de erro com %w",
+      "level": "intermediário",
+      "shortDescription": "fmt.Errorf com %w embrulha um erro original dentro de uma mensagem nova, sem perder a identidade dele (dá pra checar com errors.Is depois).",
+      "explanation": "Quando uma função de baixo nível falha, muitas vezes vale adicionar contexto (\"falha ao fazer X\") sem esconder qual foi o erro original. `fmt.Errorf(\"...: %w\", err)` faz isso: cria uma nova mensagem que ainda \"contém\" o erro original, permitindo que código mais acima use `errors.Is`/`errors.As` pra reconhecer o erro de origem mesmo depois de embrulhado várias vezes.",
+      "codeExample": "func (r *Registry) Get(c domain.ChannelType) (Sender, error) {\n\tsender, ok := r.senders[c]\n\tif !ok {\n\t\treturn nil, fmt.Errorf(\"nenhum conector registrado para o canal %q\", c)\n\t}\n\treturn sender, nil\n}",
+      "whereUsed": "internal/channel/channel.go — erro claro quando um canal não tem conector registrado",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: configuração via variáveis de ambiente",
+      "level": "intermediário",
+      "shortDescription": "Ler .env com godotenv e depois os.Getenv com um valor default — padrão comum em Go pra centralizar toda configuração num só lugar.",
+      "explanation": "Em vez de espalhar os.Getenv pelo código, o padrão é ter uma função `Load()` só, que lê o arquivo `.env` (via biblioteca `godotenv`) e monta uma struct `Config` com TODAS as variáveis já convertidas pro tipo certo (int, bool, float), cada uma com um valor padrão seguro caso a variável não exista. O resto do programa só usa a struct Config, nunca os.Getenv diretamente.",
+      "codeExample": "func Load() *Config {\n\tif err := godotenv.Load(); err != nil {\n\t\tlog.Println(\"[config] arquivo .env não encontrado, usando variáveis de ambiente do sistema\")\n\t}\n\n\treturn &Config{\n\t\tAPIPort: getEnv(\"API_PORT\", \"8080\"),\n\t\tDBHost:         getEnv(\"DB_HOST\", \"localhost\"),\n\t\tDBMaxOpenConns: getEnvAsInt(\"DB_MAX_OPEN_CONNS\", 25),\n\t\tRateLimitEnabled: getEnvAsBool(\"RATE_LIMIT_ENABLED\", true),\n\t}\n}",
+      "whereUsed": "internal/config/config.go — carregado uma vez no início de cmd/api/main.go e cmd/worker/main.go",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: goroutines + sync.WaitGroup",
+      "level": "avançado",
+      "shortDescription": "goroutine é uma função rodando concorrentemente (`go func(){...}`); WaitGroup espera todas terminarem antes de continuar.",
+      "explanation": "Uma goroutine é extremamente barata comparada a uma thread do sistema operacional, e é assim que Go faz concorrência nativa: só colocar `go` antes de uma chamada de função. Quando o programa precisa esperar várias goroutines terminarem (por exemplo, antes de encerrar de vez), usa-se `sync.WaitGroup`: `Add(1)` antes de cada goroutine, `Done()` (geralmente via `defer`) dentro dela, e `Wait()` no ponto que precisa bloquear até todas acabarem. O worker sobe N consumidores concorrentes desse jeito.",
+      "codeExample": "var wg sync.WaitGroup\nfor i := 0; i < cfg.WorkerConcurrency; i++ {\n\tconsumerName := fmt.Sprintf(\"%s-%d\", cfg.RedisConsumerName, i)\n\tconsumer := queue.NewRedisConsumer(redisClient, cfg.RedisStreamName, cfg.RedisConsumerGroup, consumerName)\n\n\twg.Add(1)\n\tgo func(c *queue.RedisConsumer, name string) {\n\t\tdefer wg.Done()\n\t\tif err := c.Consume(ctx, dispatcher.Handle); err != nil && ctx.Err() == nil {\n\t\t\tlog.Printf(\"[worker] consumidor %s encerrado com erro: %v\", name, err)\n\t\t}\n\t}(consumer, consumerName)\n}\n\n<-ctx.Done()\nwg.Wait()",
+      "whereUsed": "cmd/worker/main.go — sobe WorkerConcurrency goroutines consumindo a mesma fila em paralelo, todas do mesmo consumer group do Redis",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: graceful shutdown com context + sinais do SO",
+      "level": "avançado",
+      "shortDescription": "signal.NotifyContext cria um context que é cancelado automaticamente quando o processo recebe Ctrl+C/SIGTERM, propagando o cancelamento pra tudo que usa esse context.",
+      "explanation": "Em vez de o processo morrer abruptamente ao receber um sinal do sistema operacional (Ctrl+C, ou SIGTERM do Docker/Kubernetes pedindo pra parar), `signal.NotifyContext` devolve um `context.Context` que fica \"vivo\" até o sinal chegar — e a partir daí, todo código que respeita esse context (loops com `select { case <-ctx.Done(): ... }`, chamadas de rede) recebe o cancelamento e pode terminar o que está fazendo antes de sair. É isso que permite ao worker parar de aceitar trabalho novo mas ainda esperar (`wg.Wait()`) as goroutines em andamento finalizarem antes de encerrar de vez.",
+      "codeExample": "ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)\ndefer stop()\n\n// ... sobe goroutines usando ctx ...\n\n<-ctx.Done()\nlog.Println(\"[worker] sinal de encerramento recebido, aguardando goroutines finalizarem...\")\nwg.Wait()",
+      "whereUsed": "cmd/worker/main.go — encerramento limpo do worker sem derrubar mensagens sendo processadas no meio",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: Redis Streams com Consumer Groups",
+      "level": "avançado",
+      "shortDescription": "XReadGroup lê mensagens de um stream do Redis garantindo que cada uma vá pra só um consumidor do grupo; XAutoClaim recupera mensagens de um consumidor que travou/caiu.",
+      "explanation": "Redis Streams com Consumer Groups funciona parecido com uma fila distribuída de verdade: vários consumidores (aqui, várias goroutines) leem do MESMO stream e MESMO grupo, e o Redis garante que cada mensagem seja entregue a só um deles — permitindo escalar processamento em paralelo sem duplicar entrega. Se um consumidor cair no meio (crash, restart), a mensagem que ele tinha em mãos fica na Pending Entries List (PEL); `XAutoClaim` periodicamente reivindica de volta mensagens paradas há tempo demais na PEL, pra nenhuma notificação ficar perdida pra sempre.",
+      "codeExample": "streams, err := c.client.XReadGroup(ctx, &redis.XReadGroupArgs{\n\tGroup:    c.consumerGrp,\n\tConsumer: c.consumerName,\n\tStreams:  []string{c.streamName, \">\"}, // \">\" = apenas mensagens nunca entregues\n\tCount:    10,\n\tBlock:    5 * time.Second,\n}).Result()\n\n// reivindica mensagens presas na PEL de qualquer consumidor do grupo\nmessages, _, err := c.client.XAutoClaim(ctx, &redis.XAutoClaimArgs{\n\tStream: c.streamName, Group: c.consumerGrp, Consumer: c.consumerName,\n\tMinIdle: claimMinIdle, Start: \"0-0\", Count: 10,\n}).Result()",
+      "whereUsed": "internal/queue/redis_consumer.go — cada goroutine do worker roda esse loop de consumo em paralelo",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: rate limiting (token bucket) + sync.Mutex",
+      "level": "avançado",
+      "shortDescription": "golang.org/x/time/rate.Limiter implementa um token bucket por chave (aqui, por canal); sync.Mutex protege o mapa de limiters de acesso concorrente por várias goroutines.",
+      "explanation": "Pra não estourar o rate limit de APIs externas (Discord, Telegram...) quando várias goroutines enviam ao mesmo tempo, cada canal ganha seu próprio `rate.Limiter` (token bucket: N tokens por segundo, com um burst inicial). Como várias goroutines podem pedir um limiter pro mesmo canal ao mesmo tempo, o mapa que guarda os limiters precisa de um `sync.Mutex` protegendo a leitura/escrita — sem isso, duas goroutines criando o limiter do mesmo canal simultaneamente causariam uma condição de corrida.",
+      "codeExample": "type Limiters struct {\n\tmu       sync.Mutex\n\tlimiters map[domain.ChannelType]*rate.Limiter\n\trps      map[domain.ChannelType]float64\n}\n\nfunc (l *Limiters) limiterFor(ch domain.ChannelType) *rate.Limiter {\n\tl.mu.Lock()\n\tdefer l.mu.Unlock()\n\n\tif lim, ok := l.limiters[ch]; ok {\n\t\treturn lim\n\t}\n\trps := l.rps[ch]\n\tif rps <= 0 {\n\t\trps = defaultRPS\n\t}\n\tlim := rate.NewLimiter(rate.Limit(rps), int(rps))\n\tl.limiters[ch] = lim\n\treturn lim\n}",
+      "whereUsed": "internal/ratelimit/limiter.go — usado pelo Dispatcher antes de cada envio (d.Limiters.Wait(ctx, n.Channel))",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: mitigação de SSRF com net.Dialer customizado",
+      "level": "avançado",
+      "shortDescription": "Um http.Transport com DialContext próprio resolve o DNS manualmente e recusa conectar se o IP resolvido for privado/interno — proteção contra Server-Side Request Forgery.",
+      "explanation": "Quando a própria API aceita uma URL do cliente pra depois fazer uma requisição a ela (webhook genérico, Discord), existe risco de SSRF: alguém mandar uma URL que aponta pra dentro da rede interna (ex: metadados de nuvem em 169.254.169.254). A defesa de verdade não é só olhar a URL na hora de criar a notificação (o DNS pode mudar depois — 'DNS rebinding') — é sobrescrever `DialContext` do `http.Transport` pra resolver o host e checar CADA IP retornado no exato momento da conexão, recusando qualquer um privado/loopback/link-local antes de discar.",
+      "codeExample": "transport := &http.Transport{\n\tDialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {\n\t\thost, port, _ := net.SplitHostPort(addr)\n\t\tips, err := net.DefaultResolver.LookupIP(ctx, \"ip\", host)\n\t\tfor _, ip := range ips {\n\t\t\tif isBlockedIP(ip) {\n\t\t\t\treturn nil, fmt.Errorf(\"%w: %q resolve para endereço privado/interno (%s)\", ErrBlockedTarget, host, ip)\n\t\t\t}\n\t\t}\n\t\treturn dialer.DialContext(ctx, network, net.JoinHostPort(ips[0].String(), port))\n\t},\n}",
+      "whereUsed": "internal/security/ssrf.go — usado por todo canal que dispara requisição HTTP pra URL fornecida pelo cliente da API",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: retry com exponential backoff e jitter",
+      "level": "avançado",
+      "shortDescription": "O atraso entre tentativas cresce exponencialmente (2s, 4s, 8s...) até um teto, e o valor final é sorteado dentro desse teto ('jitter') pra não sincronizar retries de várias notificações ao mesmo tempo.",
+      "explanation": "Ao tentar de novo uma operação que falhou, esperar sempre o mesmo tempo fixo entre tentativas é ruim: se um monte de notificações falhar no mesmo instante (ex: canal externo caiu), todas tentariam de novo exatamente juntas, martelando o canal assim que ele voltar. Backoff exponencial aumenta o teto de espera a cada tentativa (2^attempt segundos), e sortear (`jitter`) um valor dentro desse teto espalha os retries no tempo em vez de concentrá-los.",
+      "codeExample": "func NextBackoff(attempt int, maxSeconds int) time.Duration {\n\tcapSeconds := 1 << attempt // 2^attempt\n\tif capSeconds <= 0 || capSeconds > maxSeconds {\n\t\tcapSeconds = maxSeconds\n\t}\n\tjittered := 1 + rand.Intn(capSeconds)\n\treturn time.Duration(jittered) * time.Second\n}",
+      "whereUsed": "internal/retry/backoff.go — chamado por ApplyFailure toda vez que um envio falha e ainda não esgotou as tentativas",
+      "projectName": "Notification Engine"
+    },
+    {
+      "name": "Go: database/sql com SQL puro (sem ORM)",
+      "level": "avançado",
+      "shortDescription": "Notification Engine não usa ORM — acessa o Postgres direto via database/sql + driver lib/pq, escrevendo o SQL à mão e checando códigos de erro específicos do driver.",
+      "explanation": "Diferente do SecondBrain (que usa Entity Framework Core), o Notification Engine acessa o banco com `database/sql` puro: SQL escrito à mão, `ExecContext`/`QueryContext` com parâmetros posicionados (`$1`, `$2`...) pra evitar SQL injection, e serialização manual de campos complexos (mapas, slices) pra JSON antes de gravar numa coluna. Pra detectar uma violação específica (ex: Idempotency-Key duplicado), o código faz cast do erro pro tipo do driver (`*pq.Error`) e compara o código SQLSTATE.",
+      "codeExample": "const pqUniqueViolation = \"23505\"\n\nfunc (r *NotificationRepository) Create(ctx context.Context, n *domain.Notification) error {\n\tpayload, _ := json.Marshal(orEmptyMap(n.Payload))\n\t_, err := r.conn.ExecContext(ctx, `\n\t\tINSERT INTO notifications (id, channel, target, message, payload, status, ...)\n\t\tVALUES ($1, $2, $3, $4, $5, $6, ...)`,\n\t\tn.ID, n.Channel, n.Target, n.Message, payload, n.Status)\n\n\tif pqErr, ok := err.(*pq.Error); ok && pqErr.Code == pqUniqueViolation {\n\t\treturn domain.ErrDuplicateIdempotencyKey\n\t}\n\treturn err\n}",
+      "whereUsed": "internal/db/notification_repository.go — implementa domain.Repository sobre Postgres",
+      "projectName": "Notification Engine"
+    }
+  ]
+}

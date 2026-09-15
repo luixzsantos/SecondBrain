@@ -145,6 +145,12 @@
   }
   .item .t { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
   .item .d { color: var(--muted); font-size: 13px; white-space: pre-wrap; }
+  .code-block {
+    display: block; background: var(--hover); border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; margin: 8px 0; overflow-x: auto; white-space: pre;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12.5px;
+    color: var(--text); line-height: 1.5;
+  }
   .item-empty { color: var(--muted); font-size: 13px; }
 
   .quick-add { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
@@ -271,6 +277,17 @@ async function api(path, options) {
 
 function escapeHtml(s) {
   return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+// Render bem simples de Markdown (sem lib): bloco de código ```lang ... ```
+// vira <pre>, e **negrito** vira <strong>. O resto é texto puro (a formatação
+// de parágrafo já vem do white-space:pre-wrap no CSS). Tudo escapado antes.
+function renderNoteContent(content) {
+  const segments = (content || '').split(/```[a-z]*\n([\s\S]*?)```/g);
+  return segments.map((seg, i) => {
+    if (i % 2 === 1) return `<pre class="code-block">${escapeHtml(seg.trim())}</pre>`;
+    return escapeHtml(seg).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  }).join('');
 }
 
 async function loadAllConcepts() {
@@ -420,7 +437,7 @@ function renderConceptDetail(c) {
 
       <div class="section">
         <div class="section-title">Anotações · ${c.notes.length}</div>
-        ${c.notes.map(n => `<div class="item"><div class="t">${escapeHtml(n.title)}</div><div class="d">${escapeHtml(n.content)}</div></div>`).join('') || '<div class="item-empty">Nenhuma ainda.</div>'}
+        ${c.notes.map(n => `<div class="item"><div class="t">${escapeHtml(n.title)}</div><div class="d">${renderNoteContent(n.content)}</div></div>`).join('') || '<div class="item-empty">Nenhuma ainda.</div>'}
         <div class="quick-add">
           <input class="field" type="text" id="quickNoteTitle" placeholder="Título" />
           <input class="field" type="text" id="quickNoteContent" placeholder="O que você quer lembrar?" />

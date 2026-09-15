@@ -1,0 +1,78 @@
+{
+  "language": "Java",
+  "tag": "java",
+  "concepts": [
+    {
+      "name": "Java: Variáveis e tipos primitivos",
+      "level": "básico",
+      "shortDescription": "Uma variável é um espaço nomeado na memória que guarda um valor de um tipo específico, como número inteiro, decimal ou verdadeiro/falso.",
+      "explanation": "Em Java, toda variável precisa ser declarada com um tipo antes de ser usada, por exemplo int para números inteiros, double para números decimais e boolean para valores verdadeiro/falso. Isso é chamado de tipagem estática: uma vez declarada com um tipo, a variável só pode guardar valores compatíveis com aquele tipo. Declarar variáveis é o primeiro passo para armazenar e manipular dados em qualquer programa Java. O exemplo abaixo mostra a declaração de variáveis inteiras, booleanas e decimais (double), além de uma variável cujo valor é calculado a partir de outra.",
+      "codeExample": "int xyz = 20;\n\nint abc = 2;\nint v = abc + 1;\n\nboolean b1 = true;\nboolean b2 = false;\n\ndouble d1 = 10.2;\ndouble d2 = 20.5;",
+      "whereUsed": "Java-notes/primeiro/src/variaveis.java — exemplo introdutório de declaração de variáveis de tipos int, boolean e double.",
+      "projectName": "Java-notes"
+    },
+    {
+      "name": "Java: Operadores aritméticos",
+      "level": "básico",
+      "shortDescription": "Operadores aritméticos (+, -, *, /) realizam cálculos matemáticos entre valores numéricos, seguindo uma ordem de precedência.",
+      "explanation": "Java segue a mesma ordem de precedência matemática tradicional: parênteses primeiro, depois multiplicação e divisão, e por último soma e subtração. Entender essa ordem é essencial para evitar resultados inesperados em expressões com múltiplos operadores. O exemplo mostra como combinar multiplicação, subtração e parênteses para controlar a ordem em que as operações acontecem, algo comum em cálculos simples como médias, totais ou conversões numéricas.",
+      "codeExample": "int a =10;\nint b = 2;\nint c = 5;\nint d = a * b - c;\nSystem.out.println(d);\n\nint e = 4;\nint f = 2;\nint g = e * (f / e);\nSystem.out.println(g);",
+      "whereUsed": "Java-notes/primeiro/src/OperatorArithmetic.java — combina multiplicação, subtração e parênteses para ilustrar precedência de operadores.",
+      "projectName": "Java-notes"
+    },
+    {
+      "name": "Java: Operadores relacionais e lógicos",
+      "level": "básico",
+      "shortDescription": "Operadores relacionais (==, !=) comparam valores e operadores lógicos (&&, ||, !) combinam ou invertem condições booleanas.",
+      "explanation": "Operadores relacionais como == e != comparam dois valores e retornam true ou false, enquanto operadores lógicos combinam múltiplas condições booleanas: && (E) exige que ambos os lados sejam verdadeiros, || (OU) basta que um lado seja verdadeiro, e ! (negação) inverte o valor de uma condição. Esses operadores são a base para construir decisões mais elaboradas em estruturas condicionais. O código também deixa explícita a ordem de prioridade entre eles: a negação (!) é avaliada antes do E (&&), que por sua vez é avaliado antes do OU (||).",
+      "codeExample": "boolean a = true;\nboolean b = false;\n\nSystem.out.println(a && b);\nSystem.out.println(a || b);\nSystem.out.println(!a);//negação\n\nSystem.out.println(a || b && !a);// prioridades ! => && => ||",
+      "whereUsed": "Java-notes/primeiro/src/OperatorLogic.java — demonstra E, OU e negação lógica, incluindo a ordem de prioridade entre eles.",
+      "projectName": "Java-notes"
+    },
+    {
+      "name": "Java: Estruturas condicionais (if/else)",
+      "level": "básico",
+      "shortDescription": "if/else permite que o programa execute blocos de código diferentes dependendo se uma condição é verdadeira ou falsa.",
+      "explanation": "A estrutura if/else é o mecanismo básico de tomada de decisão em Java: o bloco dentro do if roda somente se a condição entre parênteses for verdadeira; caso contrário, o programa passa para o else if (uma nova condição) ou para o else final, que cobre todos os outros casos. É possível encadear vários else if para tratar múltiplas faixas de valores, como no exemplo abaixo que decide uma saudação (bom dia, boa tarde, boa noite) com base na hora do dia.",
+      "codeExample": "int hour = 22;\n\nif (hour >= 0 && hour < 12) {\n    System.out.println(\"Bom dia\"); // 0h até 11h59\n} else if (hour >= 12 && hour < 18) {\n    System.out.println(\"Boa tarde\"); // 12h até 17h59\n} else if (hour >= 18 && hour <= 24) {\n    System.out.println(\"Boa noite\"); // 18h até 24h\n} else {\n    System.out.println(\"Hora inválida\"); // qualquer valor fora de 0-24\n}",
+      "whereUsed": "Java-notes/primeiro/src/IfElse.java — decide uma saudação com base na hora do dia usando if/else if/else encadeados.",
+      "projectName": "Java-notes"
+    },
+    {
+      "name": "Java: Estrutura switch",
+      "level": "intermediário",
+      "shortDescription": "O switch escolhe um bloco de código para executar com base no valor de uma variável, sendo uma alternativa a longas cadeias de if/else.",
+      "explanation": "O switch compara o valor de uma variável (no exemplo, o mês) contra vários valores possíveis (case) e executa o bloco correspondente; o break impede que a execução continue para os próximos casos, e o default cobre qualquer valor não previsto. É possível agrupar vários case seguidos sem código entre eles para que compartilhem o mesmo resultado, como feito abaixo para os meses que têm 31, 30 ou 28 dias.",
+      "codeExample": "switch (month) {\n    case 1:\n    case 3:\n    case 5:\n    case 7:\n    case 8:\n    case 10:\n    case 12:\n        days = 31;\n        break;\n\n    case 2:\n        days = 28; // ou 29 (ano bissexto)\n        break;\n\n    case 4:\n    case 6:\n    case 9:\n    case 11:\n        days = 30;\n        break;\n\n    default:\n        days = 0;\n        System.out.println(\"Inválido\");\n}",
+      "whereUsed": "Java-notes/primeiro/src/SwitchExpressions.java — usa switch com case agrupados para calcular quantos dias tem cada mês.",
+      "projectName": "Java-notes"
+    },
+    {
+      "name": "Java: Casting (conversão de tipos)",
+      "level": "intermediário",
+      "shortDescription": "Casting é a conversão de um valor de um tipo numérico para outro, podendo ser implícita (automática) ou explícita (forçada pelo programador com parênteses).",
+      "explanation": "Quando um tipo 'menor' é atribuído a um tipo 'maior' (como int para double), Java converte automaticamente o valor — isso é casting implícito. Já quando se quer converter de um tipo 'maior' para um 'menor' (como double para int, ou long para int), é preciso usar casting explícito, escrevendo o tipo desejado entre parênteses antes do valor; nesse caso pode haver perda de precisão ou de dados, como a parte decimal de um double sendo descartada ao virar int. O exemplo mostra conversões explícitas de double para int e de long para int.",
+      "codeExample": "double d = 240.56;\nint i = (int) d;\n\nSystem.out.println(d);\nSystem.out.println(i);      //transformando double d em um número inteiro\n\nlong l = 300000000000000l;\nint i2 = (int)l;\nSystem.out.println(l);\nSystem.out.println(i2);",
+      "whereUsed": "Java-notes/primeiro/src/ExplicitCasting.java — converte double para int e long para int usando casting explícito com parênteses.",
+      "projectName": "Java-notes"
+    },
+    {
+      "name": "Java: Entrada de dados com Scanner",
+      "level": "intermediário",
+      "shortDescription": "A classe Scanner permite ler valores digitados pelo usuário no console, como texto ou números.",
+      "explanation": "Scanner é uma classe da biblioteca padrão do Java usada para capturar dados digitados pelo usuário durante a execução do programa. O método nextLine() lê uma linha de texto digitada, que depois pode ser convertida para outros tipos, como double, usando métodos como Double.parseDouble(). O exemplo lê três notas digitadas pelo usuário, converte cada uma de texto para número decimal e calcula a média aritmética entre elas.",
+      "codeExample": "var scanner = new java.util.Scanner(System.in);\n\nSystem.out.println(\"nota 1:\");\ndouble nota1 = Double.parseDouble(scanner.nextLine());\n\nSystem.out.println(\"nota 2:\");\ndouble nota2 = Double.parseDouble(scanner.nextLine());\n\nSystem.out.println(\"nota 3:\");\ndouble nota3 = Double.parseDouble(scanner.nextLine());\n\ndouble media = (nota1 + nota2 + nota3)/3;\nSystem.out.println(\"Média do aluno:\\n\" + media); //Média das notas",
+      "whereUsed": "Java-notes/primeiro/src/ExAverage.java — lê três notas digitadas pelo usuário com Scanner e calcula a média.",
+      "projectName": "Java-notes"
+    },
+    {
+      "name": "Java: Manipulação de datas com Date e Calendar",
+      "level": "avançado",
+      "shortDescription": "As classes Date e Calendar (java.util) representam um instante no tempo e permitem obter, comparar e manipular datas, como somar ou subtrair dias.",
+      "explanation": "Calendar.getInstance() retorna um objeto representando a data e hora atuais, a partir do qual é possível ler (getTime()) ou modificar a data, por exemplo usando add(Calendar.DATE, -15) para retroceder 15 dias. Essa é uma API mais antiga e verbosa do Java (anterior ao pacote java.time introduzido no Java 8), mas ainda aparece bastante em código legado e é importante para entender manipulação de datas antes de migrar para APIs mais modernas como LocalDate ou Instant. O exemplo obtém a data atual e depois calcula a data de 15 dias atrás.",
+      "codeExample": "Calendar agora = Calendar.getInstance();\n\nSystem.out.println(\"A data corrente é: \" + agora.getTime());\n\nagora.add(Calendar.DATE, -15);\nSystem.out.println(\"15 dias atrás:\" + agora.getTime());",
+      "whereUsed": "Java-notes/primeiro/src/Calendar/ManipulatorDate.java — obtém a data atual com Calendar.getInstance() e subtrai 15 dias com add().",
+      "projectName": "Java-notes"
+    }
+  ]
+}
