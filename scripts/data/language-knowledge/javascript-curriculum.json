@@ -1,0 +1,246 @@
+{
+  "language": "JavaScript",
+  "tag": "javascript",
+  "concepts": [
+    {
+      "name": "JavaScript: Laços de repetição (for, while e do-while)",
+      "level": "básico",
+      "shortDescription": "São estruturas que repetem um bloco de código várias vezes, evitando escrever o mesmo código repetidamente.",
+      "explanation": "Em programação, muitas vezes precisamos executar a mesma ação várias vezes, como percorrer uma lista de itens ou repetir uma tarefa até que uma condição pare de ser verdadeira. Para isso existem os \"laços de repetição\" (também chamados de loops). O for é ideal quando você sabe quantas vezes quer repetir algo, pois já define um contador inicial, uma condição de parada e um incremento em uma única linha. O while repete um bloco enquanto uma condição continuar verdadeira, sendo útil quando não se sabe de antemão quantas repetições serão necessárias. Já o do-while é parecido com o while, mas garante que o bloco seja executado pelo menos uma vez antes de checar a condição, porque o teste fica no final. Escolher o tipo certo de loop deixa o código mais claro e evita repetição manual de instruções.",
+      "codeExample": "// for: repete um número conhecido de vezes\nfor (let i = 0; i < 3; i++) {\n  console.log(\"Repetição número \" + i);\n}\n\n// while: repete enquanto a condição for verdadeira\nlet contador = 0;\nwhile (contador < 3) {\n  console.log(\"Contador vale \" + contador);\n  contador++;\n}\n\n// do-while: executa pelo menos uma vez\nlet tentativa = 0;\ndo {\n  console.log(\"Tentativa \" + tentativa);\n  tentativa++;\n} while (tentativa < 1);",
+      "whereUsed": "Usado para percorrer listas de produtos, repetir uma animação ou tentar uma operação até dar certo.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/for"
+    },
+    {
+      "name": "JavaScript: Estrutura condicional if/else e operador ternário",
+      "level": "básico",
+      "shortDescription": "Permitem que o programa tome decisões, executando um trecho de código diferente dependendo se uma condição é verdadeira ou falsa.",
+      "explanation": "Programas raramente seguem um único caminho fixo; geralmente precisam decidir o que fazer dependendo de uma situação, como \"se o usuário está logado, mostre o painel; senão, mostre a tela de login\". O if testa uma condição e executa um bloco de código somente se ela for verdadeira; o else define o que acontece quando a condição é falsa; e o else if permite encadear várias condições diferentes. Quando a decisão é simples — apenas escolher entre dois valores — existe uma forma mais curta chamada operador ternário, escrito como condição ? valorSeVerdadeiro : valorSeFalso. O ternário é útil para atribuir valores rapidamente sem escrever um bloco if/else inteiro, mas deve ser evitado quando a lógica fica muito complexa, pois prejudica a leitura. Dominar decisões condicionais é essencial, pois praticamente todo programa real precisa reagir de formas diferentes a situações diferentes.",
+      "codeExample": "const idade = 20;\n\nif (idade >= 18) {\n  console.log(\"Maior de idade\");\n} else if (idade >= 12) {\n  console.log(\"Adolescente\");\n} else {\n  console.log(\"Criança\");\n}\n\n// Mesmo resultado do primeiro caso, usando ternário\nconst status = idade >= 18 ? \"Maior de idade\" : \"Menor de idade\";\nconsole.log(status);",
+      "whereUsed": "Usado para liberar ou bloquear o acesso a uma funcionalidade dependendo da permissão do usuário.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/Conditional_operator"
+    },
+    {
+      "name": "JavaScript: Laços for-of e for-in",
+      "level": "intermediário",
+      "shortDescription": "Duas formas especiais de loop: for-of percorre os valores de uma coleção (como um array), e for-in percorre as chaves de um objeto.",
+      "explanation": "Além do for tradicional, o JavaScript oferece laços pensados para percorrer coleções de dados de forma mais simples e legível. O for-of foi criado para percorrer diretamente os valores de estruturas \"iteráveis\", como arrays, strings e Maps, sem precisar controlar manualmente um índice numérico. Já o for-in percorre as chaves (nomes das propriedades) de um objeto, sendo útil quando você quer inspecionar ou processar cada propriedade de um objeto genérico. Um erro comum de iniciantes é usar for-in em arrays: embora funcione tecnicamente, ele percorre os índices como texto e pode incluir propriedades extras, então o recomendado é usar for-of ou métodos de array para arrays, e for-in apenas para objetos. Entender a diferença evita bugs sutis e deixa o código mais alinhado com a intenção de quem o escreve.",
+      "codeExample": "const frutas = [\"maçã\", \"banana\", \"uva\"];\n\n// for-of percorre os VALORES do array\nfor (const fruta of frutas) {\n  console.log(fruta);\n}\n\nconst pessoa = { nome: \"Ana\", idade: 30 };\n\n// for-in percorre as CHAVES do objeto\nfor (const chave in pessoa) {\n  console.log(chave + \": \" + pessoa[chave]);\n}",
+      "whereUsed": "Usado para exibir cada item de uma lista de compras na tela ou para listar dinamicamente todos os campos de um formulário.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/for...of"
+    },
+    {
+      "name": "JavaScript: Funções — declaração, expressão e arrow function",
+      "level": "básico",
+      "shortDescription": "Funções são blocos de código reutilizáveis que executam uma tarefa específica e podem ser escritas de diferentes formas em JavaScript.",
+      "explanation": "Uma função é como uma \"receita\" nomeada: você escreve um conjunto de instruções uma única vez e pode executá-la (\"chamá-la\") quantas vezes quiser, sempre que precisar daquela tarefa, evitando copiar e colar o mesmo código. Existem três formas principais de criar funções em JavaScript. A declaração de função usa a palavra function seguida de um nome, e pode ser chamada até antes de aparecer no código (por causa de um comportamento chamado hoisting). A expressão de função atribui uma função anônima ou nomeada a uma variável, e só pode ser usada depois de definida. Já a arrow function (função de seta), introduzida no ES6, é uma sintaxe mais curta usando =>, muito usada em código moderno por ser mais concisa e por não criar seu próprio this. Escolher entre essas formas é mais uma questão de estilo e contexto do que de certo ou errado, mas é essencial reconhecer as três ao ler código de outras pessoas.",
+      "codeExample": "// Declaração de função\nfunction somar(a, b) {\n  return a + b;\n}\n\n// Expressão de função\nconst subtrair = function (a, b) {\n  return a - b;\n};\n\n// Arrow function\nconst multiplicar = (a, b) => a * b;\n\nconsole.log(somar(2, 3));       // 5\nconsole.log(subtrair(5, 1));    // 4\nconsole.log(multiplicar(4, 3)); // 12",
+      "whereUsed": "Usado em praticamente todo código JavaScript para organizar cálculos, validações e ações reutilizáveis.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Functions"
+    },
+    {
+      "name": "JavaScript: Parâmetros padrão de funções",
+      "level": "básico",
+      "shortDescription": "Permitem definir um valor automático para um parâmetro de função, usado quando nenhum argumento é passado para ele.",
+      "explanation": "Quando criamos uma função, normalmente definimos \"parâmetros\", que são os nomes das informações que ela espera receber. Às vezes, porém, é útil que a função funcione mesmo se algum dado não for fornecido por quem a chamou, assumindo um valor razoável nesse caso. Antes do ES6, os programadores tinham que verificar manualmente dentro da função se um parâmetro estava undefined e, se estivesse, atribuir um valor padrão à mão. Os parâmetros padrão simplificam isso: basta escrever parametro = valorPadrao diretamente na lista de parâmetros da função. Esse recurso deixa o código mais curto, mais legível e reduz erros causados por esquecer de passar um argumento.",
+      "codeExample": "function saudar(nome = \"visitante\") {\n  console.log(\"Olá, \" + nome + \"!\");\n}\n\nsaudar(\"Maria\"); // Olá, Maria!\nsaudar();        // Olá, visitante!\n\nfunction calcularTotal(preco, quantidade = 1) {\n  return preco * quantidade;\n}\n\nconsole.log(calcularTotal(10)); // 10",
+      "whereUsed": "Usado em funções de configuração, onde a maioria das opções tem um valor padrão razoável.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Functions/Default_parameters"
+    },
+    {
+      "name": "JavaScript: Arrays — criação e métodos push, pop, shift e unshift",
+      "level": "básico",
+      "shortDescription": "Arrays são listas ordenadas de valores, e esses quatro métodos servem para adicionar ou remover itens no início ou no fim dessa lista.",
+      "explanation": "Um array é uma estrutura de dados que guarda vários valores em uma única variável, organizados em uma sequência numerada a partir do zero (o \"índice\"). Isso é extremamente útil porque, em vez de criar uma variável separada para cada item, você guarda todos juntos e pode acessá-los pela posição. Para manipular o conteúdo de um array, o JavaScript oferece métodos prontos: push adiciona um item ao final do array, pop remove o último item, unshift adiciona um item no início, e shift remove o primeiro item. Esses métodos modificam o array original (são chamados de métodos \"mutáveis\"), diferente de outros métodos de array que criam uma nova lista sem alterar a original. Saber manipular arrays é uma das habilidades mais básicas e usadas em qualquer programa que lida com listas de dados.",
+      "codeExample": "const carrinho = [\"camiseta\", \"calça\"];\n\ncarrinho.push(\"boné\");      // adiciona no final\nconsole.log(carrinho);      // [\"camiseta\", \"calça\", \"boné\"]\n\ncarrinho.pop();              // remove o último\nconsole.log(carrinho);      // [\"camiseta\", \"calça\"]\n\ncarrinho.unshift(\"meia\");   // adiciona no início\nconsole.log(carrinho);      // [\"meia\", \"camiseta\", \"calça\"]\n\ncarrinho.shift();            // remove o primeiro\nconsole.log(carrinho);       // [\"camiseta\", \"calça\"]",
+      "whereUsed": "Usado para gerenciar um carrinho de compras, uma fila de tarefas ou uma lista de notificações.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array"
+    },
+    {
+      "name": "JavaScript: Métodos de array map, filter e reduce",
+      "level": "intermediário",
+      "shortDescription": "Três métodos poderosos que transformam, filtram ou combinam os itens de um array em um novo resultado, sem loops manuais.",
+      "explanation": "Em vez de escrever um for manual toda vez que precisar processar uma lista, o JavaScript oferece métodos de array de alto nível que expressam a intenção do código de forma mais clara. O map percorre um array e retorna um novo array do mesmo tamanho, com cada item transformado por uma função que você fornece — por exemplo, dobrando cada número de uma lista. O filter percorre um array e retorna um novo array contendo apenas os itens que passam em um teste (uma condição que retorna verdadeiro ou falso) — por exemplo, apenas os números pares. Já o reduce percorre o array \"acumulando\" um único resultado a partir de todos os itens, como somar todos os valores de uma lista em um único número total. Nenhum desses três métodos altera o array original; eles sempre retornam um novo valor, o que ajuda a evitar efeitos colaterais inesperados no código.",
+      "codeExample": "const numeros = [1, 2, 3, 4, 5];\n\nconst dobrados = numeros.map((n) => n * 2);\nconsole.log(dobrados); // [2, 4, 6, 8, 10]\n\nconst pares = numeros.filter((n) => n % 2 === 0);\nconsole.log(pares); // [2, 4]\n\nconst soma = numeros.reduce((total, n) => total + n, 0);\nconsole.log(soma); // 15",
+      "whereUsed": "Usado para calcular o total de um pedido, filtrar produtos por categoria ou transformar dados vindos de uma API.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/map"
+    },
+    {
+      "name": "JavaScript: O método forEach",
+      "level": "básico",
+      "shortDescription": "Um método de array que executa uma função para cada item da lista, sendo uma alternativa mais legível ao loop for tradicional.",
+      "explanation": "Quando você só precisa \"fazer algo\" com cada item de um array — como exibi-lo na tela — sem criar uma nova lista, o forEach é uma opção direta e legível. Ele recebe como argumento uma função (chamada de função de callback) e a executa automaticamente uma vez para cada item do array, passando o valor do item, seu índice e o array completo para essa função. Diferente do map, o forEach não cria nem retorna um novo array — ele sempre retorna undefined, então serve apenas para executar ações, não para transformar dados. É importante lembrar que não é possível interromper um forEach no meio (com break, por exemplo), então se for necessário parar a repetição antes do fim, um for tradicional pode ser mais adequado.",
+      "codeExample": "const nomes = [\"Ana\", \"Bruno\", \"Carla\"];\n\nnomes.forEach((nome, indice) => {\n  console.log(indice + \": \" + nome);\n});\n// 0: Ana\n// 1: Bruno\n// 2: Carla",
+      "whereUsed": "Usado para exibir cada mensagem de uma lista de notificações na tela do usuário.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Array/forEach"
+    },
+    {
+      "name": "JavaScript: Objetos e objetos literais",
+      "level": "básico",
+      "shortDescription": "Objetos são coleções de dados organizados em pares de chave e valor, usados para representar coisas do mundo real com várias características.",
+      "explanation": "Enquanto um array organiza valores em uma sequência numerada, um objeto organiza valores por nome, chamados de \"propriedades\". Isso é útil para representar uma entidade com várias características, como uma pessoa que tem nome, idade e cidade. A forma mais comum de criar um objeto é o \"objeto literal\", escrito diretamente entre chaves { }, com cada propriedade separada por vírgula no formato chave: valor. Além de guardar valores simples, um objeto também pode guardar funções como propriedades — nesse caso, elas são chamadas de \"métodos\" do objeto, e representam ações que aquele objeto pode realizar. Para acessar ou alterar uma propriedade, usa-se a notação de ponto (objeto.propriedade) ou a notação de colchetes (objeto[\"propriedade\"]), sendo a segunda útil quando o nome da propriedade é dinâmico ou vem de uma variável.",
+      "codeExample": "const pessoa = {\n  nome: \"Carlos\",\n  idade: 28,\n  cidade: \"São Paulo\",\n  cumprimentar: function () {\n    console.log(\"Oi, eu sou \" + this.nome);\n  },\n};\n\nconsole.log(pessoa.nome);       // Carlos\nconsole.log(pessoa[\"idade\"]);   // 28\npessoa.cumprimentar();          // Oi, eu sou Carlos\n\npessoa.idade = 29; // alterando uma propriedade",
+      "whereUsed": "Usado para representar um usuário, um produto de um e-commerce ou a resposta de uma API.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Working_with_objects"
+    },
+    {
+      "name": "JavaScript: A palavra-chave this",
+      "level": "intermediário",
+      "shortDescription": "this é uma referência especial que aponta para \"o objeto dono\" do código em execução, e seu valor muda dependendo de como a função é chamada.",
+      "explanation": "Dentro de um método de um objeto, muitas vezes é necessário acessar as próprias propriedades desse objeto, e é para isso que existe a palavra-chave this. De forma simplificada, this representa \"quem está chamando\" a função no momento em que ela é executada — se um método é chamado através de objeto.metodo(), dentro desse método this se refere a objeto. Esse comportamento pode confundir iniciantes porque o valor de this não é fixo: ele depende de como a função foi chamada, não de onde ela foi definida. Um detalhe importante é que arrow functions não possuem seu próprio this — elas \"herdam\" o this do contexto onde foram criadas, o que resolve muitos problemas comuns ao usar this dentro de callbacks. Entender this é fundamental para trabalhar com objetos, classes e várias APIs do navegador que dependem desse mecanismo.",
+      "codeExample": "const carro = {\n  marca: \"Toyota\",\n  mostrarMarca: function () {\n    console.log(this.marca);\n  },\n};\n\ncarro.mostrarMarca(); // \"Toyota\" — this é o objeto \"carro\"\n\nconst outraReferencia = carro.mostrarMarca;\n// outraReferencia(); // undefined, pois perdeu o vínculo com \"carro\"",
+      "whereUsed": "Usado dentro de métodos de objetos e classes para acessar as propriedades do próprio objeto.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/this"
+    },
+    {
+      "name": "JavaScript: Desestruturação de arrays e objetos",
+      "level": "intermediário",
+      "shortDescription": "Uma sintaxe que permite extrair valores de arrays ou propriedades de objetos e colocá-los diretamente em variáveis separadas, em uma única linha.",
+      "explanation": "Antes do ES6, para pegar valores de dentro de um array ou objeto e guardá-los em variáveis individuais, era preciso escrever uma linha de código para cada valor. A desestruturação (destructuring) resolve isso permitindo \"desmontar\" a estrutura de uma vez só. Na desestruturação de array, usa-se colchetes [ ] no lado esquerdo da atribuição, e os valores são extraídos na ordem em que aparecem no array. Na desestruturação de objeto, usa-se chaves { }, e os nomes das variáveis devem corresponder aos nomes das propriedades do objeto (a menos que você use : para renomear). Esse recurso é muito usado para simplificar código que recebe vários dados de uma vez, como parâmetros de funções ou respostas de uma API.",
+      "codeExample": "// Desestruturação de array\nconst coordenadas = [10, 20];\nconst [x, y] = coordenadas;\nconsole.log(x, y); // 10 20\n\n// Desestruturação de objeto\nconst usuario = { nome: \"Julia\", idade: 25 };\nconst { nome, idade } = usuario;\nconsole.log(nome, idade); // Julia 25\n\n// Renomeando durante a desestruturação\nconst { nome: nomeUsuario } = usuario;\nconsole.log(nomeUsuario); // Julia",
+      "whereUsed": "Usado para extrair rapidamente os dados relevantes de uma resposta de API ou dos parâmetros de uma função.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment"
+    },
+    {
+      "name": "JavaScript: Operadores spread e rest",
+      "level": "intermediário",
+      "shortDescription": "O operador spread (...) \"espalha\" os elementos de um array ou objeto, enquanto o rest agrupa vários valores soltos em um único array.",
+      "explanation": "Embora escritos com os mesmos três pontos (...), spread e rest fazem coisas opostas, e o significado depende do contexto em que aparecem. O operador spread é usado para expandir os elementos de um array ou as propriedades de um objeto em outro lugar, como ao copiar um array, juntar dois arrays, ou copiar as propriedades de um objeto para outro. Já o operador rest é usado para fazer o contrário: agrupar um número variável de valores soltos em um único array, sendo muito útil em parâmetros de função quando não se sabe de antemão quantos argumentos serão passados. Um uso comum do rest é combinado com a desestruturação, para capturar \"o restante\" dos itens que não foram explicitamente extraídos. Ambos os operadores tornaram o código para copiar, combinar e agrupar dados muito mais curto e legível do que as alternativas usadas antes do ES6.",
+      "codeExample": "// Spread: espalhando elementos\nconst parte1 = [1, 2];\nconst parte2 = [3, 4];\nconst combinado = [...parte1, ...parte2];\nconsole.log(combinado); // [1, 2, 3, 4]\n\nconst original = { a: 1, b: 2 };\nconst copia = { ...original, c: 3 };\nconsole.log(copia); // { a: 1, b: 2, c: 3 }\n\n// Rest: agrupando argumentos em um array\nfunction somarTudo(...numeros) {\n  return numeros.reduce((total, n) => total + n, 0);\n}\nconsole.log(somarTudo(1, 2, 3, 4)); // 10",
+      "whereUsed": "Usado para combinar listas de dados, copiar objetos de configuração sem alterar o original ou criar funções que aceitam qualquer quantidade de argumentos.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/Spread_syntax"
+    },
+    {
+      "name": "JavaScript: Selecionando e modificando elementos do DOM com querySelector",
+      "level": "básico",
+      "shortDescription": "O DOM é a representação de uma página HTML que o JavaScript pode ler e alterar, e querySelector é o método mais comum para encontrar um elemento nessa página.",
+      "explanation": "Quando o navegador carrega uma página HTML, ele cria uma estrutura em memória chamada DOM (Document Object Model, ou \"Modelo de Objeto do Documento\"), que representa cada elemento da página — títulos, parágrafos, botões — como um objeto que o JavaScript pode acessar e manipular. O método document.querySelector recebe um seletor CSS (o mesmo tipo usado para estilizar páginas, como .classe ou #id) e retorna o primeiro elemento da página que corresponde a esse seletor; já document.querySelectorAll retorna todos os elementos correspondentes. Depois de selecionar um elemento, é possível ler ou alterar seu conteúdo através de propriedades como textContent (texto simples) ou innerHTML (conteúdo com HTML), além de alterar estilos e atributos. Essa capacidade de ler e modificar a página depois que ela já foi carregada é o que torna páginas web interativas, em vez de apenas documentos estáticos. É por meio do DOM que o JavaScript conecta o código escrito pelo programador com o que o usuário efetivamente vê e vivencia na tela.",
+      "codeExample": "// HTML de exemplo:\n// <p id=\"mensagem\">Texto original</p>\n// <button class=\"botao\">Clique aqui</button>\n\nconst paragrafo = document.querySelector(\"#mensagem\");\nparagrafo.textContent = \"Texto alterado pelo JavaScript!\";\n\nconst botao = document.querySelector(\".botao\");\nbotao.style.backgroundColor = \"lightblue\";",
+      "whereUsed": "Usado em qualquer página web que precisa mostrar informações dinâmicas, como atualizar um contador ou exibir uma mensagem de erro.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/API/Document/querySelector"
+    },
+    {
+      "name": "JavaScript: Eventos e addEventListener",
+      "level": "básico",
+      "shortDescription": "Eventos são ações que acontecem na página (como um clique), e addEventListener permite executar uma função do JavaScript automaticamente quando esses eventos ocorrem.",
+      "explanation": "Uma página web interativa precisa reagir a ações do usuário, como clicar em um botão, digitar em um campo de texto ou rolar a tela — essas ações são chamadas de \"eventos\". O método addEventListener é a forma padrão de \"ouvir\" um evento em um elemento do DOM: ele recebe o nome do evento (como \"click\") e uma função de callback que será executada automaticamente sempre que esse evento acontecer naquele elemento. É possível adicionar vários listeners diferentes ao mesmo elemento, e a função de callback recebe automaticamente um objeto de evento com informações úteis, como qual elemento foi clicado ou qual tecla foi pressionada. Esse mecanismo é chamado de \"programação orientada a eventos\", pois o fluxo do programa não segue uma ordem fixa, e sim reage ao que o usuário faz, quando ele faz. Sem eventos, uma página seria apenas conteúdo estático, incapaz de responder a cliques, formulários ou qualquer interação.",
+      "codeExample": "// HTML de exemplo:\n// <button id=\"botaoContador\">Clique em mim</button>\n// <p id=\"resultado\">0 cliques</p>\n\nlet cliques = 0;\nconst botao = document.querySelector(\"#botaoContador\");\nconst resultado = document.querySelector(\"#resultado\");\n\nbotao.addEventListener(\"click\", function () {\n  cliques++;\n  resultado.textContent = cliques + \" cliques\";\n});",
+      "whereUsed": "Usado em qualquer botão, formulário ou menu que precisa reagir a um clique, digitação ou envio do usuário.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/API/EventTarget/addEventListener"
+    },
+    {
+      "name": "JavaScript: JSON.stringify e JSON.parse",
+      "level": "intermediário",
+      "shortDescription": "JSON é um formato de texto para representar dados, e esses dois métodos convertem entre objetos JavaScript e esse formato de texto.",
+      "explanation": "JSON (JavaScript Object Notation) é um formato de texto simples e amplamente usado para trocar dados entre sistemas diferentes, como entre um navegador e um servidor, mesmo que eles usem linguagens de programação diferentes — seu formato é muito parecido com o de objetos e arrays do JavaScript. Como esses dados costumam viajar como texto (por exemplo, dentro de uma requisição de rede ou salvos em um arquivo), o JavaScript precisa converter entre objetos \"de verdade\" e essa representação em texto. O método JSON.stringify recebe um objeto ou array do JavaScript e o transforma em uma string no formato JSON, útil para enviar dados ou salvá-los. Já o JSON.parse faz o caminho inverso: recebe uma string em formato JSON e a transforma de volta em um objeto ou array real do JavaScript, pronto para ser usado no código. Esses dois métodos são essenciais sempre que o JavaScript se comunica com uma API, um servidor, ou até com o armazenamento local do navegador.",
+      "codeExample": "const usuario = { nome: \"Pedro\", idade: 22, ativo: true };\n\n// Convertendo objeto para texto JSON\nconst textoJson = JSON.stringify(usuario);\nconsole.log(textoJson); // '{\"nome\":\"Pedro\",\"idade\":22,\"ativo\":true}'\n\n// Convertendo texto JSON de volta para objeto\nconst objetoRecuperado = JSON.parse(textoJson);\nconsole.log(objetoRecuperado.nome); // Pedro",
+      "whereUsed": "Usado para enviar dados de um formulário para um servidor ou para salvar preferências do usuário no localStorage do navegador.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/JSON"
+    },
+    {
+      "name": "JavaScript: Funções de alta ordem e callbacks",
+      "level": "intermediário",
+      "shortDescription": "Uma função de alta ordem é uma função que recebe outra função como argumento ou retorna uma função; a função passada como argumento é chamada de callback.",
+      "explanation": "Em JavaScript, funções são tratadas como \"cidadãs de primeira classe\", o que significa que podem ser guardadas em variáveis, passadas como argumento para outras funções e até retornadas por outras funções, assim como números ou textos. Uma \"função de alta ordem\" é qualquer função que aceita outra função como parâmetro ou que devolve uma função como resultado — métodos de array como map, filter e forEach são exemplos comuns de funções de alta ordem, pois todos recebem uma função como argumento. Essa função passada como argumento é chamada de \"callback\" (função de retorno), porque será \"chamada de volta\" pela função de alta ordem em um momento apropriado, como para cada item de um array, ou quando uma operação demorada terminar. Esse padrão é muito poderoso porque separa \"o que fazer com cada item\" (a lógica específica, no callback) de \"como percorrer ou processar os itens\" (a lógica genérica, na função de alta ordem). Callbacks também são a base histórica para lidar com código assíncrono em JavaScript, antes da popularização de Promises e async/await.",
+      "codeExample": "function processarNumero(numero, callback) {\n  const resultado = callback(numero);\n  console.log(\"Resultado:\", resultado);\n}\n\nprocessarNumero(5, function (n) {\n  return n * n;\n});\n// Resultado: 25\n\nprocessarNumero(5, (n) => n + 10);\n// Resultado: 15",
+      "whereUsed": "Usado em métodos de array, em manipuladores de eventos e em qualquer código que precise executar uma ação personalizada dentro de um processo genérico.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Glossary/Callback_function"
+    },
+    {
+      "name": "JavaScript: Closures (funções de fechamento)",
+      "level": "avançado",
+      "shortDescription": "Uma closure é uma função que \"lembra\" e continua tendo acesso às variáveis do local onde foi criada, mesmo depois que esse local já terminou de executar.",
+      "explanation": "Em JavaScript, quando uma função é criada dentro de outra função, ela tem acesso às variáveis da função externa — isso por si só não é surpreendente. O que torna as closures um conceito avançado é que essa função interna continua tendo acesso a essas variáveis mesmo depois que a função externa já terminou de ser executada e, normalmente, suas variáveis locais deveriam deixar de existir. Isso acontece porque o JavaScript mantém viva a referência ao ambiente (o \"escopo\") onde a função interna foi criada, enquanto essa função interna ainda existir em algum lugar do programa. Closures são extremamente úteis para criar variáveis \"privadas\", que não podem ser acessadas diretamente de fora, mas apenas através de funções específicas — um padrão comum para encapsular dados e proteger o estado interno de um pedaço de código. Esse conceito aparece, mesmo sem perceber, em contadores, em funções de configuração e em praticamente qualquer callback que usa uma variável definida fora dele.",
+      "codeExample": "function criarContador() {\n  let contagem = 0; // variável \"privada\", só acessível internamente\n\n  return function () {\n    contagem++;\n    return contagem;\n  };\n}\n\nconst contador = criarContador();\nconsole.log(contador()); // 1\nconsole.log(contador()); // 2\nconsole.log(contador()); // 3\n// \"contagem\" não pode ser acessada diretamente de fora de criarContador",
+      "whereUsed": "Usado para criar contadores, caches ou qualquer estado interno que deve ficar protegido do acesso externo direto.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Closures"
+    },
+    {
+      "name": "JavaScript: Promises",
+      "level": "avançado",
+      "shortDescription": "Uma Promise é um objeto que representa um valor que ainda não está disponível, mas que será entregue no futuro — com sucesso ou com erro.",
+      "explanation": "Muitas operações em JavaScript não terminam instantaneamente, como buscar dados de um servidor ou ler um arquivo, e o programa não pode simplesmente \"esperar parado\" por esse resultado sem travar a página inteira. Uma Promise (promessa) é um objeto que representa o resultado futuro de uma dessas operações assíncronas, podendo estar em um de três estados: \"pendente\" (ainda não terminou), \"cumprida\" (terminou com sucesso) ou \"rejeitada\" (terminou com erro). Para reagir ao resultado de uma Promise, usa-se o método .then(), que executa uma função quando ela é cumprida, e o método .catch(), que executa uma função quando ela é rejeitada. As Promises substituíram um padrão antigo baseado apenas em callbacks aninhados (conhecido informalmente como \"callback hell\"), tornando o código assíncrono mais organizado e fácil de encadear. Elas também são a base sobre a qual a sintaxe mais moderna de async/await foi construída.",
+      "codeExample": "function esperar(segundos) {\n  return new Promise(function (resolve, reject) {\n    if (segundos < 0) {\n      reject(\"Tempo inválido\");\n    } else {\n      setTimeout(function () {\n        resolve(\"Esperou \" + segundos + \" segundos\");\n      }, segundos * 1000);\n    }\n  });\n}\n\nesperar(1)\n  .then((mensagem) => console.log(mensagem))\n  .catch((erro) => console.log(\"Erro:\", erro));",
+      "whereUsed": "Usado para buscar dados de uma API, ler arquivos ou qualquer operação que leva tempo para ser concluída.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Global_Objects/Promise"
+    },
+    {
+      "name": "JavaScript: Async/await e fetch()",
+      "level": "avançado",
+      "shortDescription": "async/await é uma sintaxe que permite escrever código assíncrono (baseado em Promises) de um jeito que parece código sequencial comum, e fetch() é a função usada para fazer requisições HTTP.",
+      "explanation": "Embora as Promises tenham resolvido vários problemas do código assíncrono, encadear vários .then() ainda podia deixar o código difícil de ler. A sintaxe async/await, introduzida no ES2017, resolve isso: uma função marcada com a palavra async automaticamente retorna uma Promise, e dentro dela é possível usar a palavra await antes de outra Promise para \"pausar\" a execução daquela função até que o resultado fique pronto, sem travar o restante do programa. Isso faz o código assíncrono parecer código comum, sequencial, o que facilita muito a leitura e o uso de estruturas como try/catch para tratar erros. A função fetch() é a API nativa do navegador para fazer requisições HTTP, como buscar dados de um servidor ou API externa, e ela retorna justamente uma Promise, o que a torna um caso de uso perfeito para async/await. Juntas, essas duas ferramentas são o padrão moderno para buscar e manipular dados vindos da internet dentro de uma aplicação JavaScript.",
+      "codeExample": "async function buscarUsuario(id) {\n  try {\n    const resposta = await fetch(\"https://api.exemplo.com/usuarios/\" + id);\n    const dados = await resposta.json();\n    console.log(dados);\n    return dados;\n  } catch (erro) {\n    console.log(\"Falha ao buscar usuário:\", erro);\n  }\n}\n\nbuscarUsuario(1);",
+      "whereUsed": "Usado para carregar dados de uma API externa, como informações do clima, notícias ou dados de um usuário logado.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/async_function"
+    },
+    {
+      "name": "JavaScript: Classes ES6",
+      "level": "avançado",
+      "shortDescription": "Classes são um modelo (um \"molde\") para criar objetos com a mesma estrutura e comportamento, introduzidas no ES6 como uma sintaxe mais clara para programação orientada a objetos.",
+      "explanation": "Quando um programa precisa criar vários objetos parecidos — como vários usuários, produtos ou personagens de um jogo — repetir a criação de cada objeto manualmente seria trabalhoso e propenso a erros. Uma classe funciona como uma planta ou molde: define quais propriedades e métodos todo objeto criado a partir dela terá. O método especial constructor é executado automaticamente sempre que um novo objeto é criado a partir da classe (usando a palavra-chave new), e é ali que normalmente se definem as propriedades iniciais daquele objeto. Cada objeto criado a partir de uma classe é chamado de \"instância\", e classes também suportam \"herança\" através da palavra-chave extends, que permite que uma classe reaproveite e estenda o comportamento de outra. Vale destacar que classes em JavaScript são, por baixo dos panos, apenas uma forma mais legível de escrever o sistema de protótipos que a linguagem já usava antes do ES6 — elas não introduziram um modelo de orientação a objetos totalmente novo, apenas uma sintaxe mais familiar para quem vem de outras linguagens.",
+      "codeExample": "class Animal {\n  constructor(nome, som) {\n    this.nome = nome;\n    this.som = som;\n  }\n\n  fazerSom() {\n    console.log(this.nome + \" faz \" + this.som);\n  }\n}\n\nclass Cachorro extends Animal {\n  constructor(nome) {\n    super(nome, \"Au au\");\n  }\n}\n\nconst rex = new Cachorro(\"Rex\");\nrex.fazerSom(); // Rex faz Au au",
+      "whereUsed": "Usado para modelar entidades do sistema, como usuários, produtos ou componentes de uma interface, com estrutura e comportamento reutilizáveis.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Classes"
+    },
+    {
+      "name": "JavaScript: Módulos — import e export",
+      "level": "intermediário",
+      "shortDescription": "Módulos permitem dividir o código JavaScript em vários arquivos separados, cada um podendo exportar e importar partes específicas de código entre si.",
+      "explanation": "À medida que um projeto cresce, manter todo o código em um único arquivo se torna difícil de organizar e manter. Os módulos ES6 resolvem esse problema permitindo dividir o código em vários arquivos, cada um responsável por uma parte específica da aplicação, como um arquivo só para funções matemáticas e outro só para manipulação de usuários. A palavra-chave export marca quais variáveis, funções ou classes de um arquivo devem ficar disponíveis para outros arquivos usarem; já import traz essas partes exportadas para dentro de outro arquivo, para que possam ser utilizadas ali. Existem duas formas principais de exportar: \"exportações nomeadas\" (export), que podem ser várias por arquivo e são importadas pelo nome exato, e a \"exportação padrão\" (export default), da qual só pode haver uma por arquivo e que pode ser importada com qualquer nome. Usar módulos deixa o código mais organizado, reutilizável entre diferentes partes do projeto e mais fácil de testar isoladamente.",
+      "codeExample": "// arquivo: matematica.js\nexport function somar(a, b) {\n  return a + b;\n}\n\nexport const PI = 3.14159;\n\nexport default function multiplicar(a, b) {\n  return a * b;\n}\n\n// arquivo: principal.js\nimport multiplicar, { somar, PI } from \"./matematica.js\";\n\nconsole.log(somar(2, 3));      // 5\nconsole.log(PI);                // 3.14159\nconsole.log(multiplicar(2, 5)); // 10",
+      "whereUsed": "Usado em qualquer aplicação JavaScript de médio a grande porte para organizar o código em arquivos separados por responsabilidade.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Guide/Modules"
+    },
+    {
+      "name": "JavaScript: Igualdade == vs ===",
+      "level": "básico",
+      "shortDescription": "São dois operadores para comparar valores; == compara apenas o valor (convertendo tipos se necessário), enquanto === compara valor e tipo, sem conversão.",
+      "explanation": "Comparar dois valores é uma das operações mais comuns em programação, mas o JavaScript oferece duas formas diferentes de fazer isso, o que costuma confundir iniciantes. O operador == (igualdade solta) compara apenas se os valores \"parecem\" iguais, e para isso ele converte automaticamente os tipos envolvidos antes de comparar — por exemplo, 5 == \"5\" resulta em true, porque o texto \"5\" é convertido para o número 5 antes da comparação. Já o operador === (igualdade estrita) compara tanto o valor quanto o tipo, sem fazer nenhuma conversão automática, então 5 === \"5\" resulta em false, pois um é número e o outro é texto. Essas conversões automáticas do == seguem regras que nem sempre são intuitivas e podem gerar bugs difíceis de identificar, por isso a recomendação amplamente aceita na comunidade JavaScript é sempre preferir === (e seu equivalente !== para diferença), reservando == apenas para casos muito específicos e intencionais.",
+      "codeExample": "console.log(5 == \"5\");   // true  (converte o texto para número)\nconsole.log(5 === \"5\");  // false (tipos diferentes: number e string)\n\nconsole.log(0 == false); // true  (conversão de tipo)\nconsole.log(0 === false);// false (number e boolean são tipos diferentes)\n\nconsole.log(null == undefined);  // true\nconsole.log(null === undefined); // false",
+      "whereUsed": "Usado em toda comparação de valores, como validar se um formulário foi preenchido corretamente ou comparar uma resposta do usuário.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Operators/Equality"
+    },
+    {
+      "name": "JavaScript: Valores truthy e falsy",
+      "level": "básico",
+      "shortDescription": "São os valores que o JavaScript trata como \"verdadeiro\" (truthy) ou \"falso\" (falsy) quando aparecem em um contexto que espera um booleano, como um if.",
+      "explanation": "Em JavaScript, nem sempre é necessário usar exatamente true ou false dentro de uma condição — qualquer valor pode ser avaliado em um contexto booleano, como dentro de um if, e o JavaScript decide automaticamente se aquele valor conta como verdadeiro ou falso. Os valores considerados \"falsy\" (avaliados como falso) são apenas um pequeno grupo fixo: false, 0, \"\" (texto vazio), null, undefined e NaN. Todo e qualquer outro valor é considerado \"truthy\" (avaliado como verdadeiro), incluindo coisas que podem surpreender iniciantes, como um array vazio [] ou um objeto vazio {}, que são truthy mesmo parecendo \"vazios\" ou \"nada\". Esse comportamento é frequentemente usado como atalho para verificar rapidamente se uma variável tem algum valor útil, por exemplo if (nome) em vez de if (nome !== \"\" && nome !== null). Entender truthy e falsy evita bugs sutis, especialmente ao validar entradas do usuário ou verificar se uma variável foi de fato preenchida.",
+      "codeExample": "if (0) {\n  console.log(\"Não aparece, pois 0 é falsy\");\n}\n\nif (\"\") {\n  console.log(\"Não aparece, pois string vazia é falsy\");\n}\n\nif (\"Olá\") {\n  console.log(\"Aparece, pois texto não vazio é truthy\");\n}\n\nif ([]) {\n  console.log(\"Aparece! Array vazio é truthy, mesmo parecendo vazio\");\n}",
+      "whereUsed": "Usado para validar rapidamente se um campo de formulário foi preenchido ou se uma variável possui algum valor antes de usá-la.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Glossary/Truthy"
+    },
+    {
+      "name": "JavaScript: Tratamento de erros com try/catch",
+      "level": "intermediário",
+      "shortDescription": "try/catch é uma estrutura que permite \"tentar\" executar um código que pode falhar e capturar o erro, evitando que ele quebre todo o programa.",
+      "explanation": "Erros são inevitáveis em programação: uma API pode estar fora do ar, o usuário pode digitar um dado inválido, ou um arquivo pode não existir. Sem tratamento, um erro faz o JavaScript interromper a execução do programa imediatamente a partir daquele ponto. A estrutura try/catch permite \"tentar\" (try) executar um bloco de código que pode falhar, e caso um erro aconteça dentro desse bloco, a execução salta automaticamente para o bloco catch, onde o erro pode ser tratado (por exemplo, mostrando uma mensagem amigável ao usuário) em vez de travar toda a aplicação. Também existe um bloco opcional finally, que executa sempre, tenha ocorrido erro ou não, útil para tarefas de limpeza como fechar uma conexão. É possível também lançar erros propositalmente com a palavra-chave throw, criando validações personalizadas que avisam quando algo está fora do esperado dentro do próprio código.",
+      "codeExample": "function dividir(a, b) {\n  if (b === 0) {\n    throw new Error(\"Não é possível dividir por zero\");\n  }\n  return a / b;\n}\n\ntry {\n  const resultado = dividir(10, 0);\n  console.log(resultado);\n} catch (erro) {\n  console.log(\"Ocorreu um erro:\", erro.message);\n} finally {\n  console.log(\"Tentativa de divisão finalizada\");\n}",
+      "whereUsed": "Usado para tratar falhas em requisições de rede, conversões de dados ou qualquer operação que possa falhar de forma imprevisível.",
+      "projectName": "Referência Geral (JavaScript)",
+      "documentationUrl": "https://developer.mozilla.org/pt-BR/docs/Web/JavaScript/Reference/Statements/try...catch"
+    }
+  ]
+}

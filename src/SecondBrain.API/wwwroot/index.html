@@ -346,7 +346,9 @@ function renderNoteContent(content) {
   const segments = (content || '').split(/```[a-z]*\n([\s\S]*?)```/g);
   return segments.map((seg, i) => {
     if (i % 2 === 1) return `<pre class="code-block">${escapeHtml(seg.trim())}</pre>`;
-    return escapeHtml(seg).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    return escapeHtml(seg)
+      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+      .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
   }).join('');
 }
 
@@ -374,24 +376,33 @@ function renderNav(concepts) {
   `).join('');
 }
 
+// Troca o conteúdo principal e sempre volta o scroll pro topo — sem isso, ao
+// sair de uma lista longa (scroll bem descido) pra um verbete curto, a página
+// ficava "em branco" porque continuava rolada além do conteúdo novo.
+function setMainContent(html) {
+  const main = document.getElementById('main');
+  main.innerHTML = html;
+  window.scrollTo(0, 0);
+  main.scrollTop = 0;
+}
+
 function renderFeed() {
   state.view = { type: 'feed' };
   document.getElementById('searchInput').value = '';
   renderNav(state.concepts);
-  const main = document.getElementById('main');
   const tagName = activeTagName();
   const title = tagName ? `Verbetes · ${tagName}` : 'Seus verbetes';
   if (!state.concepts.length) {
-    main.innerHTML = `
+    setMainContent(`
       <div class="main-header"><h1>${escapeHtml(title)}</h1></div>
       <div class="empty-state">
         <h2>Nada por aqui ainda</h2>
         <p>${tagName ? 'Nenhum verbete guardado com essa tag ainda.' : 'Clique em "Novo verbete" pra guardar a primeira coisa que você aprendeu.'}</p>
       </div>
-    `;
+    `);
     return;
   }
-  main.innerHTML = `
+  setMainContent(`
     <div class="main-header"><h1>${escapeHtml(title)}</h1></div>
     <div class="main-body">
       ${state.concepts.map(c => `
@@ -401,7 +412,7 @@ function renderFeed() {
         </div>
       `).join('')}
     </div>
-  `;
+  `);
 }
 
 let searchTimer = null;
@@ -415,19 +426,18 @@ function onSearchInput() {
 async function runSearch(q) {
   state.view = { type: 'search', q };
   const data = await api('/api/search?q=' + encodeURIComponent(q));
-  const main = document.getElementById('main');
   const typeLabel = { concept: 'Verbete', note: 'Anotação', project: 'Projeto' };
   if (!data.results.length) {
-    main.innerHTML = `
+    setMainContent(`
       <div class="main-header"><h1>Busca</h1></div>
       <div class="empty-state">
         <h2>Nada encontrado para "${escapeHtml(q)}"</h2>
         <p>Talvez você ainda não tenha guardado isso — <a href="#" onclick="openNewConceptModal('${escapeHtml(q)}');return false;">criar um verbete</a> com esse nome?</p>
       </div>
-    `;
+    `);
     return;
   }
-  main.innerHTML = `
+  setMainContent(`
     <div class="main-header"><h1>Busca: "${escapeHtml(q)}"</h1></div>
     <div class="main-body">
       ${data.results.map(r => `
@@ -437,7 +447,7 @@ async function runSearch(q) {
         </div>
       `).join('')}
     </div>
-  `;
+  `);
 }
 
 function modalShell(innerHtml) {
@@ -495,7 +505,7 @@ async function openConceptDetail(id) {
 }
 
 function renderConceptDetail(c) {
-  document.getElementById('main').innerHTML = `
+  setMainContent(`
     <div class="main-header">
       <button class="icon-btn" onclick="renderFeed()">${svg('back')}</button>
       <h1>${escapeHtml(c.name)}</h1>
@@ -524,7 +534,7 @@ function renderConceptDetail(c) {
         <button class="btn btn-danger" onclick="deleteConcept('${c.id}')">Apagar este verbete</button>
       </div>
     </div>
-  `;
+  `);
 }
 
 async function quickAddNote(conceptId) {
