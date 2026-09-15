@@ -71,16 +71,24 @@ rodar); automatizar via tarefa agendada do Windows é uma opção futura, ainda 
 
 ## Base de conhecimento de linguagens
 
-O SecondBrain já vem com 85 verbetes reais extraídos dos próprios projetos do usuário — não são exemplos
-inventados, é código de verdade puxado de cada repositório: **Go** (Notification Engine), **C#** (este
-projeto), **C++/Arduino** (PlatformIO-Projects), **Java** e **JavaScript** (all-notes) e **Python**
-(Python-notes, pid-system-in-Python, pdf-editor). Cada verbete tem uma definição curta + uma anotação com a
-explicação completa (básico → avançado) e o trecho de código real, já relacionado à Tag da linguagem e ao
-Project de origem.
+O SecondBrain vem com **222 verbetes** cobrindo 6 linguagens, do "Hello World" a tópicos avançados (OOP,
+generics, async, ponteiros inteligentes...):
 
-Script: [`scripts/import-language-knowledge.ps1`](scripts/import-language-knowledge.ps1), lendo os dados de
-[`scripts/data/language-knowledge/`](scripts/data/language-knowledge). Idempotente (roda de novo sem duplicar,
-só atualiza). Requer a API no ar.
+- **85 vêm de código real** dos próprios projetos do usuário — não são exemplos inventados: **Go**
+  (Notification Engine), **C#** (este projeto), **C++/Arduino** (PlatformIO-Projects), **Java** e
+  **JavaScript** (all-notes) e **Python** (Python-notes, pid-system-in-Python, pdf-editor).
+- **137 são currículo de referência geral** — o restante do que uma linguagem tem, do básico ao avançado,
+  pensado pra alguém que não sabe nada do assunto: exemplos genéricos corretos (não vêm de um repositório
+  específico, por isso ficam num Project à parte, "Referência Geral (Linguagem)"), cada um com um link pra
+  documentação oficial (MDN, docs.python.org, Microsoft Learn, Oracle, cppreference, go.dev).
+
+Cada verbete tem uma definição curta + uma anotação com a explicação completa, o exemplo de código e (quando
+aplicável) o link de documentação — tudo já relacionado à Tag da linguagem (visível como aba na interface) e
+ao Project de origem.
+
+Scripts: [`scripts/import-language-knowledge.ps1`](scripts/import-language-knowledge.ps1), lendo os dados de
+[`scripts/data/language-knowledge/`](scripts/data/language-knowledge) (um arquivo por linguagem/origem).
+Idempotente (roda de novo sem duplicar, só atualiza). Requer a API no ar.
 
 ## Arquitetura
 
@@ -285,12 +293,15 @@ só validação manual.
   adicionar uma lib pra isso agora seria peso sem ganho real.
 - **.NET 8 (LTS)**, não a versão mais nova instalada na máquina — prioriza maturidade de tooling/documentação
   pra um projeto que também é estudo de C#/ASP.NET Core.
-- **Base de conhecimento de linguagens gerada com apoio de agentes em paralelo.** Extrair e escrever ~85
-  verbetes de 6 linguagens a partir de código real de vários repositórios era grande demais pra fazer em série
-  — um agente por linguagem/repo leu o código de verdade e escreveu explicação+exemplo, sempre com instrução
-  explícita de nunca inventar um trecho de código (só citar o que realmente existe no arquivo, pulando o
-  conceito se não achasse exemplo real). Eu revisei e escrevi Go e C# diretamente (projetos que já conhecia
-  bem nesta sessão); C++, Java/JavaScript e Python vieram de agentes.
+- **Base de conhecimento de linguagens gerada com apoio de agentes em paralelo.** Extrair/escrever ~200
+  verbetes de 6 linguagens era grande demais pra fazer em série — um agente por linguagem escreveu
+  explicação+exemplo, com instrução explícita de nunca inventar um trecho de código: na rodada de código real
+  (nunca fabricar, pular o conceito se não achasse exemplo real no repositório), e na rodada de currículo geral
+  (exemplo genérico correto, mas nunca fingir que veio de um projeto do usuário — daí o Project
+  "Referência Geral (Linguagem)" separado dos repositórios reais).
+- **`setMainContent()` centraliza toda troca de conteúdo principal na UI e sempre reseta o scroll pro topo.**
+  Bug real encontrado: sem isso, sair de uma lista rolada bem pra baixo pra um verbete mais curto deixava a
+  tela em branco (o scroll antigo ficava além do conteúdo novo, mais curto).
 - **Sync do Obsidian é sob demanda, não automático ainda.** Rodar em background (tarefa agendada do Windows)
   exigiria a API sempre no ar; hoje ela só sobe quando você chama `start.bat`. Preferi entregar o sync
   funcionando primeiro e decidir a automação depois, com o usuário confirmando explicitamente (criar uma
