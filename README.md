@@ -42,12 +42,15 @@ um verbete de enciclopédia: nome, definição, e o que mais está relacionado (
 `http://localhost:5080/` (aberta automaticamente pelo [`start.bat`](start.bat)) é uma página HTML única, sem
 build/framework — só abrir e usar:
 
-- **Busca** central, estilo enciclopédia: digite um termo e aparece na hora (verbetes, anotações, projetos).
-- **"+ Guardar algo novo"**: um formulário de duas perguntas — "qual o nome?" e "o que é isso, nas suas
+- **Layout em duas colunas** (sidebar com todos os verbetes + busca, conteúdo principal à direita) — inspirado
+  em Discord/X: flat, sem gradiente, sem sombra colorida, bordas finas separando os blocos, um único accent
+  (azul), zero emoji na interface. Tema claro e escuro, cada um seguindo a paleta desses apps.
+- **Busca** na sidebar, estilo enciclopédia: digite um termo e aparece na hora (verbetes, anotações, projetos).
+- **"+ Novo verbete"**: um formulário de duas perguntas — "qual o nome?" e "o que é isso, nas suas
   palavras?" — sem nenhum campo técnico.
-- **Clicar num verbete** abre a definição completa + anotações e projetos relacionados, com um campo rápido
-  pra anotar mais alguma coisa ali mesmo.
-- Tema claro/escuro (lembrado entre visitas).
+- **Clicar num verbete** troca o conteúdo principal pra definição completa + anotações e projetos
+  relacionados (like uma thread do X, com botão de voltar), com um campo rápido pra anotar mais alguma coisa
+  ali mesmo.
 
 Pensada pra alguém que não sabe (nem precisa saber) o que é uma API — quem quiser mexer nos detalhes técnicos
 ainda tem o Swagger em `/swagger`.

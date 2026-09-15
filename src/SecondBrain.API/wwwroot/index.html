@@ -3,153 +3,257 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Meu Cérebro</title>
+<title>SecondBrain</title>
 <style>
+  /* Paleta inspirada em X/Discord: neutra, sem gradiente, sem sombra colorida.
+     Bordas finas separam blocos em vez de box-shadow. Um único accent (azul). */
   :root {
-    --bg: #faf9f7;
+    --bg: #ffffff;
+    --sidebar: #f7f9f9;
     --surface: #ffffff;
-    --text: #2b2b2b;
-    --muted: #6b6b6b;
-    --border: #e8e6e2;
-    --accent: #6c5ce7;
-    --accent-soft: #f1eefe;
-    --danger: #d9534f;
-    --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    --hover: rgba(15,20,25,0.06);
+    --text: #0f1419;
+    --muted: #536471;
+    --border: #eff3f4;
+    --accent: #1d9bf0;
+    --accent-text: #ffffff;
+    --danger: #f4212e;
   }
-  [data-theme="dark"] {
-    --bg: #1c1c1e;
-    --surface: #262628;
-    --text: #ececec;
-    --muted: #a0a0a0;
-    --border: #3a3a3c;
-    --accent: #9b8afb;
-    --accent-soft: #2e2a4d;
-    --shadow: 0 1px 3px rgba(0,0,0,0.4);
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #000000;
+      --sidebar: #000000;
+      --surface: #000000;
+      --hover: rgba(239,243,244,0.08);
+      --text: #e7e9ea;
+      --muted: #71767b;
+      --border: #2f3336;
+      --accent: #1d9bf0;
+      --accent-text: #ffffff;
+      --danger: #f4212e;
+    }
   }
+  :root[data-theme="dark"] {
+    --bg: #000000;
+    --sidebar: #000000;
+    --surface: #000000;
+    --hover: rgba(239,243,244,0.08);
+    --text: #e7e9ea;
+    --muted: #71767b;
+    --border: #2f3336;
+    --accent: #1d9bf0;
+    --accent-text: #ffffff;
+    --danger: #f4212e;
+  }
+
   * { box-sizing: border-box; }
+  html, body { height: 100%; }
   body {
     margin: 0;
     background: var(--bg);
     color: var(--text);
     font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.45;
   }
-  .wrap { max-width: 860px; margin: 0 auto; padding: 32px 20px 80px; }
-  header { text-align: center; margin-bottom: 32px; position: relative; }
-  header h1 { font-size: 32px; margin: 0 0 6px; }
-  header p { color: var(--muted); margin: 0; font-size: 15px; }
-  #themeToggle {
-    position: absolute; right: 0; top: 0;
-    background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
-    padding: 6px 12px; cursor: pointer; font-size: 13px; color: var(--text);
-  }
-  .search-box {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 14px;
-    box-shadow: var(--shadow); padding: 4px; display: flex; align-items: center; gap: 8px;
-  }
-  .search-box input {
-    flex: 1; border: none; outline: none; background: transparent; color: var(--text);
-    font-size: 17px; padding: 14px 12px;
-  }
-  .search-box span { padding-left: 14px; font-size: 18px; color: var(--muted); }
-  .hint { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+  button, input, textarea { font-family: inherit; color: inherit; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
 
-  .section-title { font-size: 14px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 32px 0 12px; }
+  .app { display: flex; min-height: 100vh; max-width: 1100px; margin: 0 auto; }
 
-  .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; }
-  .card {
-    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-    padding: 16px; cursor: pointer; box-shadow: var(--shadow); transition: transform .1s ease;
+  /* ---------- sidebar ---------- */
+  .sidebar {
+    width: 280px; flex-shrink: 0; border-right: 1px solid var(--border);
+    background: var(--sidebar); padding: 16px 12px; display: flex; flex-direction: column; gap: 12px;
   }
-  .card:hover { transform: translateY(-2px); }
-  .card h3 { margin: 0 0 6px; font-size: 16px; }
-  .card p { margin: 0; font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
-  .card .badge { display: inline-block; font-size: 11px; color: var(--accent); background: var(--accent-soft); border-radius: 6px; padding: 2px 6px; margin-bottom: 8px; }
+  .sidebar-top { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 8px; }
+  .brand { font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
 
-  .empty { text-align: center; color: var(--muted); padding: 40px 0; font-size: 14px; }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 999px; border: none; background: transparent;
+    color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:hover { background: var(--hover); }
+  .icon-btn svg { width: 18px; height: 18px; }
 
-  .fab {
-    position: fixed; right: 24px; bottom: 24px; background: var(--accent); color: white;
-    border: none; border-radius: 999px; padding: 16px 22px; font-size: 15px; font-weight: 600;
-    cursor: pointer; box-shadow: 0 4px 14px rgba(108,92,231,.4);
+  .search-pill {
+    display: flex; align-items: center; gap: 8px; background: var(--sidebar);
+    border: 1px solid var(--border); border-radius: 999px; padding: 8px 14px;
+  }
+  .search-pill svg { width: 16px; height: 16px; color: var(--muted); flex-shrink: 0; }
+  .search-pill input { flex: 1; border: none; outline: none; background: transparent; font-size: 14px; }
+  .search-pill:focus-within { border-color: var(--accent); }
+
+  .btn-pill {
+    border: none; border-radius: 999px; padding: 10px 16px; font-size: 14px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  .btn-pill.btn-primary { background: var(--accent); color: var(--accent-text); }
+  .btn-pill.btn-primary:hover { filter: brightness(0.92); }
+  .btn-pill svg { width: 16px; height: 16px; }
+
+  .nav-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; margin-top: 4px; }
+  .nav-item {
+    padding: 9px 10px; border-radius: 8px; cursor: pointer; font-size: 14px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .nav-item:hover { background: var(--hover); }
+  .nav-item.active { background: var(--hover); font-weight: 700; }
+  .nav-empty { color: var(--muted); font-size: 13px; padding: 10px; }
+
+  /* ---------- main ---------- */
+  .main { flex: 1; min-width: 0; border-right: 1px solid var(--border); }
+  .main-header {
+    position: sticky; top: 0; background: color-mix(in srgb, var(--bg) 85%, transparent);
+    backdrop-filter: blur(6px); border-bottom: 1px solid var(--border);
+    padding: 14px 20px; display: flex; align-items: center; gap: 14px; z-index: 1;
+  }
+  .main-header h1 { font-size: 19px; margin: 0; font-weight: 800; }
+  .main-body { padding: 4px 0; }
+
+  .row {
+    display: block; padding: 14px 20px; border-bottom: 1px solid var(--border); cursor: pointer;
+  }
+  .row:hover { background: var(--hover); }
+  .row .row-title { font-size: 15px; font-weight: 700; margin: 0 0 4px; }
+  .row .row-desc {
+    margin: 0; color: var(--muted); font-size: 14px; overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .row .row-type {
+    display: inline-block; font-size: 12px; font-weight: 700; color: var(--accent); margin-bottom: 4px;
   }
 
+  .empty-state { padding: 60px 24px; text-align: center; color: var(--muted); }
+  .empty-state h2 { color: var(--text); font-size: 17px; margin-bottom: 6px; }
+
+  /* ---------- detail view ---------- */
+  .detail { padding: 20px; }
+  .detail h1 { font-size: 22px; margin: 0 0 8px; }
+  .detail .desc { color: var(--muted); font-size: 15px; margin: 0 0 12px; white-space: pre-wrap; }
+  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 20px; }
+  .tag-pill {
+    font-size: 12px; font-weight: 600; color: var(--accent); border: 1px solid var(--border);
+    border-radius: 999px; padding: 3px 10px;
+  }
+
+  .section { margin-top: 24px; }
+  .section-title { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin-bottom: 10px; }
+  .item {
+    border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; margin-bottom: 8px;
+  }
+  .item .t { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
+  .item .d { color: var(--muted); font-size: 13px; white-space: pre-wrap; }
+  .item-empty { color: var(--muted); font-size: 13px; }
+
+  .quick-add { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .quick-add input { flex: 1; min-width: 140px; }
+  .field {
+    padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface);
+    font-size: 14px; outline: none;
+  }
+  .field:focus { border-color: var(--accent); }
+
+  .btn {
+    border: 1px solid var(--border); background: transparent; color: var(--text); border-radius: 999px;
+    padding: 8px 16px; cursor: pointer; font-size: 13px; font-weight: 700;
+  }
+  .btn:hover { background: var(--hover); }
+  .btn-danger { color: var(--danger); border-color: var(--border); }
+
+  .detail-footer { display: flex; justify-content: flex-end; margin-top: 28px; }
+
+  .msg { font-size: 13px; margin-top: 8px; }
+  .msg.error { color: var(--danger); }
+
+  /* ---------- modal (criar novo) ---------- */
   .overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,.4); display: flex; align-items: flex-start;
-    justify-content: center; padding: 5vh 16px; overflow-y: auto; z-index: 10;
+    position: fixed; inset: 0; background: rgba(91,112,131,.4); display: flex; align-items: flex-start;
+    justify-content: center; padding: 8vh 16px; overflow-y: auto; z-index: 10;
   }
   .modal {
-    background: var(--surface); border-radius: 14px; padding: 24px; max-width: 560px; width: 100%;
-    box-shadow: var(--shadow); animation: pop .12s ease;
+    background: var(--bg); border: 1px solid var(--border); border-radius: 16px; padding: 20px;
+    max-width: 500px; width: 100%;
   }
-  @keyframes pop { from { transform: scale(.97); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .modal h2 { margin-top: 0; }
-  .modal label { display: block; font-size: 13px; color: var(--muted); margin: 14px 0 6px; }
-  .modal input[type=text], .modal textarea, .modal select {
+  .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+  .modal h2 { font-size: 18px; margin: 0; }
+  .modal label { display: block; font-size: 13px; color: var(--muted); font-weight: 600; margin: 16px 0 6px; }
+  .modal input[type=text], .modal textarea {
     width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px;
-    background: var(--bg); color: var(--text); font-size: 14px; font-family: inherit;
+    background: var(--bg); color: var(--text); font-size: 14px; outline: none;
   }
+  .modal input[type=text]:focus, .modal textarea:focus { border-color: var(--accent); }
   .modal textarea { min-height: 90px; resize: vertical; }
   .modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 20px; }
-  button { font-family: inherit; }
-  .btn { border: 1px solid var(--border); background: var(--surface); color: var(--text); border-radius: 8px; padding: 9px 16px; cursor: pointer; font-size: 14px; }
-  .btn-primary { background: var(--accent); color: white; border-color: var(--accent); }
-  .btn-text { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 13px; }
-  .close-x { position: absolute; top: 18px; right: 20px; background: none; border: none; font-size: 20px; color: var(--muted); cursor: pointer; }
-  .msg { font-size: 13px; margin-top: 10px; }
-  .msg.error { color: var(--danger); }
-  .msg.ok { color: #2e7d32; }
 
-  .detail-tag { display: inline-block; background: var(--accent-soft); color: var(--accent); border-radius: 999px; padding: 3px 10px; font-size: 12px; margin: 0 6px 6px 0; }
-  .detail-block { margin-top: 22px; }
-  .detail-block h4 { font-size: 13px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); margin-bottom: 8px; }
-  .detail-item { padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 8px; font-size: 14px; }
-  .detail-item .t { font-weight: 600; margin-bottom: 2px; }
-  .detail-item .d { color: var(--muted); font-size: 13px; }
-  .quick-add { display: flex; gap: 8px; margin-top: 10px; }
-  .quick-add input { flex: 1; }
-  .link { color: var(--danger); background: none; border: none; cursor: pointer; font-size: 12px; padding: 0; }
+  ::-webkit-scrollbar { width: 10px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+  @media (max-width: 760px) {
+    .app { flex-direction: column; }
+    .sidebar { width: auto; border-right: none; border-bottom: 1px solid var(--border); }
+    .nav-list { max-height: 160px; }
+    .main { border-right: none; }
+  }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <button id="themeToggle" onclick="toggleTheme()">🌙 Escuro</button>
-    <h1>🧠 Meu Cérebro</h1>
-    <p>Sua enciclopédia pessoal — guarde o que você aprende e encontre de novo quando esquecer.</p>
-  </header>
 
-  <div class="search-box">
-    <span>🔍</span>
-    <input id="searchInput" type="text" placeholder="Buscar um termo, uma definição, um projeto..." oninput="onSearchInput()" />
-  </div>
-  <div class="hint">Digite pra buscar. Deixe vazio pra ver tudo que você já guardou.</div>
+<div class="app">
+  <aside class="sidebar">
+    <div class="sidebar-top">
+      <span class="brand">SecondBrain</span>
+      <button class="icon-btn" id="themeToggle" title="Alternar tema"></button>
+    </div>
+    <div class="search-pill">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input id="searchInput" type="text" placeholder="Buscar" oninput="onSearchInput()" />
+    </div>
+    <button class="btn-pill btn-primary" onclick="openNewConceptModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+      Novo verbete
+    </button>
+    <nav class="nav-list" id="navList"></nav>
+  </aside>
 
-  <div id="results"></div>
+  <main class="main" id="main"></main>
 </div>
-
-<button class="fab" onclick="openNewConceptModal()">+ Guardar algo novo</button>
 
 <div id="modalRoot"></div>
 
 <script>
-const state = { concepts: [], searching: false };
+const ICONS = {
+  moon: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>',
+  sun: '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>',
+  back: '<line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>',
+  close: '<line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line>',
+};
+function svg(name, size) {
+  return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:${size || 18}px;height:${size || 18}px">${ICONS[name]}</svg>`;
+}
 
+const state = { concepts: [], view: { type: 'feed' } };
+
+function applyThemeIcon() {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
+    || (!document.documentElement.hasAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+  document.getElementById('themeToggle').innerHTML = svg(isDark ? 'sun' : 'moon');
+}
 function toggleTheme() {
   const root = document.documentElement;
-  const isDark = root.getAttribute('data-theme') === 'dark';
-  root.setAttribute('data-theme', isDark ? 'light' : 'dark');
-  document.getElementById('themeToggle').textContent = isDark ? '🌙 Escuro' : '☀️ Claro';
-  try { localStorage.setItem('secondbrain-theme', isDark ? 'light' : 'dark'); } catch (e) {}
+  const current = root.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  const next = current === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  try { localStorage.setItem('secondbrain-theme', next); } catch (e) {}
+  applyThemeIcon();
 }
 (function initTheme() {
   let saved = null;
   try { saved = localStorage.getItem('secondbrain-theme'); } catch (e) {}
-  if (saved === 'dark') {
-    document.documentElement.setAttribute('data-theme', 'dark');
-    window.addEventListener('DOMContentLoaded', () => {
-      document.getElementById('themeToggle').textContent = '☀️ Claro';
-    });
-  }
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+  applyThemeIcon();
 })();
 
 async function api(path, options) {
@@ -165,28 +269,49 @@ async function api(path, options) {
   return res.json();
 }
 
-async function loadAllConcepts() {
-  state.concepts = await api('/api/concepts');
-  renderConceptGrid(state.concepts, 'Tudo que você já guardou');
-}
-
 function escapeHtml(s) {
   return (s || '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 }
 
-function renderConceptGrid(concepts, title) {
-  const results = document.getElementById('results');
+async function loadAllConcepts() {
+  state.concepts = await api('/api/concepts');
+  renderNav(state.concepts);
+  if (state.view.type === 'feed' || state.view.type === 'search') renderFeed();
+}
+
+function renderNav(concepts) {
+  const nav = document.getElementById('navList');
   if (!concepts.length) {
-    results.innerHTML = `<div class="section-title">${title}</div><div class="empty">Nada por aqui ainda. Clique em "Guardar algo novo" pra começar.</div>`;
+    nav.innerHTML = '<div class="nav-empty">Nada guardado ainda.</div>';
     return;
   }
-  results.innerHTML = `
-    <div class="section-title">${title}</div>
-    <div class="cards">
-      ${concepts.map(c => `
-        <div class="card" onclick="openConceptDetail('${c.id}')">
-          <h3>${escapeHtml(c.name)}</h3>
-          <p>${escapeHtml(c.description || 'Sem descrição ainda.')}</p>
+  nav.innerHTML = concepts.map(c => `
+    <div class="nav-item${state.view.type === 'detail' && state.view.id === c.id ? ' active' : ''}" onclick="openConceptDetail('${c.id}')">${escapeHtml(c.name)}</div>
+  `).join('');
+}
+
+function renderFeed() {
+  state.view = { type: 'feed' };
+  document.getElementById('searchInput').value = '';
+  renderNav(state.concepts);
+  const main = document.getElementById('main');
+  if (!state.concepts.length) {
+    main.innerHTML = `
+      <div class="main-header"><h1>Seus verbetes</h1></div>
+      <div class="empty-state">
+        <h2>Nada por aqui ainda</h2>
+        <p>Clique em "Novo verbete" pra guardar a primeira coisa que você aprendeu.</p>
+      </div>
+    `;
+    return;
+  }
+  main.innerHTML = `
+    <div class="main-header"><h1>Seus verbetes</h1></div>
+    <div class="main-body">
+      ${state.concepts.map(c => `
+        <div class="row" onclick="openConceptDetail('${c.id}')">
+          <div class="row-title">${escapeHtml(c.name)}</div>
+          <p class="row-desc">${escapeHtml(c.description || 'Sem descrição ainda.')}</p>
         </div>
       `).join('')}
     </div>
@@ -197,25 +322,32 @@ let searchTimer = null;
 function onSearchInput() {
   clearTimeout(searchTimer);
   const q = document.getElementById('searchInput').value.trim();
-  if (!q) { loadAllConcepts(); return; }
+  if (!q) { renderFeed(); return; }
   searchTimer = setTimeout(() => runSearch(q), 250);
 }
 
 async function runSearch(q) {
+  state.view = { type: 'search', q };
   const data = await api('/api/search?q=' + encodeURIComponent(q));
-  const results = document.getElementById('results');
+  const main = document.getElementById('main');
+  const typeLabel = { concept: 'Verbete', note: 'Anotação', project: 'Projeto' };
   if (!data.results.length) {
-    results.innerHTML = `<div class="section-title">Resultados para "${escapeHtml(q)}"</div><div class="empty">Nada encontrado. Talvez você ainda não tenha guardado isso — quer <a href="#" onclick="openNewConceptModal('${escapeHtml(q)}');return false;">criar um verbete</a> com esse nome?</div>`;
+    main.innerHTML = `
+      <div class="main-header"><h1>Busca</h1></div>
+      <div class="empty-state">
+        <h2>Nada encontrado para "${escapeHtml(q)}"</h2>
+        <p>Talvez você ainda não tenha guardado isso — <a href="#" onclick="openNewConceptModal('${escapeHtml(q)}');return false;">criar um verbete</a> com esse nome?</p>
+      </div>
+    `;
     return;
   }
-  const typeLabel = { concept: '📖 Verbete', note: '📝 Anotação', project: '📁 Projeto' };
-  results.innerHTML = `
-    <div class="section-title">Resultados para "${escapeHtml(q)}"</div>
-    <div class="cards">
+  main.innerHTML = `
+    <div class="main-header"><h1>Busca: "${escapeHtml(q)}"</h1></div>
+    <div class="main-body">
       ${data.results.map(r => `
-        <div class="card" onclick="${r.type === 'concept' ? `openConceptDetail('${r.id}')` : ''}">
-          <span class="badge">${typeLabel[r.type] || r.type}</span>
-          <h3>${escapeHtml(r.title)}</h3>
+        <div class="row" onclick="${r.type === 'concept' ? `openConceptDetail('${r.id}')` : ''}" style="${r.type !== 'concept' ? 'cursor:default' : ''}">
+          <span class="row-type">${typeLabel[r.type] || r.type}</span>
+          <div class="row-title">${escapeHtml(r.title)}</div>
         </div>
       `).join('')}
     </div>
@@ -225,8 +357,11 @@ async function runSearch(q) {
 function modalShell(innerHtml) {
   document.getElementById('modalRoot').innerHTML = `
     <div class="overlay" onclick="if(event.target===this) closeModal()">
-      <div class="modal" style="position:relative">
-        <button class="close-x" onclick="closeModal()">✕</button>
+      <div class="modal">
+        <div class="modal-head">
+          <div></div>
+          <button class="icon-btn" onclick="closeModal()">${svg('close', 16)}</button>
+        </div>
         ${innerHtml}
       </div>
     </div>
@@ -236,7 +371,7 @@ function closeModal() { document.getElementById('modalRoot').innerHTML = ''; }
 
 function openNewConceptModal(prefillName) {
   modalShell(`
-    <h2>Guardar algo novo</h2>
+    <h2>Novo verbete</h2>
     <label>Nome (o termo, a palavra, a classe...)</label>
     <input type="text" id="newName" placeholder="Ex: Redis" value="${escapeHtml(prefillName || '')}" />
     <label>O que é isso? (em suas próprias palavras)</label>
@@ -244,61 +379,66 @@ function openNewConceptModal(prefillName) {
     <div id="newMsg" class="msg"></div>
     <div class="modal-actions">
       <button class="btn" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" onclick="submitNewConcept()">Guardar</button>
+      <button class="btn-pill btn-primary" onclick="submitNewConcept()">Guardar</button>
     </div>
   `);
+  document.getElementById('newName').focus();
 }
 
 async function submitNewConcept() {
   const name = document.getElementById('newName').value.trim();
   const description = document.getElementById('newDesc').value.trim();
   const msg = document.getElementById('newMsg');
-  if (!name) { msg.textContent = 'Dá um nome pra essa ideia primeiro :)'; msg.className = 'msg error'; return; }
+  if (!name) { msg.textContent = 'Dá um nome pra essa ideia primeiro.'; msg.className = 'msg error'; return; }
   try {
     const created = await api('/api/concepts', { method: 'POST', body: JSON.stringify({ name, description }) });
     closeModal();
-    document.getElementById('searchInput').value = '';
     await loadAllConcepts();
     openConceptDetail(created.id);
   } catch (e) {
-    msg.textContent = e.status === 409 ? 'Você já guardou algo com esse nome — procure por ele na busca.' : e.message;
+    msg.textContent = e.status === 409 ? 'Você já guardou algo com esse nome.' : e.message;
     msg.className = 'msg error';
   }
 }
 
 async function openConceptDetail(id) {
   const c = await api('/api/concepts/' + id);
+  state.view = { type: 'detail', id };
+  renderNav(state.concepts);
   renderConceptDetail(c);
 }
 
 function renderConceptDetail(c) {
-  modalShell(`
-    <h2>${escapeHtml(c.name)}</h2>
-    <p style="color:var(--muted)">${escapeHtml(c.description || 'Sem descrição ainda.')}</p>
-    ${c.tags.length ? `<div>${c.tags.map(t => `<span class="detail-tag">${escapeHtml(t.name)}</span>`).join('')}</div>` : ''}
+  document.getElementById('main').innerHTML = `
+    <div class="main-header">
+      <button class="icon-btn" onclick="renderFeed()">${svg('back')}</button>
+      <h1>${escapeHtml(c.name)}</h1>
+    </div>
+    <div class="detail">
+      <p class="desc">${escapeHtml(c.description || 'Sem descrição ainda.')}</p>
+      ${c.tags.length ? `<div class="tag-row">${c.tags.map(t => `<span class="tag-pill">${escapeHtml(t.name)}</span>`).join('')}</div>` : ''}
 
-    <div class="detail-block">
-      <h4>📝 Anotações (${c.notes.length})</h4>
-      ${c.notes.map(n => `<div class="detail-item"><div class="t">${escapeHtml(n.title)}</div><div class="d">${escapeHtml(n.content)}</div></div>`).join('') || '<div class="d">Nenhuma ainda.</div>'}
-      <div class="quick-add">
-        <input type="text" id="quickNoteTitle" placeholder="Título da anotação" />
-        <input type="text" id="quickNoteContent" placeholder="O que você quer lembrar?" />
-        <button class="btn" onclick="quickAddNote('${c.id}')">+ Anotar</button>
+      <div class="section">
+        <div class="section-title">Anotações · ${c.notes.length}</div>
+        ${c.notes.map(n => `<div class="item"><div class="t">${escapeHtml(n.title)}</div><div class="d">${escapeHtml(n.content)}</div></div>`).join('') || '<div class="item-empty">Nenhuma ainda.</div>'}
+        <div class="quick-add">
+          <input class="field" type="text" id="quickNoteTitle" placeholder="Título" />
+          <input class="field" type="text" id="quickNoteContent" placeholder="O que você quer lembrar?" />
+          <button class="btn" onclick="quickAddNote('${c.id}')">Anotar</button>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="section-title">Usado nos projetos · ${c.projects.length}</div>
+        ${c.projects.map(p => `<div class="item"><div class="t">${escapeHtml(p.name)}</div><div class="d">${escapeHtml(p.description || '')}</div></div>`).join('') || '<div class="item-empty">Nenhum ainda.</div>'}
+      </div>
+
+      <div id="detailMsg" class="msg"></div>
+      <div class="detail-footer">
+        <button class="btn btn-danger" onclick="deleteConcept('${c.id}')">Apagar este verbete</button>
       </div>
     </div>
-
-    <div class="detail-block">
-      <h4>📁 Usado nos projetos (${c.projects.length})</h4>
-      ${c.projects.map(p => `<div class="detail-item"><div class="t">${escapeHtml(p.name)}</div><div class="d">${escapeHtml(p.description || '')}</div></div>`).join('') || '<div class="d">Nenhum ainda.</div>'}
-    </div>
-
-    <div id="detailMsg" class="msg"></div>
-    <div class="modal-actions">
-      <button class="link" onclick="deleteConcept('${c.id}')">Apagar este verbete</button>
-      <span style="flex:1"></span>
-      <button class="btn" onclick="closeModal()">Fechar</button>
-    </div>
-  `);
+  `;
 }
 
 async function quickAddNote(conceptId) {
@@ -319,11 +459,11 @@ async function quickAddNote(conceptId) {
 async function deleteConcept(id) {
   if (!confirm('Tem certeza que quer apagar esse verbete? Isso não pode ser desfeito.')) return;
   await api('/api/concepts/' + id, { method: 'DELETE' });
-  closeModal();
-  loadAllConcepts();
+  await loadAllConcepts();
+  renderFeed();
 }
 
-loadAllConcepts();
+loadAllConcepts().then(renderFeed);
 </script>
 </body>
 </html>
