@@ -1,4 +1,5 @@
 using SecondBrain.Application.DTOs;
+using SecondBrain.Domain.Entities;
 
 namespace SecondBrain.Application.Interfaces;
 
@@ -20,4 +21,7 @@ public interface IConceptService
 
     Task LinkTagAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default);
     Task UnlinkTagAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default);
+
+    Task LinkRelationAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default);
+    Task UnlinkRelationAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default);
 }

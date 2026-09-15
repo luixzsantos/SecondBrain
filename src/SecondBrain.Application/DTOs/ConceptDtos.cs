@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using SecondBrain.Domain.Entities;
 
 namespace SecondBrain.Application.DTOs;
 
@@ -28,4 +29,10 @@ public class UpdateConceptRequest
 
     [MaxLength(4000, ErrorMessage = "Description deve ter no máximo 4000 caracteres.")]
     public string? Description { get; set; }
+}
+
+public class LinkConceptRelationRequest
+{
+    [Required(ErrorMessage = "Type é obrigatório.")]
+    public ConceptRelationType Type { get; set; }
 }

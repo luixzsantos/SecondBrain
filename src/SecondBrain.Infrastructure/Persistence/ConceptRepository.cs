@@ -39,6 +39,8 @@ public class ConceptRepository(SecondBrainDbContext context) : IConceptRepositor
             .Include(c => c.ConceptNotes).ThenInclude(cn => cn.Note)
             .Include(c => c.ConceptProjects).ThenInclude(cp => cp.Project)
             .Include(c => c.ConceptTags).ThenInclude(ct => ct.Tag)
+            .Include(c => c.RelationsAsSource).ThenInclude(r => r.TargetConcept)
+            .Include(c => c.RelationsAsTarget).ThenInclude(r => r.SourceConcept)
             .AsSplitQuery()
             .FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 
@@ -99,6 +101,30 @@ public class ConceptRepository(SecondBrainDbContext context) : IConceptRepositor
         }
 
         context.ConceptTags.Remove(link);
+        return true;
+    }
+
+    public Task<bool> RelationExistsAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default) =>
+        context.ConceptRelations.AnyAsync(r => r.Type == type &&
+            ((r.SourceConceptId == conceptId && r.TargetConceptId == relatedConceptId) ||
+             (r.SourceConceptId == relatedConceptId && r.TargetConceptId == conceptId)), cancellationToken);
+
+    public async Task AddRelationAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default) =>
+        await context.ConceptRelations.AddAsync(
+            new ConceptRelation { SourceConceptId = conceptId, TargetConceptId = relatedConceptId, Type = type, CreatedAt = DateTime.UtcNow },
+            cancellationToken);
+
+    public async Task<bool> RemoveRelationAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default)
+    {
+        var relation = await context.ConceptRelations.FirstOrDefaultAsync(r => r.Type == type &&
+            ((r.SourceConceptId == conceptId && r.TargetConceptId == relatedConceptId) ||
+             (r.SourceConceptId == relatedConceptId && r.TargetConceptId == conceptId)), cancellationToken);
+        if (relation is null)
+        {
+            return false;
+        }
+
+        context.ConceptRelations.Remove(relation);
         return true;
     }
 }

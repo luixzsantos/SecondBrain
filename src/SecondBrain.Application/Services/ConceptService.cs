@@ -53,9 +53,16 @@ public class ConceptService(
             .Select(ct => new TagDto(ct.Tag.Id, ct.Tag.Name))
             .ToList();
 
+        var relations = concept.RelationsAsSource
+            .Select(r => new ConceptRelationDto(r.TargetConcept.Id, r.TargetConcept.Name, r.Type))
+            .Concat(concept.RelationsAsTarget
+                .Select(r => new ConceptRelationDto(r.SourceConcept.Id, r.SourceConcept.Name, r.Type)))
+            .OrderBy(r => r.ConceptName)
+            .ToList();
+
         return new ConceptDetailDto(
             concept.Id, concept.Name, concept.Description, concept.CreatedAt, concept.UpdatedAt,
-            notes, projects, tags);
+            notes, projects, tags, relations);
     }
 
     public async Task LinkNoteAsync(Guid conceptId, Guid noteId, CancellationToken cancellationToken = default)
@@ -134,6 +141,38 @@ public class ConceptService(
         if (!removed)
         {
             throw new NotFoundException("Relação entre esse Concept e essa Tag não encontrada.");
+        }
+
+        await repository.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task LinkRelationAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default)
+    {
+        if (conceptId == relatedConceptId)
+        {
+            throw new ConflictException("Um Concept não pode se relacionar com ele mesmo.");
+        }
+
+        _ = await repository.GetByIdAsync(conceptId, cancellationToken)
+            ?? throw new NotFoundException($"Concept '{conceptId}' não encontrado.");
+        _ = await repository.GetByIdAsync(relatedConceptId, cancellationToken)
+            ?? throw new NotFoundException($"Concept '{relatedConceptId}' não encontrado.");
+
+        if (await repository.RelationExistsAsync(conceptId, relatedConceptId, type, cancellationToken))
+        {
+            throw new ConflictException("Essa relação já existe.");
+        }
+
+        await repository.AddRelationAsync(conceptId, relatedConceptId, type, cancellationToken);
+        await repository.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task UnlinkRelationAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default)
+    {
+        var removed = await repository.RemoveRelationAsync(conceptId, relatedConceptId, type, cancellationToken);
+        if (!removed)
+        {
+            throw new NotFoundException("Essa relação não foi encontrada.");
         }
 
         await repository.SaveChangesAsync(cancellationToken);

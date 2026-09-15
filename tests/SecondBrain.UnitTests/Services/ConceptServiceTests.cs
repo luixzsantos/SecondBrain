@@ -236,4 +236,75 @@ public class ConceptServiceTests
         Assert.Single(detail.Tags);
         Assert.Equal("database", detail.Tags[0].Name);
     }
+
+    [Fact]
+    public async Task LinkRelationAsync_ApareceNoDetalheDosDoisLados()
+    {
+        var ctx = CreateContext();
+        var redis = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "Redis" });
+        var streams = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "Redis Streams" });
+
+        await ctx.Service.LinkRelationAsync(redis.Id, streams.Id, ConceptRelationType.RelatedTo);
+
+        var redisDetail = await ctx.Service.GetDetailByIdAsync(redis.Id);
+        var streamsDetail = await ctx.Service.GetDetailByIdAsync(streams.Id);
+
+        Assert.Single(redisDetail.Relations);
+        Assert.Equal("Redis Streams", redisDetail.Relations[0].ConceptName);
+        Assert.Single(streamsDetail.Relations);
+        Assert.Equal("Redis", streamsDetail.Relations[0].ConceptName);
+    }
+
+    [Fact]
+    public async Task LinkRelationAsync_ComSiMesmo_LancaConflictException()
+    {
+        var ctx = CreateContext();
+        var redis = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "Redis" });
+
+        await Assert.ThrowsAsync<ConflictException>(() => ctx.Service.LinkRelationAsync(redis.Id, redis.Id, ConceptRelationType.RelatedTo));
+    }
+
+    [Fact]
+    public async Task LinkRelationAsync_JaExistente_LancaConflictException()
+    {
+        var ctx = CreateContext();
+        var redis = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "Redis" });
+        var rabbitmq = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "RabbitMQ" });
+        await ctx.Service.LinkRelationAsync(redis.Id, rabbitmq.Id, ConceptRelationType.AlternativeTo);
+
+        await Assert.ThrowsAsync<ConflictException>(() => ctx.Service.LinkRelationAsync(rabbitmq.Id, redis.Id, ConceptRelationType.AlternativeTo));
+    }
+
+    [Fact]
+    public async Task LinkRelationAsync_ComConceptInexistente_LancaNotFoundException()
+    {
+        var ctx = CreateContext();
+        var redis = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "Redis" });
+
+        await Assert.ThrowsAsync<NotFoundException>(() => ctx.Service.LinkRelationAsync(redis.Id, Guid.NewGuid(), ConceptRelationType.RelatedTo));
+    }
+
+    [Fact]
+    public async Task UnlinkRelationAsync_RemoveDosDoisLados()
+    {
+        var ctx = CreateContext();
+        var redis = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "Redis" });
+        var streams = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "Redis Streams" });
+        await ctx.Service.LinkRelationAsync(redis.Id, streams.Id, ConceptRelationType.RelatedTo);
+
+        await ctx.Service.UnlinkRelationAsync(streams.Id, redis.Id, ConceptRelationType.RelatedTo);
+
+        var redisDetail = await ctx.Service.GetDetailByIdAsync(redis.Id);
+        Assert.Empty(redisDetail.Relations);
+    }
+
+    [Fact]
+    public async Task UnlinkRelationAsync_SemRelacaoExistente_LancaNotFoundException()
+    {
+        var ctx = CreateContext();
+        var redis = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "Redis" });
+        var rabbitmq = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "RabbitMQ" });
+
+        await Assert.ThrowsAsync<NotFoundException>(() => ctx.Service.UnlinkRelationAsync(redis.Id, rabbitmq.Id, ConceptRelationType.AlternativeTo));
+    }
 }

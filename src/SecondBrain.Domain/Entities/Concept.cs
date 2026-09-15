@@ -14,4 +14,10 @@ public class Concept
     public ICollection<ConceptNote> ConceptNotes { get; set; } = [];
     public ICollection<ConceptProject> ConceptProjects { get; set; } = [];
     public ICollection<ConceptTag> ConceptTags { get; set; } = [];
+
+    // Auto-relacionamento (grafo de conhecimento): "Redis" relacionado a "Redis Streams",
+    // "Redis" alternativa a "RabbitMQ" etc. Duas coleções porque é uma relação em si mesma —
+    // ver ConceptRelation.
+    public ICollection<ConceptRelation> RelationsAsSource { get; set; } = [];
+    public ICollection<ConceptRelation> RelationsAsTarget { get; set; } = [];
 }

@@ -29,4 +29,11 @@ public interface IConceptRepository
     Task<bool> TagLinkExistsAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default);
     Task AddTagLinkAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default);
     Task<bool> RemoveTagLinkAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default);
+
+    // Grafo de conhecimento: relação Concept<->Concept. "Exists"/"Remove" ignoram o sentido
+    // (source/target) em que a relação foi criada — pra quem usa, "A relacionado a B" e
+    // "B relacionado a A" são a mesma relação.
+    Task<bool> RelationExistsAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default);
+    Task AddRelationAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default);
+    Task<bool> RemoveRelationAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default);
 }

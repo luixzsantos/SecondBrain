@@ -82,8 +82,9 @@
     width: 280px; flex-shrink: 0; border-right: 1px solid var(--border);
     background: var(--sidebar); padding: 16px 12px; display: flex; flex-direction: column; gap: 12px;
   }
-  .sidebar-top { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 8px; }
+  .sidebar-top { display: flex; align-items: center; justify-content: space-between; padding: 4px 4px 4px; }
   .brand { font-size: 17px; font-weight: 800; letter-spacing: -.01em; }
+  .stats { font-size: 12px; color: var(--muted); padding: 0 4px 8px; }
 
   .icon-btn {
     width: 34px; height: 34px; border-radius: 999px; border: none; background: transparent;
@@ -160,6 +161,10 @@
   }
   .item .t { font-weight: 700; font-size: 14px; margin-bottom: 2px; }
   .item .d { color: var(--muted); font-size: 13px; white-space: pre-wrap; }
+  .item.relation-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; }
+  .item.relation-item .d { margin: 0; }
+  .item-remove { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 12px; flex-shrink: 0; }
+  .item-remove:hover { color: var(--danger); }
   .code-block {
     display: block; background: var(--hover); border: 1px solid var(--border); border-radius: 8px;
     padding: 10px 12px; margin: 8px 0; overflow-x: auto; white-space: pre;
@@ -230,6 +235,7 @@
       <span class="brand">SecondBrain</span>
       <button class="icon-btn" id="themeToggle" title="Alternar tema"></button>
     </div>
+    <div class="stats" id="statsLine"></div>
     <div class="search-pill">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       <input id="searchInput" type="text" placeholder="Buscar" oninput="onSearchInput()" />
@@ -257,7 +263,14 @@ function svg(name, size) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:${size || 18}px;height:${size || 18}px">${ICONS[name]}</svg>`;
 }
 
-const state = { concepts: [], tags: [], activeTagId: null, view: { type: 'feed' } };
+const state = { concepts: [], tags: [], activeTagId: null, view: { type: 'feed' }, allConceptsCache: null };
+
+const RELATION_LABELS = { RelatedTo: 'Relacionado a', AlternativeTo: 'Alternativa a' };
+
+async function ensureAllConceptsCache() {
+  if (!state.allConceptsCache) state.allConceptsCache = await api('/api/concepts');
+  return state.allConceptsCache;
+}
 
 // Logo oficial (colorido) de cada linguagem via devicon, num círculo neutro —
 // nada de bandeira colorida no fundo (isso seria "enfeite"), só o logo real.
@@ -489,6 +502,7 @@ async function submitNewConcept() {
   try {
     const created = await api('/api/concepts', { method: 'POST', body: JSON.stringify({ name, description }) });
     closeModal();
+    state.allConceptsCache = null;
     await loadAllConcepts();
     openConceptDetail(created.id);
   } catch (e) {
@@ -501,10 +515,14 @@ async function openConceptDetail(id) {
   const c = await api('/api/concepts/' + id);
   state.view = { type: 'detail', id };
   renderNav(state.concepts);
-  renderConceptDetail(c);
+  await renderConceptDetail(c);
 }
 
-function renderConceptDetail(c) {
+async function renderConceptDetail(c) {
+  const allConcepts = await ensureAllConceptsCache();
+  const relatedIds = new Set(c.relations.map(r => r.conceptId));
+  const pickable = allConcepts.filter(x => x.id !== c.id && !relatedIds.has(x.id));
+
   setMainContent(`
     <div class="main-header">
       <button class="icon-btn" onclick="renderFeed()">${svg('back')}</button>
@@ -513,6 +531,25 @@ function renderConceptDetail(c) {
     <div class="detail">
       <p class="desc">${escapeHtml(c.description || 'Sem descrição ainda.')}</p>
       ${c.tags.length ? `<div class="tag-row">${c.tags.map(t => `<span class="tag-pill">${escapeHtml(t.name)}</span>`).join('')}</div>` : ''}
+
+      <div class="section">
+        <div class="section-title">Relacionados · ${c.relations.length}</div>
+        ${c.relations.map(r => `
+          <div class="item relation-item" onclick="openConceptDetail('${r.conceptId}')">
+            <div><div class="t">${escapeHtml(r.conceptName)}</div><div class="d">${escapeHtml(RELATION_LABELS[r.relationType] || r.relationType)}</div></div>
+            <button class="item-remove" onclick="event.stopPropagation(); unlinkRelation('${c.id}','${r.conceptId}','${r.relationType}')">remover</button>
+          </div>
+        `).join('') || '<div class="item-empty">Nenhum ainda.</div>'}
+        <div class="quick-add">
+          <input class="field" list="allConceptsList" type="text" id="relationConceptName" placeholder="Nome de outro verbete" />
+          <datalist id="allConceptsList">${pickable.map(x => `<option value="${escapeHtml(x.name)}">`).join('')}</datalist>
+          <select class="field" id="relationType">
+            <option value="RelatedTo">Relacionado a</option>
+            <option value="AlternativeTo">Alternativa a</option>
+          </select>
+          <button class="btn" onclick="addRelation('${c.id}')">Relacionar</button>
+        </div>
+      </div>
 
       <div class="section">
         <div class="section-title">Anotações · ${c.notes.length}</div>
@@ -537,6 +574,30 @@ function renderConceptDetail(c) {
   `);
 }
 
+async function addRelation(conceptId) {
+  const nameInput = document.getElementById('relationConceptName');
+  const name = nameInput.value.trim();
+  const type = document.getElementById('relationType').value;
+  const msg = document.getElementById('detailMsg');
+  const allConcepts = await ensureAllConceptsCache();
+  const target = allConcepts.find(x => x.name.toLowerCase() === name.toLowerCase());
+  if (!target) { msg.textContent = 'Digite o nome de um verbete que já existe (aparece sugestão ao digitar).'; msg.className = 'msg error'; return; }
+  try {
+    await api(`/api/concepts/${conceptId}/relations/${target.id}`, { method: 'POST', body: JSON.stringify({ type }) });
+    const c = await api('/api/concepts/' + conceptId);
+    await renderConceptDetail(c);
+  } catch (e) {
+    msg.textContent = e.status === 409 ? 'Esses dois verbetes já estão relacionados assim.' : e.message;
+    msg.className = 'msg error';
+  }
+}
+
+async function unlinkRelation(conceptId, relatedConceptId, type) {
+  await api(`/api/concepts/${conceptId}/relations/${relatedConceptId}?type=${type}`, { method: 'DELETE' });
+  const c = await api('/api/concepts/' + conceptId);
+  await renderConceptDetail(c);
+}
+
 async function quickAddNote(conceptId) {
   const title = document.getElementById('quickNoteTitle').value.trim();
   const content = document.getElementById('quickNoteContent').value.trim();
@@ -545,7 +606,7 @@ async function quickAddNote(conceptId) {
   try {
     await api('/api/notes', { method: 'POST', body: JSON.stringify({ title, content, conceptIds: [conceptId] }) });
     const c = await api('/api/concepts/' + conceptId);
-    renderConceptDetail(c);
+    await renderConceptDetail(c);
   } catch (e) {
     msg.textContent = e.message;
     msg.className = 'msg error';
@@ -559,8 +620,14 @@ async function deleteConcept(id) {
   renderFeed();
 }
 
+async function loadStats() {
+  const [notes, projects, tags] = await Promise.all([api('/api/notes'), api('/api/projects'), api('/api/tags')]);
+  document.getElementById('statsLine').textContent =
+    `${state.concepts.length} verbetes · ${notes.length} anotações · ${projects.length} projetos · ${tags.length} tags`;
+}
+
 loadTags();
-loadAllConcepts().then(renderFeed);
+loadAllConcepts().then(() => { renderFeed(); loadStats(); });
 </script>
 </body>
 </html>

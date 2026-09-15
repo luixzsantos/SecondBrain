@@ -6,7 +6,7 @@ usar é uma página simples — sem jargão, sem Swagger — com busca e um bot�
 também pode vir importado direto do [Segundo Cérebro (Obsidian)](#sincronizar-com-o-obsidian), pra não precisar
 digitar tudo de novo.
 
-Este README documenta até a **V0.2 — Knowledge** (Note, Tag, Project, relações N:N, busca full-text, UI e sync com Obsidian).
+Este README documenta até a **V0.3 — Knowledge Graph** (Note/Tag/Project da V0.2 + relação Concept↔Concept, contadores e um catálogo de 222 verbetes prontos).
 
 ---
 
@@ -115,14 +115,19 @@ gravar (retorna 409 direto) e o banco tem um índice único como garantia final 
 ## Modelo de dados
 
 ```
-Concept ──┬── ConceptNote ──── Note       ("explicado em")
-          ├── ConceptProject ─ Project    ("usado em")
-          └── ConceptTag ───── Tag
+Concept ──┬── ConceptNote ─────── Note       ("explicado em")
+          ├── ConceptProject ──── Project    ("usado em")
+          ├── ConceptTag ──────── Tag
+          └── ConceptRelation ─── Concept    ("relacionado a" / "alternativa a" — grafo de conhecimento)
 ```
 
-Cada relação é uma **tabela de junção tipada** (`concept_notes`, `concept_projects`, `concept_tags`), não uma
-tabela `KnowledgeRelation` genérica/polimórfica — ver [Decisões](#decisões-desta-versão). `Project.Status` é
-um enum (`Active`/`Paused`/`Completed`/`Archived`), serializado como texto no JSON.
+Cada relação é uma **tabela de junção tipada** (`concept_notes`, `concept_projects`, `concept_tags`,
+`concept_relations`), não uma tabela `KnowledgeRelation` genérica/polimórfica — ver
+[Decisões](#decisões-desta-versão). `ConceptRelation` é um auto-relacionamento (Concept↔Concept): guardado num
+sentido só (`SourceConceptId`→`TargetConceptId`), mas mostrado nos dois lados — "Redis relacionado a Redis
+Streams" aparece tanto na página de Redis quanto na de Redis Streams. `Project.Status` e
+`ConceptRelation.Type` são enums (`Active`/`Paused`/`Completed`/`Archived` e `RelatedTo`/`AlternativeTo`),
+serializados como texto no JSON.
 
 ## Stack
 
@@ -223,6 +228,11 @@ curl -X POST   http://localhost:5080/api/concepts/{conceptId}/notes/{noteId}
 curl -X DELETE http://localhost:5080/api/concepts/{conceptId}/notes/{noteId}
 curl -X POST   http://localhost:5080/api/concepts/{conceptId}/projects/{projectId}
 curl -X POST   http://localhost:5080/api/concepts/{conceptId}/tags/{tagId}
+
+# Grafo de conhecimento: Concept <-> Concept (type: RelatedTo|AlternativeTo)
+curl -X POST   http://localhost:5080/api/concepts/{conceptId}/relations/{relatedConceptId} \
+  -H "Content-Type: application/json" -d '{"type":"RelatedTo"}'
+curl -X DELETE "http://localhost:5080/api/concepts/{conceptId}/relations/{relatedConceptId}?type=RelatedTo"
 ```
 
 Respostas de erro seguem um formato consistente (`ExceptionHandlingMiddleware`):
@@ -277,13 +287,22 @@ só validação manual.
 - Erros não tratados nunca vazam stack trace pro cliente (middleware global retorna mensagem genérica + loga
   o detalhe no servidor).
 - Entrada validada via Data Annotations antes de chegar na regra de negócio.
-- Ainda sem autenticação — API de uso pessoal/local por enquanto; entra no roadmap (V0.3).
+- Ainda sem autenticação — API de uso pessoal/local por enquanto; entra no roadmap (V0.4).
 
 ## Decisões desta versão
 
 - **Sem `KnowledgeRelation` genérico.** Uma tabela `Source/Target` polimórfica (Concept↔Note↔Project…) não tem
   integridade referencial real em EF Core/Postgres. Cada par de tipos tem sua própria tabela de junção
-  (`concept_notes`, `concept_projects`, `concept_tags`) com FK de verdade.
+  (`concept_notes`, `concept_projects`, `concept_tags`, `concept_relations`) com FK de verdade.
+- **`ConceptRelation` (Concept↔Concept) começa com só 2 tipos** (`RelatedTo`, `AlternativeTo`), não os 7 do
+  plano de produto original — cresce o enum quando fizer falta de verdade, sem migrar nada existente. Guardado
+  num sentido só, mas exibido nos dois lados (união de `RelationsAsSource`/`RelationsAsTarget` na consulta) —
+  pra quem usa, "A relacionado a B" e "B relacionado a A" são a mesma relação. Cascade delete dos dois lados da
+  FK — restrição de "múltiplos caminhos de cascade" é do SQL Server, não existe no Postgres/Npgsql.
+- **Grafo mostrado como lista, não como visualização interativa.** Um mapa visual (nós/setas, force-directed)
+  foi cogitado e descartado por agora: exigiria uma lib de layout de grafo ou D3 na mão, conflita com
+  "minimalista, sem framework", e a lista de "Relacionados" na página do conceito já entrega a maior parte do
+  valor por uma fração do custo. Revisita se a lista não bastar no uso real.
 - **Busca full-text calculada em tempo de consulta, sem coluna gerada + índice GIN ainda.** Funciona correto
   hoje; dataset pessoal de baixo volume não justifica a complexidade extra até isso realmente doer
   (performance medida depois, não otimizada antes de existir problema).
@@ -309,8 +328,14 @@ só validação manual.
 
 ## Roadmap
 
-- **V0.3** — Users, login, JWT.
-- **V0.4** — Experience, Decision, grafo de conhecimento relacionado.
-- **V0.5** — Redis, background workers, observabilidade.
+- **V0.3 ✅** — Knowledge Graph: relação Concept↔Concept (`RelatedTo`/`AlternativeTo`), "Relacionados" na
+  página do conceito, contadores na sidebar.
+- **V0.4** — Users, login, JWT (adiado da V0.3 original — o grafo tinha prioridade maior: sem ele, o app ainda
+  parecia "um Notion simplificado"; com ele, começa a parecer um mapa do que você sabe).
+- **V0.5** — Timeline de aprendizado (já dá pra fazer sem schema novo — `CreatedAt` já existe em tudo).
+- **Considerando, não decidido**: revisão espaçada (é um produto de estudo à parte, só vale investir se o uso
+  real pedir isso); Experience/Decision do plano original; scanner de tecnologia por projeto (custo alto,
+  valor incerto — melhor esperar uma necessidade concreta aparecer).
 - **V1.0** — Automatizar o sync do Obsidian (tarefa agendada, hoje é sob demanda), sincronizar outras pastas do
-  vault, integração com GitHub, embeddings/busca semântica, assistente via LLM.
+  vault, integração com GitHub, embeddings/busca semântica, assistente via LLM ("explique usando o que eu já
+  sei" — não um chatbot genérico).

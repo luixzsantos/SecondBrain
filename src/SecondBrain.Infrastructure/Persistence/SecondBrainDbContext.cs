@@ -12,6 +12,7 @@ public class SecondBrainDbContext(DbContextOptions<SecondBrainDbContext> options
     public DbSet<ConceptNote> ConceptNotes => Set<ConceptNote>();
     public DbSet<ConceptProject> ConceptProjects => Set<ConceptProject>();
     public DbSet<ConceptTag> ConceptTags => Set<ConceptTag>();
+    public DbSet<ConceptRelation> ConceptRelations => Set<ConceptRelation>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -88,6 +89,23 @@ public class SecondBrainDbContext(DbContextOptions<SecondBrainDbContext> options
             entity.HasOne(ct => ct.Tag).WithMany(t => t.ConceptTags)
                 .HasForeignKey(ct => ct.TagId).OnDelete(DeleteBehavior.Cascade);
             entity.Property(ct => ct.CreatedAt).IsRequired();
+        });
+
+        modelBuilder.Entity<ConceptRelation>(entity =>
+        {
+            entity.ToTable("concept_relations");
+            entity.HasKey(cr => new { cr.SourceConceptId, cr.TargetConceptId, cr.Type });
+            entity.Property(cr => cr.Type).IsRequired().HasConversion<string>().HasMaxLength(20);
+            entity.Property(cr => cr.CreatedAt).IsRequired();
+
+            // Duas FKs pro mesmo Concept (self-relacionamento), as duas em cascade: apagar um
+            // Concept precisa limpar toda ConceptRelation onde ele aparece, seja como Source ou
+            // Target. "Múltiplos caminhos de cascade" é uma restrição do SQL Server, não do
+            // Postgres/Npgsql — aqui não há problema em cascatear dos dois lados.
+            entity.HasOne(cr => cr.SourceConcept).WithMany(c => c.RelationsAsSource)
+                .HasForeignKey(cr => cr.SourceConceptId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(cr => cr.TargetConcept).WithMany(c => c.RelationsAsTarget)
+                .HasForeignKey(cr => cr.TargetConceptId).OnDelete(DeleteBehavior.Cascade);
         });
 
         base.OnModelCreating(modelBuilder);

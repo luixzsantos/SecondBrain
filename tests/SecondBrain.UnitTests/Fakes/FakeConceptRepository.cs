@@ -15,6 +15,7 @@ public class FakeConceptRepository(
     private readonly List<(Guid ConceptId, Guid NoteId)> _noteLinks = [];
     private readonly List<(Guid ConceptId, Guid ProjectId)> _projectLinks = [];
     private readonly List<(Guid ConceptId, Guid TagId)> _tagLinks = [];
+    private readonly List<(Guid SourceId, Guid TargetId, ConceptRelationType Type)> _relations = [];
 
     public Task<List<Concept>> GetAllAsync(CancellationToken cancellationToken = default) =>
         Task.FromResult(_concepts.OrderBy(c => c.Name).ToList());
@@ -66,6 +67,16 @@ public class FakeConceptRepository(
             .Select(l => new ConceptTag { ConceptId = id, TagId = l.TagId, Tag = tags.Tags.First(t => t.Id == l.TagId) })
             .ToList();
 
+        concept.RelationsAsSource = _relations
+            .Where(r => r.SourceId == id)
+            .Select(r => new ConceptRelation { SourceConceptId = id, TargetConceptId = r.TargetId, Type = r.Type, TargetConcept = _concepts.First(c => c.Id == r.TargetId) })
+            .ToList();
+
+        concept.RelationsAsTarget = _relations
+            .Where(r => r.TargetId == id)
+            .Select(r => new ConceptRelation { SourceConceptId = r.SourceId, TargetConceptId = id, Type = r.Type, SourceConcept = _concepts.First(c => c.Id == r.SourceId) })
+            .ToList();
+
         return Task.FromResult<Concept?>(concept);
     }
 
@@ -104,4 +115,29 @@ public class FakeConceptRepository(
 
     public Task<bool> RemoveTagLinkAsync(Guid conceptId, Guid tagId, CancellationToken cancellationToken = default) =>
         Task.FromResult(_tagLinks.Remove((conceptId, tagId)));
+
+    public Task<bool> RelationExistsAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_relations.Any(r => r.Type == type &&
+            ((r.SourceId == conceptId && r.TargetId == relatedConceptId) ||
+             (r.SourceId == relatedConceptId && r.TargetId == conceptId))));
+
+    public Task AddRelationAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default)
+    {
+        _relations.Add((conceptId, relatedConceptId, type));
+        return Task.CompletedTask;
+    }
+
+    public Task<bool> RemoveRelationAsync(Guid conceptId, Guid relatedConceptId, ConceptRelationType type, CancellationToken cancellationToken = default)
+    {
+        var index = _relations.FindIndex(r => r.Type == type &&
+            ((r.SourceId == conceptId && r.TargetId == relatedConceptId) ||
+             (r.SourceId == relatedConceptId && r.TargetId == conceptId)));
+        if (index < 0)
+        {
+            return Task.FromResult(false);
+        }
+
+        _relations.RemoveAt(index);
+        return Task.FromResult(true);
+    }
 }

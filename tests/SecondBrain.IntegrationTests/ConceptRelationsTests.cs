@@ -2,6 +2,7 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using SecondBrain.Application.DTOs;
+using SecondBrain.Domain.Entities;
 using Xunit;
 
 namespace SecondBrain.IntegrationTests;
@@ -87,6 +88,50 @@ public class ConceptRelationsTests(SecondBrainApiFactory factory) : IClassFixtur
         var response = await _client.GetAsync($"/api/concepts?tagId={Guid.NewGuid()}");
 
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task LinkRelation_ApareceNaPaginaDosDoisConceitos()
+    {
+        var redis = await CreateAsync<ConceptDto>("/api/concepts", new CreateConceptRequest { Name = "Redis (relação)" });
+        var streams = await CreateAsync<ConceptDto>("/api/concepts", new CreateConceptRequest { Name = "Redis Streams (relação)" });
+
+        var linkResponse = await _client.PostAsJsonAsync(
+            $"/api/concepts/{redis.Id}/relations/{streams.Id}", new LinkConceptRelationRequest { Type = ConceptRelationType.RelatedTo });
+        Assert.Equal(HttpStatusCode.NoContent, linkResponse.StatusCode);
+
+        var redisDetail = await (await _client.GetAsync($"/api/concepts/{redis.Id}")).Content.ReadFromJsonAsync<ConceptDetailDto>(JsonOptions);
+        var streamsDetail = await (await _client.GetAsync($"/api/concepts/{streams.Id}")).Content.ReadFromJsonAsync<ConceptDetailDto>(JsonOptions);
+
+        Assert.Single(redisDetail!.Relations);
+        Assert.Equal("Redis Streams (relação)", redisDetail.Relations[0].ConceptName);
+        Assert.Single(streamsDetail!.Relations);
+        Assert.Equal("Redis (relação)", streamsDetail.Relations[0].ConceptName);
+    }
+
+    [Fact]
+    public async Task LinkRelation_ComSiMesmo_Retorna409()
+    {
+        var concept = await CreateAsync<ConceptDto>("/api/concepts", new CreateConceptRequest { Name = "Go (relação)" });
+
+        var response = await _client.PostAsJsonAsync(
+            $"/api/concepts/{concept.Id}/relations/{concept.Id}", new LinkConceptRelationRequest { Type = ConceptRelationType.RelatedTo });
+
+        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task UnlinkRelation_RemoveDosDoisLados()
+    {
+        var a = await CreateAsync<ConceptDto>("/api/concepts", new CreateConceptRequest { Name = "Kafka (relação)" });
+        var b = await CreateAsync<ConceptDto>("/api/concepts", new CreateConceptRequest { Name = "RabbitMQ (relação)" });
+        await _client.PostAsJsonAsync($"/api/concepts/{a.Id}/relations/{b.Id}", new LinkConceptRelationRequest { Type = ConceptRelationType.AlternativeTo });
+
+        var unlinkResponse = await _client.DeleteAsync($"/api/concepts/{b.Id}/relations/{a.Id}?type=AlternativeTo");
+        Assert.Equal(HttpStatusCode.NoContent, unlinkResponse.StatusCode);
+
+        var detail = await (await _client.GetAsync($"/api/concepts/{a.Id}")).Content.ReadFromJsonAsync<ConceptDetailDto>(JsonOptions);
+        Assert.Empty(detail!.Relations);
     }
 
     private async Task<T> CreateAsync<T>(string url, object body)

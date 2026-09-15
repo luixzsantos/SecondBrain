@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using SecondBrain.Application.DTOs;
 using SecondBrain.Application.Interfaces;
+using SecondBrain.Domain.Entities;
 
 namespace SecondBrain.API.Controllers;
 
@@ -126,6 +127,30 @@ public class ConceptsController(IConceptService conceptService) : ControllerBase
     public async Task<IActionResult> UnlinkTag(Guid conceptId, Guid tagId, CancellationToken cancellationToken)
     {
         await conceptService.UnlinkTagAsync(conceptId, tagId, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>Relaciona este Concept a outro Concept (grafo de conhecimento) — ex: "relacionado a", "alternativa a".</summary>
+    [HttpPost("{conceptId:guid}/relations/{relatedConceptId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
+    public async Task<IActionResult> LinkRelation(
+        Guid conceptId, Guid relatedConceptId, [FromBody] LinkConceptRelationRequest request, CancellationToken cancellationToken)
+    {
+        await conceptService.LinkRelationAsync(conceptId, relatedConceptId, request.Type, cancellationToken);
+        return NoContent();
+    }
+
+    /// <summary>Remove a relação entre este Concept e outro Concept.</summary>
+    [HttpDelete("{conceptId:guid}/relations/{relatedConceptId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> UnlinkRelation(
+        Guid conceptId, Guid relatedConceptId, [FromQuery] ConceptRelationType type, CancellationToken cancellationToken)
+    {
+        await conceptService.UnlinkRelationAsync(conceptId, relatedConceptId, type, cancellationToken);
         return NoContent();
     }
 }
