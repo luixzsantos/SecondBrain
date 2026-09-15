@@ -60,7 +60,20 @@
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
 
-  .app { display: flex; min-height: 100vh; max-width: 1100px; margin: 0 auto; }
+  .app { display: flex; min-height: 100vh; max-width: 1200px; margin: 0 auto; }
+
+  /* ---------- rail (abas laterais por linguagem/tag, estilo Discord) ---------- */
+  .rail {
+    width: 68px; flex-shrink: 0; border-right: 1px solid var(--border); background: var(--sidebar);
+    padding: 14px 0; display: flex; flex-direction: column; align-items: center; gap: 10px; overflow-y: auto;
+  }
+  .rail-item {
+    width: 46px; height: 46px; border-radius: 16px; flex-shrink: 0; display: flex; align-items: center;
+    justify-content: center; font-size: 12px; font-weight: 800; cursor: pointer; background: var(--surface);
+    border: 1px solid var(--border); color: var(--muted); transition: border-radius .12s ease;
+  }
+  .rail-item:hover { border-radius: 12px; color: var(--text); }
+  .rail-item.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); border-radius: 12px; }
 
   /* ---------- sidebar ---------- */
   .sidebar {
@@ -198,6 +211,7 @@
 
   @media (max-width: 760px) {
     .app { flex-direction: column; }
+    .rail { width: auto; flex-direction: row; border-right: none; border-bottom: 1px solid var(--border); padding: 10px 12px; }
     .sidebar { width: auto; border-right: none; border-bottom: 1px solid var(--border); }
     .nav-list { max-height: 160px; }
     .main { border-right: none; }
@@ -207,6 +221,8 @@
 <body>
 
 <div class="app">
+  <nav class="rail" id="rail"></nav>
+
   <aside class="sidebar">
     <div class="sidebar-top">
       <span class="brand">SecondBrain</span>
@@ -239,7 +255,31 @@ function svg(name, size) {
   return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:${size || 18}px;height:${size || 18}px">${ICONS[name]}</svg>`;
 }
 
-const state = { concepts: [], view: { type: 'feed' } };
+const state = { concepts: [], tags: [], activeTagId: null, view: { type: 'feed' } };
+
+// Abreviações conhecidas pra caber no círculo da aba lateral — o resto usa as 2 primeiras letras.
+const TAG_LABELS = { go: 'Go', csharp: 'C#', cpp: 'C++', python: 'Py', java: 'Ja', javascript: 'JS', database: 'DB' };
+function tagLabel(name) { return TAG_LABELS[name.toLowerCase()] || name.slice(0, 2).toUpperCase(); }
+
+async function loadTags() {
+  state.tags = await api('/api/tags');
+  renderRail();
+}
+
+function renderRail() {
+  const rail = document.getElementById('rail');
+  const allActive = state.activeTagId === null;
+  const items = [`<div class="rail-item${allActive ? ' active' : ''}" title="Todos" onclick="selectTag(null)">Tudo</div>`];
+  items.push(...state.tags.map(t => `<div class="rail-item${state.activeTagId === t.id ? ' active' : ''}" title="${escapeHtml(t.name)}" onclick="selectTag('${t.id}')">${escapeHtml(tagLabel(t.name))}</div>`));
+  rail.innerHTML = items.join('');
+}
+
+async function selectTag(tagId) {
+  state.activeTagId = tagId;
+  renderRail();
+  await loadAllConcepts();
+  renderFeed();
+}
 
 function applyThemeIcon() {
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark'
@@ -291,9 +331,16 @@ function renderNoteContent(content) {
 }
 
 async function loadAllConcepts() {
-  state.concepts = await api('/api/concepts');
+  const url = state.activeTagId ? `/api/concepts?tagId=${state.activeTagId}` : '/api/concepts';
+  state.concepts = await api(url);
   renderNav(state.concepts);
   if (state.view.type === 'feed' || state.view.type === 'search') renderFeed();
+}
+
+function activeTagName() {
+  if (!state.activeTagId) return null;
+  const tag = state.tags.find(t => t.id === state.activeTagId);
+  return tag ? tag.name : null;
 }
 
 function renderNav(concepts) {
@@ -312,18 +359,20 @@ function renderFeed() {
   document.getElementById('searchInput').value = '';
   renderNav(state.concepts);
   const main = document.getElementById('main');
+  const tagName = activeTagName();
+  const title = tagName ? `Verbetes · ${tagName}` : 'Seus verbetes';
   if (!state.concepts.length) {
     main.innerHTML = `
-      <div class="main-header"><h1>Seus verbetes</h1></div>
+      <div class="main-header"><h1>${escapeHtml(title)}</h1></div>
       <div class="empty-state">
         <h2>Nada por aqui ainda</h2>
-        <p>Clique em "Novo verbete" pra guardar a primeira coisa que você aprendeu.</p>
+        <p>${tagName ? 'Nenhum verbete guardado com essa tag ainda.' : 'Clique em "Novo verbete" pra guardar a primeira coisa que você aprendeu.'}</p>
       </div>
     `;
     return;
   }
   main.innerHTML = `
-    <div class="main-header"><h1>Seus verbetes</h1></div>
+    <div class="main-header"><h1>${escapeHtml(title)}</h1></div>
     <div class="main-body">
       ${state.concepts.map(c => `
         <div class="row" onclick="openConceptDetail('${c.id}')">
@@ -480,6 +529,7 @@ async function deleteConcept(id) {
   renderFeed();
 }
 
+loadTags();
 loadAllConcepts().then(renderFeed);
 </script>
 </body>

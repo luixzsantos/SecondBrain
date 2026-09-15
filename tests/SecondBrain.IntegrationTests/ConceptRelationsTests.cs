@@ -67,6 +67,28 @@ public class ConceptRelationsTests(SecondBrainApiFactory factory) : IClassFixtur
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
+    [Fact]
+    public async Task GetAllConcepts_ComTagId_RetornaSoOsRelacionados()
+    {
+        var tagged = await CreateAsync<ConceptDto>("/api/concepts", new CreateConceptRequest { Name = "Kubernetes" });
+        await CreateAsync<ConceptDto>("/api/concepts", new CreateConceptRequest { Name = "Terraform" });
+        var tag = await CreateAsync<TagDto>("/api/tags", new CreateTagRequest { Name = "devops" });
+        await _client.PostAsync($"/api/concepts/{tagged.Id}/tags/{tag.Id}", null);
+
+        var filtered = await _client.GetFromJsonAsync<List<ConceptDto>>($"/api/concepts?tagId={tag.Id}", JsonOptions);
+
+        Assert.Single(filtered!);
+        Assert.Equal("Kubernetes", filtered![0].Name);
+    }
+
+    [Fact]
+    public async Task GetAllConcepts_ComTagIdInexistente_Retorna404()
+    {
+        var response = await _client.GetAsync($"/api/concepts?tagId={Guid.NewGuid()}");
+
+        Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
+    }
+
     private async Task<T> CreateAsync<T>(string url, object body)
     {
         var response = await _client.PostAsJsonAsync(url, body);

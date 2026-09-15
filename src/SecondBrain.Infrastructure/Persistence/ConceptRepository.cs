@@ -12,6 +12,13 @@ public class ConceptRepository(SecondBrainDbContext context) : IConceptRepositor
             .OrderBy(c => c.Name)
             .ToListAsync(cancellationToken);
 
+    public async Task<List<Concept>> GetAllByTagAsync(Guid tagId, CancellationToken cancellationToken = default) =>
+        await context.Concepts
+            .AsNoTracking()
+            .Where(c => c.ConceptTags.Any(ct => ct.TagId == tagId))
+            .OrderBy(c => c.Name)
+            .ToListAsync(cancellationToken);
+
     public async Task<Concept?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
         await context.Concepts.FirstOrDefaultAsync(c => c.Id == id, cancellationToken);
 

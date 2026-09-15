@@ -9,12 +9,15 @@ namespace SecondBrain.API.Controllers;
 [Produces("application/json")]
 public class ConceptsController(IConceptService conceptService) : ControllerBase
 {
-    /// <summary>Lista todos os conceitos, ordenados por nome.</summary>
+    /// <summary>Lista os conceitos, ordenados por nome — opcionalmente filtrados por Tag (ex: uma linguagem).</summary>
     [HttpGet]
     [ProducesResponseType<List<ConceptDto>>(StatusCodes.Status200OK)]
-    public async Task<ActionResult<List<ConceptDto>>> GetAll(CancellationToken cancellationToken)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<List<ConceptDto>>> GetAll([FromQuery] Guid? tagId, CancellationToken cancellationToken)
     {
-        var concepts = await conceptService.GetAllAsync(cancellationToken);
+        var concepts = tagId.HasValue
+            ? await conceptService.GetAllByTagAsync(tagId.Value, cancellationToken)
+            : await conceptService.GetAllAsync(cancellationToken);
         return Ok(concepts);
     }
 

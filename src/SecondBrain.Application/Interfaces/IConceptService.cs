@@ -5,6 +5,7 @@ namespace SecondBrain.Application.Interfaces;
 public interface IConceptService
 {
     Task<List<ConceptDto>> GetAllAsync(CancellationToken cancellationToken = default);
+    Task<List<ConceptDto>> GetAllByTagAsync(Guid tagId, CancellationToken cancellationToken = default);
     Task<ConceptDto> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<ConceptDetailDto> GetDetailByIdAsync(Guid id, CancellationToken cancellationToken = default);
     Task<ConceptDto> CreateAsync(CreateConceptRequest request, CancellationToken cancellationToken = default);

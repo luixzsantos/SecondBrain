@@ -19,6 +19,11 @@ obj/
 .env
 *.pfx
 
+# Artefatos de execucao local (start.bat/dev)
+api-out.log
+api-err.log
+api.pid
+
 # OS
 .DS_Store
 Thumbs.db

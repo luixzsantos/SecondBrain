@@ -100,7 +100,13 @@ Get-ChildItem -Path $DataDir -Filter "*.json" | ForEach-Object {
             if ($projectByName.ContainsKey($projKey)) {
                 $projectId = $projectByName[$projKey].id
             } else {
-                $projResp = Invoke-JsonApi -Uri "$ApiBase/projects" -Method Post -Payload @{ name = $concept.projectName; description = "Projeto real do usuario, fonte dos exemplos de codigo importados." }
+                $isGenericRef = $concept.projectName -like "Referencia Geral*" -or $concept.projectName -like "Refer*ncia Geral*"
+                $projDescription = if ($isGenericRef) {
+                    "Conteudo de referencia geral da linguagem, nao vinculado a um repositorio especifico do usuario."
+                } else {
+                    "Projeto real do usuario, fonte dos exemplos de codigo importados."
+                }
+                $projResp = Invoke-JsonApi -Uri "$ApiBase/projects" -Method Post -Payload @{ name = $concept.projectName; description = $projDescription }
                 $projectByName[$projKey] = $projResp
                 $projectId = $projResp.id
             }
@@ -119,21 +125,26 @@ Get-ChildItem -Path $DataDir -Filter "*.json" | ForEach-Object {
                 $script:totalCreated++
             }
 
-            # Note com a explicacao completa + codigo real
+            # Note com a explicacao completa + exemplo de codigo
             $noteTitle = "$($concept.name) (nota completa)"
-            $noteContent = @(
+            $noteLines = @(
                 "**Nivel:** $($concept.level)"
                 ""
                 $concept.explanation
                 ""
-                "## Codigo real do projeto"
+                "## Exemplo de codigo"
                 ""
                 "$fence3$fence"
                 $concept.codeExample
                 $fence3
                 ""
-                "**Onde usei:** $($concept.whereUsed)"
-            ) -join "`n"
+                "**Contexto de uso:** $($concept.whereUsed)"
+            )
+            if ($concept.PSObject.Properties.Name -contains "documentationUrl" -and $concept.documentationUrl) {
+                $noteLines += ""
+                $noteLines += "**Documentacao oficial:** $($concept.documentationUrl)"
+            }
+            $noteContent = $noteLines -join "`n"
             $noteKey = $noteTitle.ToLower()
             if ($noteByTitle.ContainsKey($noteKey)) {
                 $noteId = $noteByTitle[$noteKey].id

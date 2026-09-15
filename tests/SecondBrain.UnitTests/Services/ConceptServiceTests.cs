@@ -124,6 +124,29 @@ public class ConceptServiceTests
     }
 
     [Fact]
+    public async Task GetAllByTagAsync_RetornaSoConceptsComEssaTag()
+    {
+        var ctx = CreateContext();
+        var redis = await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "Redis" });
+        await ctx.Service.CreateAsync(new CreateConceptRequest { Name = "Docker" });
+        var tag = new Tag { Id = Guid.NewGuid(), Name = "database" };
+        await ctx.Tags.AddAsync(tag);
+        await ctx.Service.LinkTagAsync(redis.Id, tag.Id);
+
+        var filtered = await ctx.Service.GetAllByTagAsync(tag.Id);
+
+        Assert.Equal(["Redis"], filtered.Select(c => c.Name));
+    }
+
+    [Fact]
+    public async Task GetAllByTagAsync_ComTagInexistente_LancaNotFoundException()
+    {
+        var ctx = CreateContext();
+
+        await Assert.ThrowsAsync<NotFoundException>(() => ctx.Service.GetAllByTagAsync(Guid.NewGuid()));
+    }
+
+    [Fact]
     public async Task LinkNoteAsync_RelacionaNoteAoConcept_ApareceNoDetalhe()
     {
         var ctx = CreateContext();

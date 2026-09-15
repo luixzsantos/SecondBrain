@@ -19,6 +19,15 @@ public class ConceptService(
         return concepts.Select(ToDto).ToList();
     }
 
+    public async Task<List<ConceptDto>> GetAllByTagAsync(Guid tagId, CancellationToken cancellationToken = default)
+    {
+        _ = await tagRepository.GetByIdAsync(tagId, cancellationToken)
+            ?? throw new NotFoundException($"Tag '{tagId}' não encontrada.");
+
+        var concepts = await repository.GetAllByTagAsync(tagId, cancellationToken);
+        return concepts.Select(ToDto).ToList();
+    }
+
     public async Task<ConceptDto> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
     {
         var concept = await repository.GetByIdAsync(id, cancellationToken)

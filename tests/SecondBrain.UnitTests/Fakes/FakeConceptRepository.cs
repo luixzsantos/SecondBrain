@@ -19,6 +19,13 @@ public class FakeConceptRepository(
     public Task<List<Concept>> GetAllAsync(CancellationToken cancellationToken = default) =>
         Task.FromResult(_concepts.OrderBy(c => c.Name).ToList());
 
+    public Task<List<Concept>> GetAllByTagAsync(Guid tagId, CancellationToken cancellationToken = default) =>
+        Task.FromResult(_tagLinks
+            .Where(l => l.TagId == tagId)
+            .Select(l => _concepts.First(c => c.Id == l.ConceptId))
+            .OrderBy(c => c.Name)
+            .ToList());
+
     public Task<Concept?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default) =>
         Task.FromResult(_concepts.FirstOrDefault(c => c.Id == id));
 
